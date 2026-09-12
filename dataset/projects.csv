@@ -1,0 +1,169 @@
+project_id,skill_id,project_title,description,difficulty,estimated_time
+1,1,Build a CLI Todo App,Command-line task manager using Python,Beginner,5
+2,1,Web Scraper,Scrape and parse data from a website using requests+BeautifulSoup,Intermediate,8
+3,2,Implement a Linked List,Build a doubly-linked list from scratch,Intermediate,6
+4,2,Binary Search Tree,"Create BST with insert, delete, search",Intermediate,8
+5,3,Sorting Visualizer,Animate various sorting algorithms,Intermediate,10
+6,3,LeetCode 50 Challenge,Solve 50 curated algorithm problems,Advanced,20
+7,4,Practice Project: Object-Oriented Programming,Apply Object-Oriented Programming concepts through a hands-on project,Intermediate,10
+8,5,Practice Project: Functional Programming,Apply Functional Programming concepts through a hands-on project,Intermediate,12
+9,6,Practice Project: Concurrency & Multithreading,Apply Concurrency & Multithreading concepts through a hands-on project,Advanced,8
+10,7,Practice Project: Design Patterns,Apply Design Patterns concepts through a hands-on project,Advanced,12
+11,8,Practice Project: Testing & TDD,Apply Testing & TDD concepts through a hands-on project,Intermediate,12
+12,9,Practice Project: Version Control (Git),Apply Version Control (Git) concepts through a hands-on project,Beginner,10
+13,10,Practice Project: Command Line & Shell Scripting,Apply Command Line & Shell Scripting concepts through a hands-on project,Beginner,10
+14,11,Practice Project: Regular Expressions,Apply Regular Expressions concepts through a hands-on project,Intermediate,12
+15,12,Practice Project: Debugging Techniques,Apply Debugging Techniques concepts through a hands-on project,Intermediate,12
+16,13,Practice Project: Code Review Best Practices,Apply Code Review Best Practices concepts through a hands-on project,Intermediate,10
+17,14,Practice Project: API Design,Apply API Design concepts through a hands-on project,Advanced,8
+18,15,Practice Project: Database Programming,Apply Database Programming concepts through a hands-on project,Intermediate,8
+19,16,Practice Project: Memory Management,Apply Memory Management concepts through a hands-on project,Advanced,12
+20,17,Practice Project: Compiler Design,Apply Compiler Design concepts through a hands-on project,Advanced,8
+21,18,Practice Project: Networking Fundamentals for Developers,Apply Networking Fundamentals for Developers concepts through a hands-on project,Intermediate,12
+22,19,Practice Project: Software Architecture,Apply Software Architecture concepts through a hands-on project,Advanced,5
+23,20,Practice Project: Performance Optimization,Apply Performance Optimization concepts through a hands-on project,Advanced,10
+24,21,Practice Project: Rust Programming,Apply Rust Programming concepts through a hands-on project,Advanced,12
+25,22,Practice Project: Go Programming,Apply Go Programming concepts through a hands-on project,Intermediate,12
+26,23,Practice Project: Java Programming,Apply Java Programming concepts through a hands-on project,Intermediate,12
+27,24,Practice Project: C++ Programming,Apply C++ Programming concepts through a hands-on project,Advanced,8
+28,25,Practice Project: TypeScript,Apply TypeScript concepts through a hands-on project,Intermediate,12
+29,26,Practice Project: Data Wrangling with Pandas,Apply Data Wrangling with Pandas concepts through a hands-on project,Intermediate,5
+30,27,Practice Project: Exploratory Data Analysis,Apply Exploratory Data Analysis concepts through a hands-on project,Intermediate,8
+31,28,Practice Project: Feature Engineering,Apply Feature Engineering concepts through a hands-on project,Advanced,10
+32,29,Practice Project: Statistical Inference,Apply Statistical Inference concepts through a hands-on project,Intermediate,5
+33,30,Practice Project: Probability Theory,Apply Probability Theory concepts through a hands-on project,Intermediate,12
+34,31,Practice Project: Data Visualization,Apply Data Visualization concepts through a hands-on project,Beginner,5
+35,32,Practice Project: Time Series Analysis,Apply Time Series Analysis concepts through a hands-on project,Advanced,12
+36,33,Practice Project: A/B Testing,Apply A/B Testing concepts through a hands-on project,Intermediate,5
+37,34,Practice Project: SQL for Data Science,Apply SQL for Data Science concepts through a hands-on project,Beginner,8
+38,35,Practice Project: Data Pipeline Design,Apply Data Pipeline Design concepts through a hands-on project,Advanced,12
+39,36,Practice Project: NoSQL Databases,Apply NoSQL Databases concepts through a hands-on project,Intermediate,8
+40,37,Practice Project: Web Scraping,Apply Web Scraping concepts through a hands-on project,Intermediate,5
+41,38,Practice Project: Data Ethics & Privacy,Apply Data Ethics & Privacy concepts through a hands-on project,Beginner,12
+42,39,Practice Project: Bayesian Statistics,Apply Bayesian Statistics concepts through a hands-on project,Advanced,10
+43,40,Practice Project: Dimensionality Reduction,Apply Dimensionality Reduction concepts through a hands-on project,Advanced,10
+44,41,Practice Project: Recommender Systems,Apply Recommender Systems concepts through a hands-on project,Advanced,12
+45,42,Practice Project: Graph Analytics,Apply Graph Analytics concepts through a hands-on project,Advanced,5
+46,43,Practice Project: Geospatial Analysis,Apply Geospatial Analysis concepts through a hands-on project,Intermediate,10
+47,44,Practice Project: Business Intelligence,Apply Business Intelligence concepts through a hands-on project,Beginner,12
+48,45,Practice Project: Data Storytelling,Apply Data Storytelling concepts through a hands-on project,Intermediate,10
+49,46,Practice Project: Machine Learning Fundamentals,Apply Machine Learning Fundamentals concepts through a hands-on project,Intermediate,12
+50,47,Practice Project: Linear & Logistic Regression,Apply Linear & Logistic Regression concepts through a hands-on project,Beginner,5
+51,48,Practice Project: Decision Trees & Random Forests,Apply Decision Trees & Random Forests concepts through a hands-on project,Intermediate,5
+52,49,Practice Project: Support Vector Machines,Apply Support Vector Machines concepts through a hands-on project,Intermediate,8
+53,50,Practice Project: Neural Networks Basics,Apply Neural Networks Basics concepts through a hands-on project,Intermediate,10
+54,51,Practice Project: Deep Learning,Apply Deep Learning concepts through a hands-on project,Advanced,8
+55,52,Practice Project: Natural Language Processing,Apply Natural Language Processing concepts through a hands-on project,Advanced,5
+56,53,Practice Project: Computer Vision,Apply Computer Vision concepts through a hands-on project,Advanced,12
+57,54,Practice Project: Reinforcement Learning,Apply Reinforcement Learning concepts through a hands-on project,Advanced,5
+58,55,Practice Project: Model Evaluation & Metrics,Apply Model Evaluation & Metrics concepts through a hands-on project,Intermediate,5
+59,56,Practice Project: Hyperparameter Tuning,Apply Hyperparameter Tuning concepts through a hands-on project,Intermediate,12
+60,57,Practice Project: Transfer Learning,Apply Transfer Learning concepts through a hands-on project,Advanced,8
+61,58,Practice Project: Generative AI & LLMs,Apply Generative AI & LLMs concepts through a hands-on project,Advanced,10
+62,59,Practice Project: MLOps,Apply MLOps concepts through a hands-on project,Advanced,5
+63,60,Practice Project: Explainable AI,Apply Explainable AI concepts through a hands-on project,Advanced,5
+64,61,Practice Project: Graph Neural Networks,Apply Graph Neural Networks concepts through a hands-on project,Advanced,10
+65,62,Practice Project: Federated Learning,Apply Federated Learning concepts through a hands-on project,Advanced,5
+66,63,Practice Project: AI Ethics & Fairness,Apply AI Ethics & Fairness concepts through a hands-on project,Intermediate,10
+67,64,Practice Project: AutoML,Apply AutoML concepts through a hands-on project,Intermediate,10
+68,65,Practice Project: Causal Inference,Apply Causal Inference concepts through a hands-on project,Advanced,10
+69,66,Practice Project: HTML & CSS Fundamentals,Apply HTML & CSS Fundamentals concepts through a hands-on project,Beginner,12
+70,67,Practice Project: Responsive Web Design,Apply Responsive Web Design concepts through a hands-on project,Beginner,8
+71,68,Practice Project: JavaScript Fundamentals,Apply JavaScript Fundamentals concepts through a hands-on project,Beginner,8
+72,69,Practice Project: React.js,Apply React.js concepts through a hands-on project,Intermediate,12
+73,70,Practice Project: Vue.js,Apply Vue.js concepts through a hands-on project,Intermediate,8
+74,71,Practice Project: Node.js & Express,Apply Node.js & Express concepts through a hands-on project,Intermediate,8
+75,72,Practice Project: Next.js,Apply Next.js concepts through a hands-on project,Intermediate,8
+76,73,Practice Project: GraphQL,Apply GraphQL concepts through a hands-on project,Intermediate,5
+77,74,Practice Project: RESTful API Development,Apply RESTful API Development concepts through a hands-on project,Intermediate,12
+78,75,Practice Project: Web Accessibility (a11y),Apply Web Accessibility (a11y) concepts through a hands-on project,Intermediate,8
+79,76,Practice Project: Progressive Web Apps,Apply Progressive Web Apps concepts through a hands-on project,Intermediate,12
+80,77,Practice Project: WebSockets & Real-time Apps,Apply WebSockets & Real-time Apps concepts through a hands-on project,Advanced,8
+81,78,Practice Project: Authentication & Authorization,Apply Authentication & Authorization concepts through a hands-on project,Advanced,8
+82,79,Practice Project: Web Security,Apply Web Security concepts through a hands-on project,Advanced,12
+83,80,Practice Project: Frontend Performance,Apply Frontend Performance concepts through a hands-on project,Advanced,10
+84,81,Practice Project: CSS Frameworks (Tailwind),Apply CSS Frameworks (Tailwind) concepts through a hands-on project,Beginner,12
+85,82,Practice Project: Testing Frontend Apps,Apply Testing Frontend Apps concepts through a hands-on project,Intermediate,10
+86,83,Practice Project: Browser DevTools,Apply Browser DevTools concepts through a hands-on project,Beginner,5
+87,84,Practice Project: Web Components,Apply Web Components concepts through a hands-on project,Intermediate,12
+88,85,Practice Project: Svelte,Apply Svelte concepts through a hands-on project,Intermediate,10
+89,86,Practice Project: Cloud Fundamentals,Apply Cloud Fundamentals concepts through a hands-on project,Beginner,8
+90,87,Practice Project: AWS Core Services,Apply AWS Core Services concepts through a hands-on project,Intermediate,5
+91,88,Practice Project: Azure Fundamentals,Apply Azure Fundamentals concepts through a hands-on project,Intermediate,12
+92,89,Practice Project: Google Cloud Platform,Apply Google Cloud Platform concepts through a hands-on project,Intermediate,10
+93,90,Practice Project: Containerization with Docker,Apply Containerization with Docker concepts through a hands-on project,Intermediate,10
+94,91,Practice Project: Kubernetes,Apply Kubernetes concepts through a hands-on project,Advanced,12
+95,92,Practice Project: Infrastructure as Code (Terraform),Apply Infrastructure as Code (Terraform) concepts through a hands-on project,Advanced,10
+96,93,Practice Project: CI/CD Pipelines,Apply CI/CD Pipelines concepts through a hands-on project,Intermediate,12
+97,94,Practice Project: Serverless Architecture,Apply Serverless Architecture concepts through a hands-on project,Intermediate,10
+98,95,Practice Project: Cloud Networking,Apply Cloud Networking concepts through a hands-on project,Advanced,8
+99,96,Practice Project: Cloud Security,Apply Cloud Security concepts through a hands-on project,Advanced,12
+100,97,Practice Project: Cost Optimization,Apply Cost Optimization concepts through a hands-on project,Intermediate,12
+101,98,Practice Project: Observability & Monitoring,Apply Observability & Monitoring concepts through a hands-on project,Intermediate,5
+102,99,Practice Project: Multi-Cloud Strategy,Apply Multi-Cloud Strategy concepts through a hands-on project,Advanced,8
+103,100,Practice Project: Cloud Databases,Apply Cloud Databases concepts through a hands-on project,Intermediate,12
+104,101,Practice Project: Event-Driven Architecture,Apply Event-Driven Architecture concepts through a hands-on project,Advanced,10
+105,102,Practice Project: Microservices on Cloud,Apply Microservices on Cloud concepts through a hands-on project,Advanced,10
+106,103,Practice Project: DevOps Culture,Apply DevOps Culture concepts through a hands-on project,Intermediate,10
+107,104,Practice Project: Cloud Storage & CDN,Apply Cloud Storage & CDN concepts through a hands-on project,Beginner,5
+108,105,Practice Project: Disaster Recovery & HA,Apply Disaster Recovery & HA concepts through a hands-on project,Advanced,12
+109,106,Practice Project: Security Fundamentals,Apply Security Fundamentals concepts through a hands-on project,Beginner,10
+110,107,Practice Project: Network Security,Apply Network Security concepts through a hands-on project,Intermediate,5
+111,108,Practice Project: Cryptography,Apply Cryptography concepts through a hands-on project,Advanced,5
+112,109,Practice Project: Penetration Testing,Apply Penetration Testing concepts through a hands-on project,Advanced,12
+113,110,Practice Project: Ethical Hacking,Apply Ethical Hacking concepts through a hands-on project,Advanced,10
+114,111,Practice Project: Web Application Security,Apply Web Application Security concepts through a hands-on project,Intermediate,8
+115,112,Practice Project: Malware Analysis,Apply Malware Analysis concepts through a hands-on project,Advanced,10
+116,113,Practice Project: Digital Forensics,Apply Digital Forensics concepts through a hands-on project,Advanced,8
+117,114,Practice Project: Incident Response,Apply Incident Response concepts through a hands-on project,Advanced,8
+118,115,Practice Project: Security Operations Center (SOC),Apply Security Operations Center (SOC) concepts through a hands-on project,Intermediate,10
+119,116,Practice Project: Identity & Access Management,Apply Identity & Access Management concepts through a hands-on project,Intermediate,8
+120,117,Practice Project: Cloud Security2,Apply Cloud Security2 concepts through a hands-on project,Advanced,5
+121,118,Practice Project: Social Engineering,Apply Social Engineering concepts through a hands-on project,Intermediate,5
+122,119,Practice Project: Vulnerability Management,Apply Vulnerability Management concepts through a hands-on project,Intermediate,10
+123,120,Practice Project: Secure Software Development,Apply Secure Software Development concepts through a hands-on project,Intermediate,12
+124,121,Practice Project: Risk Management,Apply Risk Management concepts through a hands-on project,Intermediate,5
+125,122,Practice Project: Container & Kubernetes Security,Apply Container & Kubernetes Security concepts through a hands-on project,Advanced,10
+126,123,Practice Project: Red vs Blue Team Operations,Apply Red vs Blue Team Operations concepts through a hands-on project,Advanced,8
+127,124,Practice Project: Threat Intelligence,Apply Threat Intelligence concepts through a hands-on project,Advanced,5
+128,125,Practice Project: Compliance & Regulations,Apply Compliance & Regulations concepts through a hands-on project,Intermediate,10
+129,126,Practice Project: Linear Algebra,Apply Linear Algebra concepts through a hands-on project,Intermediate,10
+130,127,Practice Project: Calculus,Apply Calculus concepts through a hands-on project,Intermediate,12
+131,128,Practice Project: Probability Theory2,Apply Probability Theory2 concepts through a hands-on project,Intermediate,8
+132,129,Practice Project: Statistics,Apply Statistics concepts through a hands-on project,Intermediate,8
+133,130,Practice Project: Discrete Mathematics,Apply Discrete Mathematics concepts through a hands-on project,Intermediate,8
+134,131,Practice Project: Numerical Methods,Apply Numerical Methods concepts through a hands-on project,Advanced,10
+135,132,Practice Project: Optimization Theory,Apply Optimization Theory concepts through a hands-on project,Advanced,10
+136,133,Practice Project: Information Theory,Apply Information Theory concepts through a hands-on project,Advanced,8
+137,134,Practice Project: Differential Equations,Apply Differential Equations concepts through a hands-on project,Advanced,10
+138,135,Practice Project: Abstract Algebra,Apply Abstract Algebra concepts through a hands-on project,Advanced,12
+139,136,Practice Project: Real Analysis,Apply Real Analysis concepts through a hands-on project,Advanced,10
+140,137,Practice Project: Complex Analysis,Apply Complex Analysis concepts through a hands-on project,Advanced,10
+141,138,Practice Project: Topology,Apply Topology concepts through a hands-on project,Advanced,5
+142,139,Practice Project: Game Theory,Apply Game Theory concepts through a hands-on project,Intermediate,12
+143,140,Practice Project: Mathematical Logic,Apply Mathematical Logic concepts through a hands-on project,Advanced,5
+144,141,Practice Project: Number Theory,Apply Number Theory concepts through a hands-on project,Intermediate,8
+145,142,Practice Project: Graph Theory,Apply Graph Theory concepts through a hands-on project,Intermediate,8
+146,143,Practice Project: Stochastic Processes,Apply Stochastic Processes concepts through a hands-on project,Advanced,12
+147,144,Practice Project: Fourier Analysis,Apply Fourier Analysis concepts through a hands-on project,Advanced,10
+148,145,Practice Project: Combinatorics,Apply Combinatorics concepts through a hands-on project,Intermediate,5
+149,146,Practice Project: Kotlin Programming,Apply Kotlin Programming concepts through a hands-on project,Intermediate,12
+150,147,Practice Project: Swift Programming,Apply Swift Programming concepts through a hands-on project,Intermediate,5
+151,148,Practice Project: Scala & Functional JVM,Apply Scala & Functional JVM concepts through a hands-on project,Advanced,10
+152,149,Practice Project: Ruby on Rails,Apply Ruby on Rails concepts through a hands-on project,Intermediate,5
+153,150,Practice Project: PHP & Laravel,Apply PHP & Laravel concepts through a hands-on project,Intermediate,12
+154,151,Practice Project: Dask & Parallel Computing,Apply Dask & Parallel Computing concepts through a hands-on project,Advanced,10
+155,152,Practice Project: PySpark & Big Data,Apply PySpark & Big Data concepts through a hands-on project,Advanced,10
+156,153,Practice Project: Data Quality & Validation,Apply Data Quality & Validation concepts through a hands-on project,Intermediate,12
+157,154,Practice Project: Speech Recognition,Apply Speech Recognition concepts through a hands-on project,Advanced,10
+158,155,Practice Project: Multi-Agent Systems,Apply Multi-Agent Systems concepts through a hands-on project,Advanced,5
+159,156,Practice Project: WebAssembly,Apply WebAssembly concepts through a hands-on project,Advanced,8
+160,157,Practice Project: Three.js & WebGL,Apply Three.js & WebGL concepts through a hands-on project,Advanced,12
+161,158,Practice Project: Platform Engineering,Apply Platform Engineering concepts through a hands-on project,Advanced,5
+162,159,Practice Project: FinOps & Cloud Cost Management,Apply FinOps & Cloud Cost Management concepts through a hands-on project,Intermediate,10
+163,160,Practice Project: Zero Trust Architecture,Apply Zero Trust Architecture concepts through a hands-on project,Advanced,8
+164,161,Practice Project: AI-Powered Security,Apply AI-Powered Security concepts through a hands-on project,Advanced,5
+165,162,Practice Project: Measure Theory,Apply Measure Theory concepts through a hands-on project,Advanced,12
+166,163,Practice Project: Algebraic Topology,Apply Algebraic Topology concepts through a hands-on project,Advanced,10
+167,164,Practice Project: Convex Analysis,Apply Convex Analysis concepts through a hands-on project,Advanced,12
+168,165,Practice Project: Synthetic Data Generation,Apply Synthetic Data Generation concepts through a hands-on project,Advanced,5

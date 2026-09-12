@@ -1,0 +1,447 @@
+resource_id,skill_id,resource_type,resource_title,description,difficulty,estimated_time,url,rating,popularity
+1,1,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Beginner,26,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.5,4145
+2,1,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Beginner,14,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.5,3505
+3,2,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,13,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.9,4498
+4,2,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Intermediate,25,https://www.coursera.org/specializations/algorithms,3.8,3662
+5,3,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Advanced,4,https://www.geeksforgeeks.org/,4.6,1313
+6,3,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Advanced,32,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,4.5,3898
+7,4,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Intermediate,29,https://www.coursera.org/specializations/algorithms,4.8,3696
+8,4,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Intermediate,23,https://www.oreilly.com/library/view/clean-code/9780136083238/,3.6,2133
+9,5,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Intermediate,34,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.1,2035
+10,5,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,20,https://cs50.harvard.edu/x/,3.5,2281
+11,5,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Intermediate,29,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,3.8,4280
+12,6,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Advanced,41,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,4.3,3979
+13,6,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Advanced,34,https://www.coursera.org/specializations/algorithms,3.5,1969
+14,6,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Advanced,6,https://www.geeksforgeeks.org/,3.8,2259
+15,7,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Advanced,31,https://www.coursera.org/specializations/algorithms,4.5,3613
+16,7,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Advanced,4,https://www.geeksforgeeks.org/,4.3,644
+17,8,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,10,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.8,2350
+18,8,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,25,https://cs50.harvard.edu/x/,4.4,1930
+19,8,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Intermediate,36,https://www.coursera.org/specializations/algorithms,4.7,2235
+20,9,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Beginner,23,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,3.5,2761
+21,9,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Beginner,13,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.7,2629
+22,10,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Beginner,37,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.5,4434
+23,10,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Beginner,14,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.0,670
+24,11,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,6,https://www.geeksforgeeks.org/,3.7,1143
+25,11,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Intermediate,35,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.9,1245
+26,11,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Intermediate,29,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,4.0,1904
+27,12,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,9,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.6,3147
+28,12,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,6,https://www.geeksforgeeks.org/,3.6,1261
+29,13,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Intermediate,28,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.8,1762
+30,13,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Intermediate,49,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,4.4,536
+31,14,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Advanced,48,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,4.7,3408
+32,14,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Advanced,6,https://www.geeksforgeeks.org/,4.6,3349
+33,15,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,24,https://cs50.harvard.edu/x/,4.3,2720
+34,15,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Intermediate,23,https://www.oreilly.com/library/view/clean-code/9780136083238/,5.0,4455
+35,16,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Advanced,31,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.1,3826
+36,16,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Advanced,5,https://www.geeksforgeeks.org/,4.3,3416
+37,16,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Advanced,36,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,4.7,520
+38,17,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Advanced,34,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.4,1704
+39,17,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Advanced,14,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.8,3451
+40,18,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,9,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.4,3200
+41,18,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,4,https://www.geeksforgeeks.org/,4.6,4794
+42,19,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Advanced,22,https://www.coursera.org/specializations/algorithms,3.6,170
+43,19,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Advanced,33,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,3.8,4726
+44,19,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Advanced,14,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.9,3126
+45,20,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Advanced,31,https://cs50.harvard.edu/x/,3.6,3917
+46,20,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Advanced,49,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,3.8,58
+47,20,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Advanced,15,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.7,2891
+48,21,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Advanced,18,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,3.9,2456
+49,21,book,Clean Code by Robert C. Martin,A resource covering clean code by robert c. martin,Advanced,31,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.5,3204
+50,22,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Intermediate,50,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,4.0,3442
+51,22,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,11,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.1,4419
+52,22,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Intermediate,30,https://www.coursera.org/specializations/algorithms,3.8,4483
+53,23,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,4,https://www.geeksforgeeks.org/,3.9,4951
+54,23,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Intermediate,26,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.9,1816
+55,24,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Advanced,19,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.5,4009
+56,24,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Advanced,28,https://cs50.harvard.edu/x/,4.4,1807
+57,24,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Advanced,11,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.8,2245
+58,25,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Intermediate,27,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.6,3580
+59,25,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,22,https://cs50.harvard.edu/x/,3.7,3988
+60,26,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Intermediate,14,https://www.youtube.com/@statquest,4.1,247
+61,26,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,19,https://www.kaggle.com/learn,5.0,3195
+62,26,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,8,https://www.youtube.com/@dataschool,4.5,2763
+63,27,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,16,https://www.kaggle.com/learn,4.3,3322
+64,27,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,12,https://www.youtube.com/@dataschool,4.5,1362
+65,27,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Intermediate,14,https://www.youtube.com/@statquest,4.8,3838
+66,28,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Advanced,16,https://www.youtube.com/@statquest,4.7,1055
+67,28,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Advanced,6,https://towardsdatascience.com/,3.8,4385
+68,29,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,25,https://www.kaggle.com/learn,3.5,230
+69,29,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Intermediate,4,https://towardsdatascience.com/,4.0,3237
+70,30,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,11,https://www.youtube.com/@dataschool,3.9,4858
+71,30,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Intermediate,52,https://hastie.su.domains/ElemStatLearn/,3.8,4633
+72,31,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Beginner,13,https://www.youtube.com/@statquest,4.9,232
+73,31,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Beginner,57,https://hastie.su.domains/ElemStatLearn/,4.8,697
+74,31,book,Hands-On Machine Learning by Aurélien Géron,A resource covering hands-on machine learning by aurélien géron,Beginner,34,https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/,4.0,3521
+75,32,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Advanced,5,https://towardsdatascience.com/,4.5,1121
+76,32,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Advanced,24,https://www.kaggle.com/learn,4.1,3792
+77,32,book,Python for Data Analysis by Wes McKinney,A resource covering python for data analysis by wes mckinney,Advanced,20,https://www.oreilly.com/library/view/python-for-data/9781491957653/,4.9,1498
+78,33,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Intermediate,19,https://www.youtube.com/@statquest,4.2,421
+79,33,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Intermediate,51,https://www.coursera.org/specializations/jhu-data-science,3.9,2141
+80,33,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,20,https://www.kaggle.com/learn,3.9,3115
+81,34,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Beginner,37,https://hastie.su.domains/ElemStatLearn/,4.3,2691
+82,34,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Beginner,29,https://www.coursera.org/specializations/jhu-data-science,3.9,1743
+83,35,video,Data School YouTube Channel,A resource covering data school youtube channel,Advanced,12,https://www.youtube.com/@dataschool,4.4,3734
+84,35,book,Hands-On Machine Learning by Aurélien Géron,A resource covering hands-on machine learning by aurélien géron,Advanced,38,https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/,4.8,2687
+85,35,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Advanced,64,https://hastie.su.domains/ElemStatLearn/,4.1,2774
+86,36,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,21,https://www.kaggle.com/learn,3.8,3115
+87,36,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Intermediate,46,https://hastie.su.domains/ElemStatLearn/,5.0,2289
+88,36,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,12,https://www.youtube.com/@dataschool,4.3,3463
+89,37,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,9,https://www.youtube.com/@dataschool,3.6,2076
+90,37,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Intermediate,36,https://www.coursera.org/specializations/jhu-data-science,3.6,680
+91,37,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,25,https://www.kaggle.com/learn,3.7,3862
+92,38,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Beginner,42,https://hastie.su.domains/ElemStatLearn/,4.4,168
+93,38,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Beginner,35,https://www.coursera.org/specializations/jhu-data-science,4.7,4428
+94,39,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Advanced,6,https://towardsdatascience.com/,4.1,436
+95,39,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Advanced,17,https://www.kaggle.com/learn,3.6,2876
+96,40,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Advanced,49,https://hastie.su.domains/ElemStatLearn/,4.1,1846
+97,40,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Advanced,4,https://towardsdatascience.com/,5.0,572
+98,41,book,Hands-On Machine Learning by Aurélien Géron,A resource covering hands-on machine learning by aurélien géron,Advanced,27,https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/,4.3,339
+99,41,book,Python for Data Analysis by Wes McKinney,A resource covering python for data analysis by wes mckinney,Advanced,20,https://www.oreilly.com/library/view/python-for-data/9781491957653/,5.0,264
+100,42,book,Python for Data Analysis by Wes McKinney,A resource covering python for data analysis by wes mckinney,Advanced,21,https://www.oreilly.com/library/view/python-for-data/9781491957653/,4.8,2035
+101,42,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Advanced,51,https://www.coursera.org/specializations/jhu-data-science,3.5,1643
+102,43,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,17,https://www.kaggle.com/learn,4.6,176
+103,43,book,Python for Data Analysis by Wes McKinney,A resource covering python for data analysis by wes mckinney,Intermediate,25,https://www.oreilly.com/library/view/python-for-data/9781491957653/,4.5,1258
+104,44,video,Data School YouTube Channel,A resource covering data school youtube channel,Beginner,8,https://www.youtube.com/@dataschool,4.3,1964
+105,44,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Beginner,23,https://www.kaggle.com/learn,3.9,1044
+106,45,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Intermediate,14,https://www.youtube.com/@statquest,4.5,3889
+107,45,article,Towards Data Science Medium Publication,A resource covering towards data science medium publication,Intermediate,5,https://towardsdatascience.com/,3.7,947
+108,45,video,Data School YouTube Channel,A resource covering data school youtube channel,Intermediate,9,https://www.youtube.com/@dataschool,4.2,4630
+109,46,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Intermediate,16,https://huggingface.co/learn/nlp-course/,4.2,1795
+110,46,article,Papers With Code Trending Research,A resource covering papers with code trending research,Intermediate,5,https://paperswithcode.com/,4.9,3819
+111,47,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Beginner,30,https://course.fast.ai/,4.8,2109
+112,47,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Beginner,53,https://www.deeplearningbook.org/,3.9,3031
+113,48,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Intermediate,22,https://huggingface.co/learn/nlp-course/,4.3,1384
+114,48,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Intermediate,25,https://cs231n.stanford.edu/,3.8,4973
+115,48,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Intermediate,58,https://www.deeplearningbook.org/,4.9,4984
+116,49,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Intermediate,17,https://huggingface.co/learn/nlp-course/,4.8,948
+117,49,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Intermediate,37,https://course.fast.ai/,3.9,1351
+118,50,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Intermediate,68,https://www.springer.com/gp/book/9780387310732,4.5,2558
+119,50,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Intermediate,31,https://course.fast.ai/,4.4,895
+120,50,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Intermediate,35,https://www.deeplearningbook.org/,3.7,4750
+121,51,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Advanced,16,https://huggingface.co/learn/nlp-course/,4.6,220
+122,51,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Advanced,17,https://cs231n.stanford.edu/,4.3,2565
+123,51,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Advanced,48,https://www.deeplearningbook.org/,4.7,4726
+124,52,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Advanced,19,https://huggingface.co/learn/nlp-course/,4.3,3084
+125,52,article,Papers With Code Trending Research,A resource covering papers with code trending research,Advanced,5,https://paperswithcode.com/,3.5,3259
+126,52,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,31,https://course.fast.ai/,4.0,1634
+127,53,video,3Blue1Brown Neural Networks Series,A resource covering 3blue1brown neural networks series,Advanced,3,https://www.youtube.com/watch?v=aircAruvnKk,3.5,632
+128,53,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Advanced,24,https://huggingface.co/learn/nlp-course/,4.9,4860
+129,53,article,Papers With Code Trending Research,A resource covering papers with code trending research,Advanced,4,https://paperswithcode.com/,4.8,1999
+130,54,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,30,https://course.fast.ai/,4.7,844
+131,54,article,Papers With Code Trending Research,A resource covering papers with code trending research,Advanced,6,https://paperswithcode.com/,4.0,2480
+132,55,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Intermediate,26,https://cs231n.stanford.edu/,3.6,4928
+133,55,course,DeepLearning.AI Deep Learning Specialization,A resource covering deeplearning.ai deep learning specialization,Intermediate,34,https://www.coursera.org/specializations/deep-learning,4.8,1001
+134,56,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Intermediate,25,https://course.fast.ai/,4.9,4646
+135,56,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Intermediate,36,https://www.deeplearningbook.org/,3.6,346
+136,56,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Intermediate,26,https://cs231n.stanford.edu/,4.2,2854
+137,57,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Advanced,54,https://www.deeplearningbook.org/,3.6,4374
+138,57,course,Hugging Face NLP Course (Free),A resource covering hugging face nlp course (free),Advanced,16,https://huggingface.co/learn/nlp-course/,4.6,3519
+139,57,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,35,https://course.fast.ai/,4.6,3045
+140,58,course,DeepLearning.AI Deep Learning Specialization,A resource covering deeplearning.ai deep learning specialization,Advanced,36,https://www.coursera.org/specializations/deep-learning,3.7,574
+141,58,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Advanced,51,https://www.springer.com/gp/book/9780387310732,4.2,4154
+142,59,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,35,https://course.fast.ai/,4.3,2805
+143,59,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Advanced,19,https://cs231n.stanford.edu/,3.9,113
+144,60,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,31,https://course.fast.ai/,4.8,3451
+145,60,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Advanced,52,https://www.deeplearningbook.org/,4.1,4025
+146,61,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Advanced,77,https://www.springer.com/gp/book/9780387310732,3.8,874
+147,61,course,fast.ai Practical Deep Learning for Coders,A resource covering fast.ai practical deep learning for coders,Advanced,28,https://course.fast.ai/,4.3,3561
+148,61,article,Papers With Code Trending Research,A resource covering papers with code trending research,Advanced,4,https://paperswithcode.com/,4.6,2977
+149,62,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Advanced,76,https://www.springer.com/gp/book/9780387310732,3.8,3776
+150,62,video,Stanford CS231n Convolutional Neural Networks,A resource covering stanford cs231n convolutional neural networks,Advanced,25,https://cs231n.stanford.edu/,4.0,1263
+151,63,article,Papers With Code Trending Research,A resource covering papers with code trending research,Intermediate,5,https://paperswithcode.com/,5.0,3577
+152,63,course,DeepLearning.AI Deep Learning Specialization,A resource covering deeplearning.ai deep learning specialization,Intermediate,41,https://www.coursera.org/specializations/deep-learning,4.5,1452
+153,63,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Intermediate,67,https://www.springer.com/gp/book/9780387310732,4.2,4284
+154,64,article,Papers With Code Trending Research,A resource covering papers with code trending research,Intermediate,4,https://paperswithcode.com/,4.3,2222
+155,64,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Intermediate,59,https://www.deeplearningbook.org/,3.7,4418
+156,65,video,3Blue1Brown Neural Networks Series,A resource covering 3blue1brown neural networks series,Advanced,4,https://www.youtube.com/watch?v=aircAruvnKk,3.8,3970
+157,65,course,DeepLearning.AI Deep Learning Specialization,A resource covering deeplearning.ai deep learning specialization,Advanced,32,https://www.coursera.org/specializations/deep-learning,4.0,3818
+158,66,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Beginner,5,https://www.youtube.com/@Fireship,4.4,3578
+159,66,course,The Odin Project Full Stack Web Dev (Free),A resource covering the odin project full stack web dev (free),Beginner,54,https://www.theodinproject.com/,3.8,4863
+160,67,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Beginner,5,https://developer.mozilla.org/,3.8,2208
+161,67,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Beginner,22,https://eloquentjavascript.net/,3.6,2650
+162,68,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Beginner,4,https://developer.mozilla.org/,4.4,2021
+163,68,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Beginner,37,https://github.com/getify/You-Dont-Know-JS,3.8,719
+164,69,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Intermediate,32,https://www.freecodecamp.org/learn/responsive-web-design/,4.9,2294
+165,69,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,15,https://frontendmasters.com/,4.8,3702
+166,70,course,The Odin Project Full Stack Web Dev (Free),A resource covering the odin project full stack web dev (free),Intermediate,76,https://www.theodinproject.com/,3.6,2007
+167,70,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,18,https://frontendmasters.com/,3.9,3816
+168,70,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Intermediate,6,https://www.youtube.com/@Fireship,4.5,4678
+169,71,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,4,https://developer.mozilla.org/,3.8,3114
+170,71,video,Traversy Media Web Development Tutorials,A resource covering traversy media web development tutorials,Intermediate,10,https://www.youtube.com/@TraversyMedia,3.7,2765
+171,71,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Intermediate,6,https://www.youtube.com/@Fireship,4.9,245
+172,72,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Intermediate,36,https://github.com/getify/You-Dont-Know-JS,4.4,4059
+173,72,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Intermediate,29,https://www.freecodecamp.org/learn/responsive-web-design/,4.2,2672
+174,73,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Intermediate,21,https://github.com/getify/You-Dont-Know-JS,4.7,1499
+175,73,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,5,https://developer.mozilla.org/,4.7,4004
+176,73,course,The Odin Project Full Stack Web Dev (Free),A resource covering the odin project full stack web dev (free),Intermediate,64,https://www.theodinproject.com/,3.8,1747
+177,74,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Intermediate,38,https://www.freecodecamp.org/learn/responsive-web-design/,3.6,2916
+178,74,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Intermediate,20,https://eloquentjavascript.net/,4.1,2126
+179,74,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,5,https://developer.mozilla.org/,4.1,2798
+180,75,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,16,https://frontendmasters.com/,4.2,2300
+181,75,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Intermediate,26,https://eloquentjavascript.net/,4.6,4893
+182,75,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Intermediate,23,https://www.freecodecamp.org/learn/responsive-web-design/,4.5,2273
+183,76,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,19,https://frontendmasters.com/,5.0,4563
+184,76,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,6,https://developer.mozilla.org/,3.6,93
+185,77,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Advanced,25,https://eloquentjavascript.net/,4.1,4242
+186,77,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Advanced,36,https://www.freecodecamp.org/learn/responsive-web-design/,4.0,1575
+187,78,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Advanced,5,https://developer.mozilla.org/,4.8,711
+188,78,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Advanced,23,https://eloquentjavascript.net/,3.9,1987
+189,78,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Advanced,15,https://frontendmasters.com/,3.8,3339
+190,79,video,Traversy Media Web Development Tutorials,A resource covering traversy media web development tutorials,Advanced,9,https://www.youtube.com/@TraversyMedia,4.2,4012
+191,79,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Advanced,31,https://www.freecodecamp.org/learn/responsive-web-design/,4.1,4558
+192,79,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Advanced,26,https://github.com/getify/You-Dont-Know-JS,3.9,1978
+193,80,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Advanced,33,https://github.com/getify/You-Dont-Know-JS,3.9,3910
+194,80,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Advanced,21,https://frontendmasters.com/,4.9,4030
+195,81,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Beginner,4,https://www.youtube.com/@Fireship,4.2,3681
+196,81,book,Eloquent JavaScript by Marijn Haverbeke,A resource covering eloquent javascript by marijn haverbeke,Beginner,29,https://eloquentjavascript.net/,4.8,151
+197,82,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,17,https://frontendmasters.com/,4.3,772
+198,82,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Intermediate,4,https://www.youtube.com/@Fireship,3.6,2420
+199,83,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Beginner,21,https://frontendmasters.com/,5.0,1825
+200,83,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Beginner,22,https://github.com/getify/You-Dont-Know-JS,4.8,3322
+201,83,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Beginner,4,https://www.youtube.com/@Fireship,5.0,2003
+202,84,video,Fireship.io 100 Second Video Series,A resource covering fireship.io 100 second video series,Intermediate,5,https://www.youtube.com/@Fireship,4.9,2518
+203,84,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,6,https://developer.mozilla.org/,4.8,4774
+204,84,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Intermediate,34,https://github.com/getify/You-Dont-Know-JS,3.7,3033
+205,85,course,Frontend Masters Advanced JavaScript Courses,A resource covering frontend masters advanced javascript courses,Intermediate,24,https://frontendmasters.com/,4.2,3886
+206,85,video,Traversy Media Web Development Tutorials,A resource covering traversy media web development tutorials,Intermediate,8,https://www.youtube.com/@TraversyMedia,3.8,4544
+207,85,article,MDN Web Docs JavaScript Reference,A resource covering mdn web docs javascript reference,Intermediate,6,https://developer.mozilla.org/,4.1,4359
+208,86,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Beginner,19,https://www.manning.com/books/cloud-native-patterns,3.6,2826
+209,86,course,Linux Foundation Kubernetes Fundamentals (LFS258),A resource covering linux foundation kubernetes fundamentals (lfs258),Beginner,43,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,4.1,3495
+210,87,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Intermediate,29,https://cloud.google.com/certification/cloud-architect,5.0,4518
+211,87,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Intermediate,12,https://www.youtube.com/watch?v=3hLmDS179YE,3.9,2719
+212,88,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Intermediate,16,https://www.youtube.com/watch?v=3hLmDS179YE,4.7,2892
+213,88,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Intermediate,6,https://www.youtube.com/@TechWorldwithNana,4.2,3727
+214,88,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Intermediate,20,https://cloud.google.com/certification/cloud-architect,4.1,2229
+215,89,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Intermediate,20,https://www.oreilly.com/library/view/terraform-up/9781492046899/,4.9,2521
+216,89,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Intermediate,32,https://cloud.google.com/certification/cloud-architect,5.0,2069
+217,89,course,Linux Foundation Kubernetes Fundamentals (LFS258),A resource covering linux foundation kubernetes fundamentals (lfs258),Intermediate,27,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,4.3,1898
+218,90,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Intermediate,9,https://aws.amazon.com/architecture/well-architected/,4.6,998
+219,90,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Intermediate,19,https://www.oreilly.com/library/view/terraform-up/9781492046899/,3.7,1587
+220,91,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,17,https://www.oreilly.com/library/view/terraform-up/9781492046899/,3.9,2594
+221,91,course,Linux Foundation Kubernetes Fundamentals (LFS258),A resource covering linux foundation kubernetes fundamentals (lfs258),Advanced,31,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,5.0,989
+222,91,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Advanced,11,https://www.youtube.com/watch?v=3hLmDS179YE,4.4,4399
+223,92,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,20,https://www.oreilly.com/library/view/terraform-up/9781492046899/,4.3,1526
+224,92,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Advanced,31,https://www.manning.com/books/cloud-native-patterns,4.6,1579
+225,93,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Intermediate,17,https://www.youtube.com/watch?v=3hLmDS179YE,3.6,1782
+226,93,course,AWS Certified Solutions Architect Exam Prep,A resource covering aws certified solutions architect exam prep,Intermediate,35,https://aws.amazon.com/certification/certified-solutions-architect-associate/,4.4,3976
+227,93,course,Linux Foundation Kubernetes Fundamentals (LFS258),A resource covering linux foundation kubernetes fundamentals (lfs258),Intermediate,28,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,4.3,2275
+228,94,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Intermediate,28,https://cloud.google.com/certification/cloud-architect,4.8,4839
+229,94,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Intermediate,10,https://www.youtube.com/@TechWorldwithNana,3.7,4307
+230,94,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Intermediate,6,https://aws.amazon.com/architecture/well-architected/,4.9,4898
+231,95,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Advanced,14,https://www.youtube.com/watch?v=3hLmDS179YE,3.6,2328
+232,95,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,16,https://www.oreilly.com/library/view/terraform-up/9781492046899/,3.8,833
+233,95,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Advanced,20,https://cloud.google.com/certification/cloud-architect,4.4,1600
+234,96,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Advanced,9,https://aws.amazon.com/architecture/well-architected/,4.5,2436
+235,96,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Advanced,18,https://www.manning.com/books/cloud-native-patterns,3.9,1873
+236,96,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,20,https://www.oreilly.com/library/view/terraform-up/9781492046899/,3.7,2966
+237,97,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Intermediate,11,https://www.youtube.com/watch?v=3hLmDS179YE,4.8,1479
+238,97,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Intermediate,18,https://www.manning.com/books/cloud-native-patterns,3.9,2486
+239,98,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Intermediate,7,https://aws.amazon.com/architecture/well-architected/,4.4,125
+240,98,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Intermediate,9,https://www.youtube.com/@TechWorldwithNana,4.4,4385
+241,99,course,AWS Certified Solutions Architect Exam Prep,A resource covering aws certified solutions architect exam prep,Advanced,36,https://aws.amazon.com/certification/certified-solutions-architect-associate/,4.1,1046
+242,99,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Advanced,18,https://www.manning.com/books/cloud-native-patterns,4.4,2257
+243,99,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Advanced,6,https://aws.amazon.com/architecture/well-architected/,4.3,382
+244,100,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Intermediate,13,https://www.youtube.com/watch?v=3hLmDS179YE,4.9,456
+245,100,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Intermediate,32,https://cloud.google.com/certification/cloud-architect,3.8,4543
+246,101,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Advanced,10,https://aws.amazon.com/architecture/well-architected/,4.6,2403
+247,101,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Advanced,9,https://www.youtube.com/@TechWorldwithNana,3.9,1044
+248,101,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,22,https://www.oreilly.com/library/view/terraform-up/9781492046899/,4.1,4031
+249,102,video,freeCodeCamp AWS Certified Cloud Practitioner,A resource covering freecodecamp aws certified cloud practitioner,Advanced,15,https://www.youtube.com/watch?v=3hLmDS179YE,4.5,850
+250,102,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Advanced,32,https://www.manning.com/books/cloud-native-patterns,3.9,110
+251,102,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Advanced,7,https://www.youtube.com/@TechWorldwithNana,4.0,4712
+252,103,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Intermediate,24,https://www.oreilly.com/library/view/terraform-up/9781492046899/,4.6,2339
+253,103,course,AWS Certified Solutions Architect Exam Prep,A resource covering aws certified solutions architect exam prep,Intermediate,23,https://aws.amazon.com/certification/certified-solutions-architect-associate/,3.6,3855
+254,104,course,AWS Certified Solutions Architect Exam Prep,A resource covering aws certified solutions architect exam prep,Beginner,32,https://aws.amazon.com/certification/certified-solutions-architect-associate/,4.2,3931
+255,104,video,TechWorld with Nana Docker & Kubernetes Tutorials,A resource covering techworld with nana docker & kubernetes tutorials,Beginner,7,https://www.youtube.com/@TechWorldwithNana,5.0,3618
+256,104,book,Cloud Native Patterns by Cornelia Davis,A resource covering cloud native patterns by cornelia davis,Beginner,26,https://www.manning.com/books/cloud-native-patterns,5.0,2801
+257,105,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Advanced,15,https://www.oreilly.com/library/view/terraform-up/9781492046899/,3.6,1520
+258,105,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Advanced,19,https://cloud.google.com/certification/cloud-architect,3.8,430
+259,106,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Beginner,33,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,3.9,2078
+260,106,video,IppSec HackTheBox Walkthrough Videos,A resource covering ippsec hackthebox walkthrough videos,Beginner,9,https://www.youtube.com/@ippsec,4.9,3923
+261,107,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Intermediate,7,https://www.youtube.com/@NetworkChuck,4.8,944
+262,107,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Intermediate,41,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.8,545
+263,108,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Advanced,28,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,4.1,3292
+264,108,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Advanced,5,https://www.youtube.com/@NetworkChuck,3.7,4038
+265,109,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Advanced,35,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.8,616
+266,109,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Advanced,5,https://owasp.org/,4.6,4736
+267,109,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Advanced,6,https://www.youtube.com/@NetworkChuck,4.4,449
+268,110,course,TryHackMe Learning Paths (Practical Labs),A resource covering tryhackme learning paths (practical labs),Advanced,32,https://tryhackme.com/,5.0,1252
+269,110,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Advanced,30,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.5,1232
+270,111,course,SANS Institute Security Courses,A resource covering sans institute security courses,Intermediate,32,https://www.sans.org/,3.5,4620
+271,111,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Intermediate,7,https://www.youtube.com/@NetworkChuck,4.7,2499
+272,112,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Advanced,4,https://www.youtube.com/@NetworkChuck,3.9,707
+273,112,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Advanced,6,https://owasp.org/,4.5,2043
+274,113,video,IppSec HackTheBox Walkthrough Videos,A resource covering ippsec hackthebox walkthrough videos,Advanced,7,https://www.youtube.com/@ippsec,4.9,980
+275,113,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Advanced,27,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,3.7,4581
+276,113,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Advanced,4,https://owasp.org/,3.7,3419
+277,114,video,IppSec HackTheBox Walkthrough Videos,A resource covering ippsec hackthebox walkthrough videos,Advanced,6,https://www.youtube.com/@ippsec,3.7,4976
+278,114,course,SANS Institute Security Courses,A resource covering sans institute security courses,Advanced,33,https://www.sans.org/,4.3,4893
+279,115,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Intermediate,6,https://owasp.org/,3.9,1858
+280,115,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Intermediate,32,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.4,4290
+281,115,course,SANS Institute Security Courses,A resource covering sans institute security courses,Intermediate,30,https://www.sans.org/,4.6,3126
+282,116,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Intermediate,4,https://owasp.org/,3.8,3700
+283,116,course,SANS Institute Security Courses,A resource covering sans institute security courses,Intermediate,29,https://www.sans.org/,4.5,3636
+284,117,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Advanced,4,https://www.youtube.com/@NetworkChuck,3.9,2445
+285,117,course,SANS Institute Security Courses,A resource covering sans institute security courses,Advanced,41,https://www.sans.org/,4.2,4831
+286,117,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Advanced,6,https://owasp.org/,4.9,3522
+287,118,course,TryHackMe Learning Paths (Practical Labs),A resource covering tryhackme learning paths (practical labs),Intermediate,45,https://tryhackme.com/,4.8,2511
+288,118,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Intermediate,24,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,3.6,4668
+289,119,video,IppSec HackTheBox Walkthrough Videos,A resource covering ippsec hackthebox walkthrough videos,Intermediate,9,https://www.youtube.com/@ippsec,4.1,503
+290,119,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Intermediate,27,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,3.9,822
+291,120,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Intermediate,5,https://owasp.org/,3.5,1712
+292,120,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Intermediate,7,https://www.youtube.com/@NetworkChuck,4.7,1738
+293,120,course,SANS Institute Security Courses,A resource covering sans institute security courses,Intermediate,40,https://www.sans.org/,4.5,2177
+294,121,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Intermediate,8,https://www.youtube.com/@NetworkChuck,3.9,675
+295,121,video,IppSec HackTheBox Walkthrough Videos,A resource covering ippsec hackthebox walkthrough videos,Intermediate,7,https://www.youtube.com/@ippsec,4.6,1296
+296,121,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Intermediate,34,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.3,1974
+297,122,course,Cybrary CISSP Certification Prep,A resource covering cybrary cissp certification prep,Advanced,35,https://www.cybrary.it/,4.1,1433
+298,122,article,OWASP Security Knowledge Base,A resource covering owasp security knowledge base,Advanced,4,https://owasp.org/,3.5,4531
+299,123,course,SANS Institute Security Courses,A resource covering sans institute security courses,Advanced,29,https://www.sans.org/,3.6,624
+300,123,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Advanced,21,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,4.8,1292
+301,123,video,NetworkChuck Cybersecurity YouTube Channel,A resource covering networkchuck cybersecurity youtube channel,Advanced,7,https://www.youtube.com/@NetworkChuck,4.9,31
+302,124,course,Cybrary CISSP Certification Prep,A resource covering cybrary cissp certification prep,Advanced,27,https://www.cybrary.it/,4.3,3356
+303,124,course,SANS Institute Security Courses,A resource covering sans institute security courses,Advanced,51,https://www.sans.org/,4.8,3700
+304,125,course,TryHackMe Learning Paths (Practical Labs),A resource covering tryhackme learning paths (practical labs),Intermediate,39,https://tryhackme.com/,4.4,4874
+305,125,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Intermediate,26,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,3.7,3859
+306,126,book,Calculus by James Stewart,A resource covering calculus by james stewart,Intermediate,53,https://www.cengage.com/c/calculus-8e-stewart/,3.7,2395
+307,126,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Intermediate,33,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,4.0,277
+308,127,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Intermediate,40,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,4.8,1906
+309,127,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Intermediate,43,https://www.probabilitybook.net/,4.7,2370
+310,128,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Intermediate,3,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.8,2326
+311,128,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Intermediate,30,https://link.springer.com/book/9783319110790,4.8,3729
+312,129,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Intermediate,38,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,3.8,593
+313,129,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Intermediate,43,https://www.probabilitybook.net/,3.9,1922
+314,129,book,Calculus by James Stewart,A resource covering calculus by james stewart,Intermediate,49,https://www.cengage.com/c/calculus-8e-stewart/,3.7,2177
+315,130,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Intermediate,31,https://www.probabilitybook.net/,4.7,4841
+316,130,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Intermediate,41,https://link.springer.com/book/9783319110790,4.8,1630
+317,131,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Advanced,39,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,4.1,3492
+318,131,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Advanced,51,https://link.springer.com/book/9783319110790,4.4,950
+319,132,book,Calculus by James Stewart,A resource covering calculus by james stewart,Advanced,39,https://www.cengage.com/c/calculus-8e-stewart/,3.7,4471
+320,132,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,16,https://www.khanacademy.org/math,4.9,1851
+321,133,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Advanced,26,https://www.probabilitybook.net/,4.8,1230
+322,133,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Advanced,41,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,5.0,2186
+323,134,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,16,https://www.khanacademy.org/math,4.7,1175
+324,134,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Advanced,3,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.8,594
+325,135,book,Calculus by James Stewart,A resource covering calculus by james stewart,Advanced,39,https://www.cengage.com/c/calculus-8e-stewart/,3.5,498
+326,135,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Advanced,44,https://link.springer.com/book/9783319110790,4.6,1369
+327,136,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Advanced,32,https://www.probabilitybook.net/,4.0,2529
+328,136,book,Calculus by James Stewart,A resource covering calculus by james stewart,Advanced,41,https://www.cengage.com/c/calculus-8e-stewart/,4.9,4884
+329,137,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Advanced,42,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,4.7,4672
+330,137,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,21,https://www.khanacademy.org/math,4.8,2374
+331,137,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Advanced,4,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.7,3607
+332,138,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Advanced,42,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,3.9,1028
+333,138,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Advanced,26,https://www.probabilitybook.net/,4.7,3849
+334,138,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Advanced,50,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,3.7,2501
+335,139,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Intermediate,47,https://link.springer.com/book/9783319110790,4.8,3307
+336,139,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Intermediate,34,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,4.8,2240
+337,139,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Intermediate,46,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,3.8,4109
+338,140,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,26,https://www.khanacademy.org/math,4.7,4433
+339,140,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Advanced,3,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.2,4055
+340,140,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Advanced,50,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,4.0,3596
+341,141,course,MIT OpenCourseWare 18.06 Linear Algebra (Gilbert Strang),A resource covering mit opencourseware 18.06 linear algebra (gilbert strang),Intermediate,29,https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/,4.7,668
+342,141,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Intermediate,35,https://link.springer.com/book/9783319110790,3.8,4909
+343,141,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Intermediate,25,https://www.khanacademy.org/math,3.5,336
+344,142,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Intermediate,28,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,3.8,3549
+345,142,book,Introduction to Probability by Blitzstein & Hwang,A resource covering introduction to probability by blitzstein & hwang,Intermediate,38,https://www.probabilitybook.net/,4.0,2650
+346,142,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Intermediate,37,https://link.springer.com/book/9783319110790,4.8,4955
+347,143,course,MIT OpenCourseWare 18.01 Single Variable Calculus,A resource covering mit opencourseware 18.01 single variable calculus,Advanced,49,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,5.0,2061
+348,143,book,Calculus by James Stewart,A resource covering calculus by james stewart,Advanced,37,https://www.cengage.com/c/calculus-8e-stewart/,3.9,221
+349,144,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Advanced,50,https://link.springer.com/book/9783319110790,4.5,758
+350,144,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,20,https://www.khanacademy.org/math,4.1,1885
+351,144,video,3Blue1Brown Essence of Linear Algebra,A resource covering 3blue1brown essence of linear algebra,Advanced,2,https://www.youtube.com/watch?v=fNk_zzaMoSs,5.0,4722
+352,145,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Intermediate,3,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.3,4819
+353,145,video,3Blue1Brown Essence of Linear Algebra,A resource covering 3blue1brown essence of linear algebra,Intermediate,3,https://www.youtube.com/watch?v=fNk_zzaMoSs,4.9,179
+354,145,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Intermediate,26,https://www.khanacademy.org/math,3.7,2217
+355,145,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Intermediate,2,https://www.youtube.com/watch?v=WUvTyaaNkzM,5.0,4730
+356,145,video,3Blue1Brown Essence of Linear Algebra,A resource covering 3blue1brown essence of linear algebra,Intermediate,3,https://www.youtube.com/watch?v=fNk_zzaMoSs,3.8,339
+357,146,course,Coursera Algorithms Specialization (Stanford),A resource covering coursera algorithms specialization (stanford),Intermediate,38,https://www.coursera.org/specializations/algorithms,4.9,1445
+358,146,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,5,https://www.geeksforgeeks.org/,3.9,3864
+359,147,course,MIT OpenCourseWare 6.001 Structure and Interpretation,A resource covering mit opencourseware 6.001 structure and interpretation,Intermediate,32,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,3.7,4261
+360,147,article,GeeksforGeeks Programming Tutorials,A resource covering geeksforgeeks programming tutorials,Intermediate,6,https://www.geeksforgeeks.org/,4.2,3632
+361,148,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Advanced,27,https://cs50.harvard.edu/x/,4.6,2288
+362,148,book,The Pragmatic Programmer by Hunt & Thomas,A resource covering the pragmatic programmer by hunt & thomas,Advanced,28,https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/,4.0,1496
+363,149,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,28,https://cs50.harvard.edu/x/,4.4,4805
+364,149,book,Introduction to Algorithms (CLRS),A resource covering introduction to algorithms (clrs),Intermediate,50,https://www.amazon.com/Introduction-Algorithms-CLRS/dp/0262046305,4.3,3580
+365,150,video,CS50x Introduction to Computer Science (Harvard),A resource covering cs50x introduction to computer science (harvard),Intermediate,31,https://cs50.harvard.edu/x/,4.1,4038
+366,150,video,freeCodeCamp Full Programming Bootcamp,A resource covering freecodecamp full programming bootcamp,Intermediate,11,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.4,757
+367,151,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Advanced,36,https://www.coursera.org/specializations/jhu-data-science,3.9,3860
+368,151,book,The Elements of Statistical Learning,A resource covering the elements of statistical learning,Advanced,57,https://hastie.su.domains/ElemStatLearn/,4.6,2860
+369,152,video,Data School YouTube Channel,A resource covering data school youtube channel,Advanced,9,https://www.youtube.com/@dataschool,3.5,3355
+370,152,book,Hands-On Machine Learning by Aurélien Géron,A resource covering hands-on machine learning by aurélien géron,Advanced,42,https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/,4.9,2740
+371,153,course,Kaggle Learn Free Data Science Courses,A resource covering kaggle learn free data science courses,Intermediate,23,https://www.kaggle.com/learn,4.3,2640
+372,153,course,Coursera Data Science Specialization (Johns Hopkins),A resource covering coursera data science specialization (johns hopkins),Intermediate,32,https://www.coursera.org/specializations/jhu-data-science,4.6,866
+373,154,book,Pattern Recognition and Machine Learning by Bishop,A resource covering pattern recognition and machine learning by bishop,Advanced,62,https://www.springer.com/gp/book/9780387310732,4.6,1327
+374,154,article,Papers With Code Trending Research,A resource covering papers with code trending research,Advanced,4,https://paperswithcode.com/,4.5,2711
+375,155,video,3Blue1Brown Neural Networks Series,A resource covering 3blue1brown neural networks series,Advanced,3,https://www.youtube.com/watch?v=aircAruvnKk,4.0,3382
+376,155,book,"Deep Learning by Goodfellow, Bengio & Courville","A resource covering deep learning by goodfellow, bengio & courville",Advanced,50,https://www.deeplearningbook.org/,3.6,4068
+377,156,book,You Don't Know JS Series by Kyle Simpson,A resource covering you don't know js series by kyle simpson,Advanced,36,https://github.com/getify/You-Dont-Know-JS,4.5,2371
+378,156,video,Traversy Media Web Development Tutorials,A resource covering traversy media web development tutorials,Advanced,8,https://www.youtube.com/@TraversyMedia,4.0,3290
+379,157,course,The Odin Project Full Stack Web Dev (Free),A resource covering the odin project full stack web dev (free),Advanced,70,https://www.theodinproject.com/,4.0,4516
+380,157,course,freeCodeCamp Responsive Web Design Certification,A resource covering freecodecamp responsive web design certification,Advanced,26,https://www.freecodecamp.org/learn/responsive-web-design/,4.8,310
+381,158,course,Linux Foundation Kubernetes Fundamentals (LFS258),A resource covering linux foundation kubernetes fundamentals (lfs258),Advanced,29,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,4.6,3735
+382,158,course,Google Cloud Professional Architect Prep Course,A resource covering google cloud professional architect prep course,Advanced,32,https://cloud.google.com/certification/cloud-architect,4.0,731
+383,159,article,AWS Well-Architected Framework Whitepapers,A resource covering aws well-architected framework whitepapers,Intermediate,7,https://aws.amazon.com/architecture/well-architected/,4.0,2586
+384,159,book,Terraform: Up and Running by Yevgeniy Brikman,A resource covering terraform: up and running by yevgeniy brikman,Intermediate,17,https://www.oreilly.com/library/view/terraform-up/9781492046899/,4.1,2077
+385,160,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Advanced,34,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,4.1,2658
+386,160,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Advanced,31,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,3.9,959
+387,161,book,The Web Application Hacker's Handbook,A resource covering the web application hacker's handbook,Advanced,23,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,3.7,3321
+388,161,book,Penetration Testing by Georgia Weidman,A resource covering penetration testing by georgia weidman,Advanced,43,https://www.amazon.com/Penetration-Testing-Hands-Introduction-Hacking/dp/1593275641,4.1,4225
+389,162,book,Calculus by James Stewart,A resource covering calculus by james stewart,Advanced,46,https://www.cengage.com/c/calculus-8e-stewart/,4.9,19
+390,162,video,3Blue1Brown Essence of Calculus,A resource covering 3blue1brown essence of calculus,Advanced,2,https://www.youtube.com/watch?v=WUvTyaaNkzM,4.5,4454
+391,163,book,Linear Algebra Done Right by Sheldon Axler,A resource covering linear algebra done right by sheldon axler,Advanced,35,https://link.springer.com/book/9783319110790,4.9,3794
+392,163,video,3Blue1Brown Essence of Linear Algebra,A resource covering 3blue1brown essence of linear algebra,Advanced,3,https://www.youtube.com/watch?v=fNk_zzaMoSs,4.4,3395
+393,164,video,Khan Academy Full Mathematics Curriculum,A resource covering khan academy full mathematics curriculum,Advanced,19,https://www.khanacademy.org/math,4.0,454
+394,164,video,3Blue1Brown Essence of Linear Algebra,A resource covering 3blue1brown essence of linear algebra,Advanced,2,https://www.youtube.com/watch?v=fNk_zzaMoSs,4.3,1546
+395,165,video,StatQuest with Josh Starmer,A resource covering statquest with josh starmer,Advanced,18,https://www.youtube.com/@statquest,3.5,4257
+396,165,book,Hands-On Machine Learning by Aurélien Géron,A resource covering hands-on machine learning by aurélien géron,Advanced,40,https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/,3.9,2973
+397,140,video,Khan Academy Full Mathematics Curriculum (Supplemental),A resource covering khan academy full mathematics curriculum (supplemental),Advanced,17,https://www.khanacademy.org/math,4.1,4093
+398,35,video,StatQuest with Josh Starmer (Supplemental),A resource covering statquest with josh starmer (supplemental),Advanced,19,https://www.youtube.com/@statquest,4.4,3631
+399,101,video,freeCodeCamp AWS Certified Cloud Practitioner (Supplemental),A resource covering freecodecamp aws certified cloud practitioner (supplemental),Advanced,10,https://www.youtube.com/watch?v=3hLmDS179YE,4.5,432
+400,106,article,OWASP Security Knowledge Base (Supplemental),A resource covering owasp security knowledge base (supplemental),Beginner,5,https://owasp.org/,4.2,1677
+401,83,article,MDN Web Docs JavaScript Reference (Supplemental),A resource covering mdn web docs javascript reference (supplemental),Beginner,4,https://developer.mozilla.org/,4.2,2197
+402,116,article,OWASP Security Knowledge Base (Supplemental),A resource covering owasp security knowledge base (supplemental),Intermediate,5,https://owasp.org/,3.8,4509
+403,7,book,Clean Code by Robert C. Martin (Supplemental),A resource covering clean code by robert c. martin (supplemental),Advanced,25,https://www.oreilly.com/library/view/clean-code/9780136083238/,4.2,1083
+404,46,course,DeepLearning.AI Deep Learning Specialization (Supplemental),A resource covering deeplearning.ai deep learning specialization (supplemental),Intermediate,33,https://www.coursera.org/specializations/deep-learning,4.9,2369
+405,117,video,NetworkChuck Cybersecurity YouTube Channel (Supplemental),A resource covering networkchuck cybersecurity youtube channel (supplemental),Advanced,4,https://www.youtube.com/@NetworkChuck,4.7,3599
+406,52,book,Pattern Recognition and Machine Learning by Bishop (Supplemental),A resource covering pattern recognition and machine learning by bishop (supplemental),Advanced,54,https://www.springer.com/gp/book/9780387310732,3.8,3980
+407,137,video,3Blue1Brown Essence of Linear Algebra (Supplemental),A resource covering 3blue1brown essence of linear algebra (supplemental),Advanced,3,https://www.youtube.com/watch?v=fNk_zzaMoSs,3.6,1004
+408,24,article,GeeksforGeeks Programming Tutorials (Supplemental),A resource covering geeksforgeeks programming tutorials (supplemental),Advanced,5,https://www.geeksforgeeks.org/,4.3,246
+409,65,video,Stanford CS231n Convolutional Neural Networks (Supplemental),A resource covering stanford cs231n convolutional neural networks (supplemental),Advanced,26,https://cs231n.stanford.edu/,4.4,4997
+410,141,course,MIT OpenCourseWare 18.01 Single Variable Calculus (Supplemental),A resource covering mit opencourseware 18.01 single variable calculus (supplemental),Intermediate,50,https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/,4.0,1970
+411,42,course,Kaggle Learn Free Data Science Courses (Supplemental),A resource covering kaggle learn free data science courses (supplemental),Advanced,18,https://www.kaggle.com/learn,4.7,1307
+412,32,course,Coursera Data Science Specialization (Johns Hopkins) (Supplemental),A resource covering coursera data science specialization (johns hopkins) (supplemental),Advanced,46,https://www.coursera.org/specializations/jhu-data-science,4.6,2555
+413,134,video,3Blue1Brown Essence of Linear Algebra (Supplemental),A resource covering 3blue1brown essence of linear algebra (supplemental),Advanced,3,https://www.youtube.com/watch?v=fNk_zzaMoSs,4.5,4522
+414,30,course,Kaggle Learn Free Data Science Courses (Supplemental),A resource covering kaggle learn free data science courses (supplemental),Intermediate,18,https://www.kaggle.com/learn,3.8,122
+415,91,course,Linux Foundation Kubernetes Fundamentals (LFS258) (Supplemental),A resource covering linux foundation kubernetes fundamentals (lfs258) (supplemental),Advanced,39,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,3.8,4534
+416,58,course,fast.ai Practical Deep Learning for Coders (Supplemental),A resource covering fast.ai practical deep learning for coders (supplemental),Advanced,31,https://course.fast.ai/,3.5,3352
+417,82,video,Traversy Media Web Development Tutorials (Supplemental),A resource covering traversy media web development tutorials (supplemental),Intermediate,10,https://www.youtube.com/@TraversyMedia,3.9,773
+418,47,book,Pattern Recognition and Machine Learning by Bishop (Supplemental),A resource covering pattern recognition and machine learning by bishop (supplemental),Beginner,57,https://www.springer.com/gp/book/9780387310732,4.2,1850
+419,11,article,GeeksforGeeks Programming Tutorials (Supplemental),A resource covering geeksforgeeks programming tutorials (supplemental),Intermediate,5,https://www.geeksforgeeks.org/,4.8,939
+420,68,book,You Don't Know JS Series by Kyle Simpson (Supplemental),A resource covering you don't know js series by kyle simpson (supplemental),Beginner,38,https://github.com/getify/You-Dont-Know-JS,3.6,3790
+421,127,video,Khan Academy Full Mathematics Curriculum (Supplemental),A resource covering khan academy full mathematics curriculum (supplemental),Intermediate,20,https://www.khanacademy.org/math,4.1,972
+422,50,article,Papers With Code Trending Research (Supplemental),A resource covering papers with code trending research (supplemental),Intermediate,6,https://paperswithcode.com/,4.4,1271
+423,94,course,Linux Foundation Kubernetes Fundamentals (LFS258) (Supplemental),A resource covering linux foundation kubernetes fundamentals (lfs258) (supplemental),Intermediate,39,https://training.linuxfoundation.org/training/kubernetes-fundamentals/,3.8,4092
+424,102,course,AWS Certified Solutions Architect Exam Prep (Supplemental),A resource covering aws certified solutions architect exam prep (supplemental),Advanced,23,https://aws.amazon.com/certification/certified-solutions-architect-associate/,4.5,2400
+425,66,video,Traversy Media Web Development Tutorials (Supplemental),A resource covering traversy media web development tutorials (supplemental),Beginner,11,https://www.youtube.com/@TraversyMedia,4.2,4178
+426,79,course,Frontend Masters Advanced JavaScript Courses (Supplemental),A resource covering frontend masters advanced javascript courses (supplemental),Advanced,19,https://frontendmasters.com/,3.9,2249
+427,21,course,MIT OpenCourseWare 6.001 Structure and Interpretation (Supplemental),A resource covering mit opencourseware 6.001 structure and interpretation (supplemental),Advanced,28,https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/,4.5,3413
+428,49,book,Pattern Recognition and Machine Learning by Bishop (Supplemental),A resource covering pattern recognition and machine learning by bishop (supplemental),Intermediate,51,https://www.springer.com/gp/book/9780387310732,3.5,3962
+429,71,video,Fireship.io 100 Second Video Series (Supplemental),A resource covering fireship.io 100 second video series (supplemental),Intermediate,5,https://www.youtube.com/@Fireship,4.6,3878
+430,114,book,The Web Application Hacker's Handbook (Supplemental),A resource covering the web application hacker's handbook (supplemental),Advanced,23,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,4.7,2006
+431,6,course,Coursera Algorithms Specialization (Stanford) (Supplemental),A resource covering coursera algorithms specialization (stanford) (supplemental),Advanced,34,https://www.coursera.org/specializations/algorithms,3.7,3751
+432,99,course,AWS Certified Solutions Architect Exam Prep (Supplemental),A resource covering aws certified solutions architect exam prep (supplemental),Advanced,36,https://aws.amazon.com/certification/certified-solutions-architect-associate/,4.1,4525
+433,22,video,freeCodeCamp Full Programming Bootcamp (Supplemental),A resource covering freecodecamp full programming bootcamp (supplemental),Intermediate,15,https://www.youtube.com/watch?v=zOjov-2OZ0E,3.8,1194
+434,43,book,The Elements of Statistical Learning (Supplemental),A resource covering the elements of statistical learning (supplemental),Intermediate,59,https://hastie.su.domains/ElemStatLearn/,4.9,3152
+435,73,article,MDN Web Docs JavaScript Reference (Supplemental),A resource covering mdn web docs javascript reference (supplemental),Intermediate,4,https://developer.mozilla.org/,4.3,1571
+436,85,book,You Don't Know JS Series by Kyle Simpson (Supplemental),A resource covering you don't know js series by kyle simpson (supplemental),Intermediate,29,https://github.com/getify/You-Dont-Know-JS,3.6,4920
+437,20,book,Clean Code by Robert C. Martin (Supplemental),A resource covering clean code by robert c. martin (supplemental),Advanced,36,https://www.oreilly.com/library/view/clean-code/9780136083238/,3.9,4173
+438,115,video,NetworkChuck Cybersecurity YouTube Channel (Supplemental),A resource covering networkchuck cybersecurity youtube channel (supplemental),Intermediate,6,https://www.youtube.com/@NetworkChuck,4.8,1128
+439,19,video,freeCodeCamp Full Programming Bootcamp (Supplemental),A resource covering freecodecamp full programming bootcamp (supplemental),Advanced,14,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.2,581
+440,23,video,freeCodeCamp Full Programming Bootcamp (Supplemental),A resource covering freecodecamp full programming bootcamp (supplemental),Intermediate,9,https://www.youtube.com/watch?v=zOjov-2OZ0E,4.7,2273
+441,110,book,The Web Application Hacker's Handbook (Supplemental),A resource covering the web application hacker's handbook (supplemental),Advanced,27,https://www.amazon.com/Web-Application-Hackers-Handbook/dp/1118026470,4.5,3409
+442,92,book,Cloud Native Patterns by Cornelia Davis (Supplemental),A resource covering cloud native patterns by cornelia davis (supplemental),Advanced,26,https://www.manning.com/books/cloud-native-patterns,5.0,2794
+443,139,video,3Blue1Brown Essence of Linear Algebra (Supplemental),A resource covering 3blue1brown essence of linear algebra (supplemental),Intermediate,4,https://www.youtube.com/watch?v=fNk_zzaMoSs,4.4,4169
+444,54,video,3Blue1Brown Neural Networks Series (Supplemental),A resource covering 3blue1brown neural networks series (supplemental),Advanced,3,https://www.youtube.com/watch?v=aircAruvnKk,4.9,2198
+445,40,course,Coursera Data Science Specialization (Johns Hopkins) (Supplemental),A resource covering coursera data science specialization (johns hopkins) (supplemental),Advanced,40,https://www.coursera.org/specializations/jhu-data-science,4.8,31
+446,97,article,AWS Well-Architected Framework Whitepapers (Supplemental),A resource covering aws well-architected framework whitepapers (supplemental),Intermediate,10,https://aws.amazon.com/architecture/well-architected/,4.4,2327
