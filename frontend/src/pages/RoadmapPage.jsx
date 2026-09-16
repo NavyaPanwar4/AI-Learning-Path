@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom';
-import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText } from 'react-icons/fi';
-import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes } from '../api/roadmap';
+import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText, FiHelpCircle } from 'react-icons/fi';
+import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz } from '../api/roadmap';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useRef, useState } from 'react';
 import { useEffect } from 'react';
+import useSessionTimer from '../hooks/useSessionTimer';
 
 function StarRating({ value, onChange }) {
   const [hovered, setHovered] = useState(0);
@@ -134,7 +135,105 @@ function StudyNotesCard({ notes }) {
   );
 }
 
+function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [skillsUpdated, setSkillsUpdated] = useState([]);
+
+  const allAnswered = questions.every((_, i) => answers[i] !== undefined);
+  const correctCount = questions.reduce((count, q, i) => count + (answers[i] === q.correct_index ? 1 : 0), 0);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const result = await onSubmitScore(questions.length, correctCount);
+      setSkillsUpdated(result?.skills_updated || []);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+    }
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(45,58,53,0.4)', backdropFilter: 'blur(4px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, overflowY: 'auto' }}>
+      <div className="card" style={{ maxWidth: 560, width: '100%', position: 'relative', maxHeight: '85vh', overflowY: 'auto' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
+          <FiX size={20} />
+        </button>
+        <h3 style={{ marginBottom: 4 }}>Practice Quiz</h3>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: 20 }}>{phaseTitle}</p>
+
+        {submitted ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <h2 style={{ marginBottom: 8 }}>{correctCount} / {questions.length} correct</h2>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 24 }}>Score: {Math.round((correctCount / questions.length) * 100)}%</p>
+            {skillsUpdated.length > 0 && (
+              <div style={{ textAlign: 'left', marginBottom: 20, padding: 14, borderRadius: 10, background: 'var(--color-accent-soft)' }}>
+                <p style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 6, color: '#a65241' }}>Skill mastery updated:</p>
+                {skillsUpdated.map((s) => (
+                  <p key={s.skill_name} style={{ fontSize: '0.82rem', color: '#a65241' }}>{s.skill_name} → Level {s.new_level}/5</p>
+                ))}
+              </div>
+            )}
+            <div style={{ display: 'grid', gap: 14, textAlign: 'left', marginBottom: 20 }}>
+              {questions.map((q, i) => {
+                const isCorrect = answers[i] === q.correct_index;
+                return (
+                  <div key={i} style={{ padding: 12, borderRadius: 8, background: isCorrect ? '#eaf6ee' : '#fdecea' }}>
+                    <p style={{ fontWeight: 600, fontSize: '0.88rem', marginBottom: 4 }}>{q.question}</p>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
+                      Correct answer: {q.options[q.correct_index]}
+                      {q.explanation ? ` — ${q.explanation}` : ''}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <button className="btn btn-primary" style={{ width: '100%' }} onClick={onClose}>Close</button>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'grid', gap: 20, marginBottom: 20 }}>
+              {questions.map((q, i) => (
+                <div key={i}>
+                  <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: 10 }}>{i + 1}. {q.question}</p>
+                  <div style={{ display: 'grid', gap: 8 }}>
+                    {q.options.map((opt, oi) => (
+                      <label
+                        key={oi}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderRadius: 8,
+                          border: `1px solid ${answers[i] === oi ? 'var(--color-primary)' : 'var(--color-surface-hover)'}`,
+                          background: answers[i] === oi ? 'var(--color-accent)' : 'transparent',
+                          cursor: 'pointer', fontSize: '0.86rem',
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name={`quiz-q-${i}`}
+                          checked={answers[i] === oi}
+                          onChange={() => setAnswers((prev) => ({ ...prev, [i]: oi }))}
+                        />
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="btn btn-primary" style={{ width: '100%' }} disabled={!allAnswered || submitting} onClick={handleSubmit}>
+              {submitting ? 'Submitting...' : 'Submit Quiz'}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function RoadmapPage() {
+  useSessionTimer();
   const navigate = useNavigate();
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -142,6 +241,10 @@ export default function RoadmapPage() {
   const [feedbackResource, setFeedbackResource] = useState(null);
   const [generatingNotes, setGeneratingNotes] = useState(null);
   const [notesError, setNotesError] = useState('');
+  const [quizPhaseIndex, setQuizPhaseIndex] = useState(null);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [loadingQuiz, setLoadingQuiz] = useState(null);
+  const [quizError, setQuizError] = useState('');
   const fetchedRoadmapKey = useRef(null);
 
   const { goalId } = useParams();
@@ -193,7 +296,7 @@ export default function RoadmapPage() {
     setGeneratingNotes(phaseIndex);
     setNotesError('');
     try {
-      const res = await generateStudyNotes(goalId || roadmap.goal_id, phaseIndex);
+      const res = await generateStudyNotes(goalId || roadmap.goal_id || 'default', phaseIndex);
       setRoadmap((current) => ({
         ...current,
         phases: current.phases.map((phase, index) => index === phaseIndex ? { ...phase, ai_notes: res.data } : phase),
@@ -202,6 +305,30 @@ export default function RoadmapPage() {
       setNotesError(err.response?.data?.detail || 'Could not generate study notes. Please try again.');
     } finally {
       setGeneratingNotes(null);
+    }
+  };
+
+  const handleTakeQuiz = async (phaseIndex) => {
+    setLoadingQuiz(phaseIndex);
+    setQuizError('');
+    try {
+      const res = await generateQuiz(goalId || roadmap.goal_id || 'default', phaseIndex);
+      setQuizQuestions(res.data.questions);
+      setQuizPhaseIndex(phaseIndex);
+    } catch (err) {
+      setQuizError(err.response?.data?.detail || 'Could not generate a quiz right now. Please try again.');
+    } finally {
+      setLoadingQuiz(null);
+    }
+  };
+
+  const handleSubmitQuizScore = async (totalQuestions, correctAnswers) => {
+    try {
+      const res = await submitQuiz(goalId || roadmap.goal_id || 'default', quizPhaseIndex, totalQuestions, correctAnswers);
+      return res.data;
+    } catch (err) {
+      console.error('Failed to record quiz attempt', err);
+      return null;
     }
   };
 
@@ -228,9 +355,17 @@ export default function RoadmapPage() {
   const allPhasesComplete = phases.length > 0 && phases.every(p => p.completed);
   const isRoadmapFinished = roadmap?.is_complete;
 
-  return (
+    return (
     <div className="page">
       {feedbackResource && <FeedbackModal resource={feedbackResource} onClose={() => setFeedbackResource(null)} />}
+      {quizPhaseIndex !== null && (
+        <QuizModal
+          questions={quizQuestions}
+          phaseTitle={phases[quizPhaseIndex]?.title || ''}
+          onClose={() => setQuizPhaseIndex(null)}
+          onSubmitScore={handleSubmitQuizScore}
+        />
+      )}
 
       <div className="container">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 36, flexWrap: 'wrap', gap: 16 }}>
@@ -253,6 +388,8 @@ export default function RoadmapPage() {
         </div>
 
         {notesError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{notesError}</div>}
+        {notesError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{notesError}</div>}
+        {quizError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{quizError}</div>}
 
         {phases.length === 0 && !roadmap?.roadmap_text ? (
           <div className="card" style={{ textAlign: 'center', padding: 60 }}>
@@ -297,6 +434,22 @@ export default function RoadmapPage() {
                             disabled={generatingNotes === i}
                           >
                             <FiFileText size={14} /> {generatingNotes === i ? 'Creating notes...' : phase.ai_notes ? 'Study notes ready' : 'Generate study notes'}
+                          </button>
+                                                    <button
+                            className="btn btn-outline"
+                            style={{ padding: '4px 12px', fontSize: '0.75rem', height: 'auto', gap: 6 }}
+                            onClick={() => handleGenerateNotes(i)}
+                            disabled={generatingNotes === i}
+                          >
+                            <FiFileText size={14} /> {generatingNotes === i ? 'Creating notes...' : phase.ai_notes ? 'Study notes ready' : 'Generate study notes'}
+                          </button>
+                          <button
+                            className="btn btn-outline"
+                            style={{ padding: '4px 12px', fontSize: '0.75rem', height: 'auto', gap: 6 }}
+                            onClick={() => handleTakeQuiz(i)}
+                            disabled={loadingQuiz === i}
+                          >
+                            <FiHelpCircle size={14} /> {loadingQuiz === i ? 'Building quiz...' : 'Take Practice Quiz'}
                           </button>
                         </div>
                       </div>

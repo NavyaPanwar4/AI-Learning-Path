@@ -52,7 +52,7 @@ class LLMService:
             "max_completion_tokens": 4096,
             # GPT-OSS can spend the whole completion budget on hidden reasoning.
             # Low effort keeps structured learning responses fast and leaves room for content.
-            "reasoning_effort": "low",
+            "reasoning_effort": "medium",
         }
         try:
             logger.info("Calling Groq model %s", self.model)
@@ -105,10 +105,15 @@ Text: {text}'''
 {{"phases":[{{"title":"Phase name","duration":"2 weeks","skills":["skill"],"resources":[{{"title":"Resource title","url":"https://example.com","type":"article"}}],"projects":[{{"title":"Project name","description":"Project details"}}]}}]}}
 
 Requirements:
-- Create 3 to 6 progressive phases.
+- Create 3 to 6 progressive phases, each named for what it actually covers (not "Phase 1", "Phase 2").
+- Every phase must tie directly to specific items in "Needs to learn" below — do not include generic filler phases (e.g. a vague "Fundamentals" phase) that don't map to a listed skill.
 - Include 2 to 4 useful resources per phase, prioritising reputable official documentation, respected educational publishers, or well-known learning platforms.
+- The "Verified live resources" list below were fetched via live web search moments ago and confirmed reachable — each one is tagged with the specific skill it was searched for ("skill" field). Only place a resource in a phase that actually covers that tagged skill; never copy the same resource, or the same set of resources, into more than one phase unless those phases genuinely share that exact skill. "Reachable" is also not the same as "good": skip any tagged resource that looks like a forum thread, social media post, opinion piece, or off-topic result, even though it's in the list.
+- When you use a resource from that list, output only "title", "url", and "type" for it — drop the "skill" and "content" fields, they're for your reference only.
+- If you need a resource beyond that list, only include a URL you are highly confident is real and currently live (a well-known top-level page, e.g. an official docs homepage, not a specific article or blog post you're guessing exists); every resource is checked for reachability afterward and dropped if it's dead, so it is always safer to omit a resource than invent a link.
+- Every phase's resources array should be distinct from every other phase's — do not repeat the same title/url pair (or the same whole set) across multiple phases, whether it came from the verified list or your own knowledge.
 - Use resource type "article", "documentation", "course", or "video".
-- Only include URLs you are confident are real; omit a resource rather than inventing a link.
+- Design 1-2 original, practical projects per phase yourself, specific enough that a learner could start building immediately — sized to the phase's skills and the learner's experience level, never just a skill name restated as a project.
 - Do not generate study notes yet.
 
 Learner context:
@@ -118,8 +123,7 @@ Learner context:
 - Goal: {context.get("goal_skill_name", "Unknown")}
 - Already knows: {", ".join(context.get("possessed_skills", [])) or "None"}
 - Needs to learn: {", ".join(context.get("missing_skills", [])) or "Not specified"}
-- Available research resources: {json.dumps(context.get("resources", []))}
-- Suggested projects: {json.dumps(context.get("projects", []))}'''
+- Verified live resources (fetched just now, confirmed reachable): {json.dumps(context.get("verified_live_resources", []))}'''
         result = self._generate_json(prompt)
         return result if isinstance(result.get("phases"), list) else {"phases": []}
 
@@ -138,5 +142,49 @@ Suggested duration: {duration}
 Skills: {", ".join(skills) or "General foundations"}'''
         return self._generate_json(prompt)
 
+    def generate_learner_summary(self, context: dict) -> str:
+        """Short 2-3 sentence characterization of the learner for their
+        profile dashboard, grounded only in their real data — no invented
+        specifics."""
+        prompt = f'''Write a short, encouraging 2-3 sentence summary characterizing this learner for their profile dashboard. Return only one valid JSON object, no Markdown, matching this shape:
+{{"summary":"2-3 sentence summary"}}
+
+Requirements:
+- Second person ("You are...", "You prefer...").
+- Base it only on the data given below — never invent specific facts, numbers, or skills not listed.
+- Mention their experience level, learning style, and at most one strong skill and one improvement area if present.
+- Keep it warm and motivating, not generic corporate-speak.
+
+Learner data:
+- Experience level: {context.get("experience_level", "beginner")}
+- Learning style: {context.get("learning_style", "visual")}
+- Current goal: {context.get("goal_name", "Not set")}
+- Strong skills: {", ".join(context.get("strong_skills", [])) or "None yet"}
+- Needs improvement: {", ".join(context.get("needs_improvement", [])) or "None flagged"}'''
+        result = self._generate_json(prompt)
+        return result.get("summary", "") or ""
+
+    def generate_quiz(self, phase_title: str, skills: list, difficulty: str = "beginner") -> list:
+        prompt = f'''Create a 4-question multiple choice quiz testing understanding of this learning phase. Return only one valid JSON object, no Markdown, matching this shape:
+{{"questions":[{{"question":"...","options":["A","B","C","D"],"correct_index":0,"explanation":"..."}}]}}
+
+Requirements:
+- Exactly 4 questions, each with exactly 4 options.
+- Test conceptual understanding relevant to the listed skills, not trivia — appropriate for a {difficulty} learner.
+- correct_index is 0-based, pointing to the correct entry in "options".
+- explanation is one short sentence on why that answer is correct.
+
+Phase: {phase_title}
+Skills covered: {", ".join(skills) or "General foundations"}'''
+        result = self._generate_json(prompt)
+        questions = result.get("questions", [])
+        valid = [
+            q for q in questions
+            if isinstance(q, dict)
+            and q.get("question")
+            and isinstance(q.get("options"), list) and len(q["options"]) == 4
+            and isinstance(q.get("correct_index"), int) and 0 <= q["correct_index"] < 4
+        ]
+        return valid
 
 llm_service = LLMService()

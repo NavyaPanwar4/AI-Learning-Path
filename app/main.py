@@ -4,6 +4,11 @@ from fastapi.responses import JSONResponse
 from app.routes import auth_routes, user_routes, roadmap_routes
 from app.utils.config import settings
 from app.utils.logger import logger
+from app.db.database import Base, engine
+from app.db import models  # noqa: F401 — import so models register on Base before create_all
+
+# Creates tables on first run; safe to call every startup (no-op if they already exist)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

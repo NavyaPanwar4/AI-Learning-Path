@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiCompass, FiStar, FiLogOut, FiMap, FiHome, FiMessageSquare } from 'react-icons/fi';
+import { FiCompass, FiStar, FiLogOut, FiMap, FiHome, FiMessageSquare, FiUser } from 'react-icons/fi';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ export default function Navbar() {
         <NavLink className="btn btn-ghost" to="/saved-roadmaps"><FiMap size={16} /> Learning paths</NavLink>
         <span className="nav-section-label">Activity</span>
         <NavLink className="btn btn-ghost" to="/my-reviews"><FiMessageSquare size={16} /> My reviews</NavLink>
+        <NavLink className="btn btn-ghost" to="/profile"><FiUser size={16} /> My profile</NavLink>
         <button className="btn btn-ghost logout-button" onClick={handleLogout}>
           <FiLogOut size={16} /> Sign out
         </button>

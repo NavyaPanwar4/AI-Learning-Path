@@ -1,55 +1,52 @@
-from app.utils.csv_handler import csv_handler
+from app.db.database import SessionLocal
+from app.db.models import GoalSkill, Skill, SkillDependency, User, UserSkill
+
 
 class GapAnalysisService:
     def identify_missing_skills(self, user_id: str) -> list:
-        # Load user
-        users_df = csv_handler.read_csv("users.csv")
-        user_row = users_df[users_df['user_id'] == user_id]
-        if user_row.empty:
-            return []
-        goal_id = user_row.iloc[0].get('goal_id')
-        
-        # Current skills
-        user_skills_df = csv_handler.read_csv("user_skills.csv")
-        current_skill_ids = []
-        if not user_skills_df.empty:
-            current_skill_ids = user_skills_df[user_skills_df['user_id'] == user_id]['skill_id'].tolist()
-            
-        # Target skills for goal
-        goal_skills_df = csv_handler.read_csv("goal_skills.csv")
-        target_skill_ids = []
-        if not goal_skills_df.empty and goal_id:
-            target_skill_ids = goal_skills_df[goal_skills_df['goal_id'] == goal_id]['skill_id'].tolist()
-            
-        # If no goal is set or goal has no skills, return empty
-        if not target_skill_ids:
-            return []
-            
-        # Find missing directly
-        missing_skill_ids = set(target_skill_ids) - set(current_skill_ids)
-        
-        # Enforce dependencies (if a missing skill has prerequisites, add them)
-        deps_df = csv_handler.read_csv("skill_dependencies.csv")
-        if not deps_df.empty:
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.user_id == user_id).first()
+            if not user or not user.goal_id:
+                return []
+            goal_id = user.goal_id
+
+            current_skill_ids = {
+                us.skill_id for us in db.query(UserSkill).filter(UserSkill.user_id == user_id).all()
+            }
+            target_skill_ids = {
+                gs.skill_id for gs in db.query(GoalSkill).filter(GoalSkill.goal_id == goal_id).all()
+            }
+
+            if not target_skill_ids:
+                return []
+
+            missing_skill_ids = target_skill_ids - current_skill_ids
+
+            # Enforce dependencies (if a missing skill has prerequisites, add them)
+            dep_map = {}
+            for d in db.query(SkillDependency).all():
+                dep_map.setdefault(d.skill_id, []).append(d.prerequisite_id)
+
             added_deps = True
             while added_deps:
                 added_deps = False
                 for ms_id in list(missing_skill_ids):
-                    reqs = deps_df[deps_df['skill_id'] == ms_id]['prerequisite_id'].tolist()
-                    for req in reqs:
+                    for req in dep_map.get(ms_id, []):
                         if req not in current_skill_ids and req not in missing_skill_ids:
                             missing_skill_ids.add(req)
                             added_deps = True
-                            
-        # Map IDs to Names
-        skills_df = csv_handler.read_csv("skills.csv")
-        missing_skill_names = []
-        if not skills_df.empty:
+
+            # Map IDs to names
+            missing_skill_names = []
             for ms_id in missing_skill_ids:
-                matches = skills_df[skills_df['skill_id'] == ms_id]
-                if not matches.empty:
-                    missing_skill_names.append(matches.iloc[0]['skill_name'])
-                    
-        return missing_skill_names
+                skill = db.query(Skill).filter(Skill.skill_id == ms_id).first()
+                if skill:
+                    missing_skill_names.append(skill.skill_name)
+
+            return missing_skill_names
+        finally:
+            db.close()
+
 
 gap_analysis_service = GapAnalysisService()

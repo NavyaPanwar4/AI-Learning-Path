@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FiCompass, FiEye, FiEyeOff } from 'react-icons/fi';
 import { login, register } from '../api/auth';
 
@@ -153,6 +153,13 @@ export default function AuthPage() {
                     {strength === 'weak' ? 'Weak password' : strength === 'medium' ? 'Medium strength' : '✓ Strong password'}
                   </span>
                 </>
+              )}
+              {isLogin && (
+                <div style={{ textAlign: 'right', marginTop: 6 }}>
+                  <Link to="/forgot-password" style={{ color: 'var(--color-primary)', fontSize: '0.85rem', fontWeight: 500 }}>
+                    Forgot password?
+                  </Link>
+                </div>
               )}
             </div>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiCompass, FiArrowRight } from 'react-icons/fi';
-import { getSavedRoadmaps } from '../api/roadmap';
+import { FiCompass, FiArrowRight, FiTrash2 } from 'react-icons/fi';
+import { getSavedRoadmaps, deleteRoadmap } from '../api/roadmap';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function SavedRoadmapsPage() {
@@ -9,6 +9,7 @@ export default function SavedRoadmapsPage() {
   const [roadmaps, setRoadmaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     getSavedRoadmaps()
@@ -16,6 +17,21 @@ export default function SavedRoadmapsPage() {
       .catch(() => setError('Failed to load saved roadmaps.'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (e, goalId) => {
+    e.stopPropagation();
+    if (!window.confirm('Delete this learning path? This cannot be undone.')) return;
+
+    setDeletingId(goalId);
+    try {
+      await deleteRoadmap(goalId);
+      setRoadmaps((current) => current.filter((r) => r.goal_id !== goalId));
+    } catch {
+      setError('Failed to delete roadmap. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) return <LoadingSpinner message="Loading your saved roadmaps..." />;
 
@@ -43,7 +59,20 @@ export default function SavedRoadmapsPage() {
                 key={i}
                 className="goal-card"
                 onClick={() => navigate(`/roadmap/${r.goal_id}`)}
+                style={{ position: 'relative' }}
               >
+                <button
+                  onClick={(e) => handleDelete(e, r.goal_id)}
+                  disabled={deletingId === r.goal_id}
+                  title="Delete this learning path"
+                  style={{
+                    position: 'absolute', top: 10, right: 10, background: 'none', border: 'none',
+                    cursor: deletingId === r.goal_id ? 'default' : 'pointer', color: 'var(--color-text-muted)',
+                    padding: 6, borderRadius: 6, opacity: deletingId === r.goal_id ? 0.5 : 1,
+                  }}
+                >
+                  <FiTrash2 size={16} />
+                </button>
                 <div style={{ padding: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
                     <FiCompass size={32} color="var(--color-primary)" />

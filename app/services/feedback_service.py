@@ -1,42 +1,50 @@
 import uuid
-import pandas as pd
-from app.utils.csv_handler import csv_handler
+
+from app.db.database import SessionLocal
+from app.db.models import UserFeedback
 from app.models.schemas import FeedbackRequest
+
 
 class FeedbackService:
     def process_feedback(self, user_id: str, feedback: FeedbackRequest):
-        feedback_id = str(uuid.uuid4())
-        
-        new_feedback = {
-            "feedback_id": feedback_id,
-            "user_id": user_id,
-            "content_id": feedback.content_id,
-            "content_type": feedback.content_type,
-            "rating": feedback.rating,
-            "comments": feedback.comments or ""
-        }
-        
-        csv_handler.append_row("user_feedback.csv", new_feedback)
-        
-    def get_user_feedback(self, user_id: str):
+        db = SessionLocal()
         try:
-            df = csv_handler.read_csv("user_feedback.csv")
-            if df.empty:
-                return []
-            
-            # Ensure user_id is compared correctly (as string)
-            user_df = df[df['user_id'].astype(str) == str(user_id)]
-            
-            # Replace NaNs with None so it's JSON serializable
-            records = user_df.to_dict(orient='records')
-            for row in records:
-                for k, v in row.items():
-                    if pd.isna(v):
-                        row[k] = None
-            return records
+            db.add(
+                UserFeedback(
+                    feedback_id=str(uuid.uuid4()),
+                    user_id=user_id,
+                    content_id=feedback.content_id,
+                    content_type=feedback.content_type,
+                    rating=feedback.rating,
+                    comments=feedback.comments or "",
+                )
+            )
+            db.commit()
+        finally:
+            db.close()
+
+    def get_user_feedback(self, user_id: str):
+        db = SessionLocal()
+        try:
+            rows = db.query(UserFeedback).filter(UserFeedback.user_id == str(user_id)).all()
+            return [
+                {
+                    "feedback_id": r.feedback_id,
+                    "user_id": r.user_id,
+                    "content_id": r.content_id,
+                    "content_type": r.content_type,
+                    "rating": r.rating,
+                    "comments": r.comments,
+                }
+                for r in rows
+            ]
         except Exception as e:
             from app.utils.logger import logger
+
             logger.error(f"Error in get_user_feedback: {e}")
             return []
+        finally:
+            db.close()
+
 
 feedback_service = FeedbackService()

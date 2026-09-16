@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { FiCheckCircle } from 'react-icons/fi';
-import { getUserSkills } from '../api/user';
+import { FiCheckCircle, FiTrash2 } from 'react-icons/fi';
+import { getUserSkills, deleteUserSkill } from '../api/user';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useSessionTimer from '../hooks/useSessionTimer';
 
 export default function MySkillsPage() {
+  useSessionTimer();
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     getUserSkills()
@@ -14,6 +17,20 @@ export default function MySkillsPage() {
       .catch(() => setError('Failed to load your skills.'))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (skillId) => {
+    if (!window.confirm('Remove this skill from your profile? This cannot be undone.')) return;
+
+    setDeletingId(skillId);
+    try {
+      await deleteUserSkill(skillId);
+      setSkills((current) => current.filter((s) => s.skill_id !== skillId));
+    } catch {
+      setError('Failed to remove skill. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) return <LoadingSpinner message="Loading your skills..." />;
 
@@ -40,8 +57,8 @@ export default function MySkillsPage() {
             </p>
           ) : (
             <div className="skills-grid" style={{ gridTemplateColumns: '1fr', gap: '12px' }}>
-              {skills.map((s, i) => (
-                <div key={i} className="skill-item" style={{ background: 'var(--color-surface)', padding: '12px 16px', borderRadius: '8px' }}>
+              {skills.map((s) => (
+                <div key={s.skill_id} className="skill-item" style={{ background: 'var(--color-surface)', padding: '12px 16px', borderRadius: '8px' }}>
                   <span className="skill-name" style={{ fontWeight: '600' }}>{s.skill_name}</span>
                   <div className="confidence-bar" style={{ maxWidth: '200px', marginLeft: 'auto' }}>
                     <div className="confidence-fill" style={{ width: `${Math.round(s.confidence * 100)}%` }} />
@@ -49,6 +66,18 @@ export default function MySkillsPage() {
                   <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', minWidth: 32, textAlign: 'right' }}>
                     {Math.round(s.confidence * 100)}%
                   </span>
+                  <button
+                    onClick={() => handleDelete(s.skill_id)}
+                    disabled={deletingId === s.skill_id}
+                    title="Remove this skill"
+                    style={{
+                      background: 'none', border: 'none', cursor: deletingId === s.skill_id ? 'default' : 'pointer',
+                      color: 'var(--color-text-muted)', padding: 6, marginLeft: 8, borderRadius: 6,
+                      opacity: deletingId === s.skill_id ? 0.5 : 1,
+                    }}
+                  >
+                    <FiTrash2 size={15} />
+                  </button>
                 </div>
               ))}
             </div>

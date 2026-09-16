@@ -9,6 +9,9 @@ import RoadmapPage from './pages/RoadmapPage';
 import SavedRoadmapsPage from './pages/SavedRoadmapsPage';
 import MyReviewsPage from './pages/MyReviewsPage';
 import './styles/global.css';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import ProfilePage from './pages/ProfilePage';
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -22,6 +25,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<AuthPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/assess-skills" element={<ProtectedRoute><SkillAssessmentPage /></ProtectedRoute>} />
@@ -30,6 +35,7 @@ export default function App() {
         <Route path="/roadmap/:goalId" element={<ProtectedRoute><RoadmapPage /></ProtectedRoute>} />
         <Route path="/saved-roadmaps" element={<ProtectedRoute><SavedRoadmapsPage /></ProtectedRoute>} />
         <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

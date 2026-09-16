@@ -23,3 +23,15 @@ export const completeRoadmap = (goalId) =>
 
 export const generateStudyNotes = (goalId, phaseIndex) =>
   api.post(`/roadmap/${goalId}/phase/${phaseIndex}/study-notes`);
+
+export const deleteRoadmap = (goalId) =>
+  api.delete(`/roadmap/${goalId}`);
+
+export const generateQuiz = (goalId, phaseIndex) =>
+  api.post(`/roadmap/${goalId}/phase/${phaseIndex}/quiz`);
+
+export const submitQuiz = (goalId, phaseIndex, totalQuestions, correctAnswers) =>
+  api.post(`/roadmap/${goalId}/phase/${phaseIndex}/quiz/submit`, {
+    total_questions: totalQuestions,
+    correct_answers: correctAnswers,
+  });
