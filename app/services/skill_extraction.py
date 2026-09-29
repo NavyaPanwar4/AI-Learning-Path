@@ -82,10 +82,12 @@ class SkillExtractionService:
             db.close()
 
     def update_proficiency_from_quiz(self, user_id: str, skill_names: List[str], score_pct: int) -> List[dict]:
-        """Maps a quiz score to a 1-5 proficiency level and applies it to
-        every skill the quizzed phase covers. Never downgrades — a single
-        bad quiz shouldn't erase mastery already demonstrated elsewhere;
-        it can only raise a skill toward what this quiz just showed."""
+        """Maps a quiz score to a 1-5 proficiency level and moves each
+        quizzed skill's mastery toward it — in EITHER direction. Weighted
+        2:1 toward the prior level so a single unlucky quiz doesn't crater
+        a skill the learner has otherwise demonstrated, but sustained poor
+        performance genuinely pulls mastery back down (this is what makes
+        the recommendation engine's signal real, not one-way ratcheting)."""
         if not skill_names:
             return []
 
@@ -118,7 +120,14 @@ class SkillExtractionService:
                     .first()
                 )
                 old_level = user_skill.proficiency if user_skill else 0
-                new_level = max(old_level, level)
+
+                if old_level:
+                    # Weighted toward the prior level — moves gradually in
+                    # whichever direction repeated performance points.
+                    new_level = round((old_level * 2 + level) / 3)
+                else:
+                    new_level = level
+                new_level = max(1, min(5, new_level))
 
                 if user_skill:
                     user_skill.proficiency = new_level
@@ -126,8 +135,12 @@ class SkillExtractionService:
                     db.add(UserSkill(user_id=str(user_id), skill_id=skill.skill_id, proficiency=new_level))
                 db.commit()
 
-                if new_level > old_level:
-                    updated.append({"skill_name": skill.skill_name, "new_level": new_level})
+                if new_level != old_level:
+                    updated.append({
+                        "skill_name": skill.skill_name,
+                        "new_level": new_level,
+                        "direction": "up" if new_level > old_level else "down",
+                    })
             return updated
         finally:
             db.close()

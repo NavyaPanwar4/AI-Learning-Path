@@ -1,4 +1,26 @@
-node_modules/
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment
 venv/
-/app/data/
+.venv/
+
+# Environment variables (secrets — never commit)
 .env
+
+# Runtime data
+/app/data/
+*.log
+
+# Node / frontend
+node_modules/
+frontend/dist/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -109,7 +109,7 @@ class ExtractSkillsResponse(BaseModel):
 class ResourceSchema(BaseModel):
     title: str
     url: str
-    type: str
+    type: str = "resource"
 
 class ProjectSchema(BaseModel):
     title: str
@@ -134,11 +134,12 @@ class StudyNotes(BaseModel):
 
 class RoadmapPhase(BaseModel):
     title: str
-    duration: str
+    duration: str = "Flexible"
     skills: List[str] = Field(default_factory=list)
     resources: List[ResourceSchema] = Field(default_factory=list)
     projects: List[ProjectSchema] = Field(default_factory=list)
     completed: bool = False
+    is_remedial: bool = False
     ai_notes: Optional[StudyNotes] = None
 
 class RoadmapResponse(BaseModel):
@@ -157,3 +158,12 @@ class FeedbackRequest(BaseModel):
 class RoadmapFeedbackRequest(BaseModel):
     rating: int
     comments: Optional[str] = None
+
+# Chat (AI tutor)
+class ChatRequest(BaseModel):
+    message: str
+    goal_id: Optional[str] = None
+
+class ChatResponse(BaseModel):
+    reply: str
+    goal_id: Optional[str] = None

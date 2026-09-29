@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import AuthPage from './pages/AuthPage';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
+import BuildPlanPage from './pages/BuildPlanPage';
 import SkillAssessmentPage from './pages/SkillAssessmentPage';
 import MySkillsPage from './pages/MySkillsPage';
 import RoadmapPage from './pages/RoadmapPage';
@@ -12,6 +13,7 @@ import './styles/global.css';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProfilePage from './pages/ProfilePage';
+import ChatWidget from './components/ChatWidget';
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -28,7 +30,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-        <Route path="/onboarding" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute><BuildPlanPage /></ProtectedRoute>} />
         <Route path="/assess-skills" element={<ProtectedRoute><SkillAssessmentPage /></ProtectedRoute>} />
         <Route path="/my-skills" element={<ProtectedRoute><MySkillsPage /></ProtectedRoute>} />
         <Route path="/roadmap" element={<ProtectedRoute><RoadmapPage /></ProtectedRoute>} />
@@ -38,6 +40,7 @@ export default function App() {
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <ChatWidget />
     </BrowserRouter>
   );
 }

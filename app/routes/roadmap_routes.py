@@ -6,6 +6,7 @@ from app.services.feedback_service import feedback_service
 from app.services.llm_service import llm_service
 from app.services.activity_service import activity_service
 from app.services.skill_extraction import skill_extraction_service
+from app.services.adaptive_service import adaptive_service
 import logging
 
 router = APIRouter(prefix="/roadmap", tags=["Roadmap"])
@@ -125,7 +126,32 @@ def submit_phase_quiz(goal_id: str, phase_index: int, submission: QuizSubmission
                 )
 
         result["skills_updated"] = skills_updated
+
+        try:
+            result["recommendation"] = adaptive_service.get_recommendation_for_phase(current_user_id, goal_id, phase_index)
+        except Exception as e:
+            logger.error(f"Error computing recommendation after quiz: {e}")
+            result["recommendation"] = None
+
         return result
     except Exception as e:
         logger.error(f"Error recording quiz attempt: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get("/{goal_id}/recommendation")
+def get_recommendation(goal_id: str, current_user_id: str = Depends(get_current_user)):
+    try:
+        return adaptive_service.get_recommendation(current_user_id, goal_id)
+    except Exception as e:
+        logger.error(f"Error computing recommendation: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.post("/{goal_id}/phase/{phase_index}/insert-remedial")
+def insert_remedial_phase(goal_id: str, phase_index: int, current_user_id: str = Depends(get_current_user)):
+    try:
+        return adaptive_service.insert_remedial_phase(current_user_id, goal_id, phase_index)
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        logger.error(f"Error inserting remedial phase: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

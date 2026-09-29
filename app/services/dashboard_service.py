@@ -8,7 +8,6 @@ from app.db.models import Goal, Roadmap, Skill, User, UserSkill
 from app.services.activity_service import activity_service
 from app.services.auth_service import auth_service
 from app.services.gap_analysis import gap_analysis_service
-from app.services.llm_service import llm_service
 
 # Curated fallback quotes — shown alongside the AI summary. Not LLM-generated
 # (keeps this instant and free); rotates by day so it doesn't feel static.
@@ -123,23 +122,6 @@ class DashboardService:
         finally:
             db.close()
 
-        try:
-            ai_summary = llm_service.generate_learner_summary({
-                "experience_level": profile.get("experience_level") or "beginner",
-                "learning_style": profile.get("learning_style") or "visual",
-                "goal_name": goal_name,
-                "strong_skills": strong,
-                "needs_improvement": needs_improvement,
-            })
-        except Exception:
-            ai_summary = ""
-        if not ai_summary:
-            ai_summary = (
-                f"You're a {profile.get('experience_level') or 'beginner'} learner working toward "
-                f"{goal_name or 'your next goal'}. Keep building on what you know and chip away at "
-                "the skills ahead of you."
-            )
-
         quote = random.choice(_QUOTES)
 
         activity_stats = activity_service.get_stats(user_id)
@@ -173,7 +155,6 @@ class DashboardService:
                 "needs_improvement": needs_improvement,
                 "not_started": not_started,
             },
-            "ai_summary": ai_summary,
             "quote": quote,
                         "stats": {
                 "topics_completed": len(skills_mastery),

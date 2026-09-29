@@ -157,3 +157,17 @@ class QuizAttempt(Base):
     correct_answers = Column(Integer, nullable=False)
     score_pct = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ChatMessage(Base):
+    """One row per chat turn with the AI tutor. goal_id scopes history to the
+    learner's active goal so switching goals doesn't mix up conversations."""
+
+    __tablename__ = "chat_messages"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey("users.user_id"))
+    goal_id = Column(String, nullable=True)
+    role = Column(String, nullable=False)  # "user" or "assistant"
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

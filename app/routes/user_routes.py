@@ -40,7 +40,9 @@ def get_user_skills(current_user_id: str = Depends(get_current_user)):
             skills.append({
                 "skill_id": row.skill_id,
                 "skill_name": skill.skill_name if skill else "Unknown Skill",
-                "confidence": float(row.proficiency or 1.0),
+                # proficiency is stored 1-5; normalize to 0-1 since the
+                # frontend renders this as confidence * 100%.
+                "confidence": min(int(row.proficiency or 1), 5) / 5.0,
             })
         return skills
     except Exception as e:

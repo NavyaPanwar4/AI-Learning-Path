@@ -35,3 +35,9 @@ export const submitQuiz = (goalId, phaseIndex, totalQuestions, correctAnswers) =
     total_questions: totalQuestions,
     correct_answers: correctAnswers,
   });
+
+export const getRecommendation = (goalId) =>
+  api.get(`/roadmap/${goalId}/recommendation`);
+
+export const insertRemedialPhase = (goalId, phaseIndex) =>
+  api.post(`/roadmap/${goalId}/phase/${phaseIndex}/insert-remedial`);

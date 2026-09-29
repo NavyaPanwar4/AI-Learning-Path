@@ -1,0 +1,20 @@
+fastapi==0.141.1
+uvicorn==0.52.4
+sqlalchemy==2.0.52
+pydantic==2.13.5
+pydantic-settings==2.15.0
+email-validator==2.3.0
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+bcrypt==3.2.2
+python-dotenv==1.2.3
+requests==2.34.2
+rapidfuzz==3.14.6
+
+# Optional — only required if ENABLE_HF_FALLBACK=true in .env (local Hugging
+# Face text-generation fallback in llm_service.py). Heavy, multi-GB download
+# including model weights. Ollama + Groq already cover the default LLM paths,
+# so most contributors will not need to install these.
+# torch==2.14.0
+# transformers==5.16.1
+# accelerate==1.15.0

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   FiEdit2, FiMail, FiBookOpen, FiBarChart2, FiGlobe, FiCalendar, FiTarget,
   FiPlus, FiClock, FiCheckCircle, FiStar, FiZap, FiAward, FiTrendingUp,
-  FiHelpCircle, FiCode, FiCpu, FiAlertCircle, FiCircle, FiClipboard,
+  FiHelpCircle, FiCode, FiAlertCircle, FiCircle, FiClipboard,
 } from 'react-icons/fi';
 import { getDashboard, getGoals, updateProfile, updatePersonalInfo, changePassword } from '../api/user';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -144,7 +144,7 @@ export default function ProfilePage() {
   if (loading) return <LoadingSpinner message="Loading your profile..." />;
   if (loadError) return <div className="page"><div className="container"><div className="alert alert-error">{loadError}</div></div></div>;
 
-  const { profile, preferences, goals, skills_mastery, skill_buckets, ai_summary, quote, stats } = dashboard;
+  const { profile, preferences, goals, skills_mastery, skill_buckets, quote, stats } = dashboard;
 
   return (
     <div className="page">
@@ -387,13 +387,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="card">
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}><FiCpu color="var(--color-accent)" /> AI Learning Profile</h3>
-              <p style={{ color: '#5d5f5a', fontSize: '.88rem', lineHeight: 1.6, marginBottom: 16 }}>{ai_summary}</p>
-              <div style={{ padding: 14, borderRadius: 10, background: 'var(--color-accent-soft)' }}>
-                <p style={{ fontStyle: 'italic', color: '#a65241', fontSize: '.88rem', marginBottom: 4 }}>"{quote}"</p>
-                <span style={{ fontSize: '.75rem', color: '#a65241', fontWeight: 700 }}>— LearnPath AI</span>
-              </div>
+            <div className="card" style={{ background: 'var(--color-accent-soft)' }}>
+              <p style={{ fontStyle: 'italic', color: '#a65241', fontSize: '.88rem', marginBottom: 4 }}>"{quote}"</p>
+              <span style={{ fontSize: '.75rem', color: '#a65241', fontWeight: 700 }}>— LearnPath</span>
             </div>
           </div>
         </div>

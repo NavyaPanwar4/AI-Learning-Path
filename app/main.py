@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from app.routes import auth_routes, user_routes, roadmap_routes
+from app.routes import auth_routes, chat_routes, user_routes, roadmap_routes
 from app.utils.config import settings
 from app.utils.logger import logger
 from app.db.database import Base, engine
@@ -53,6 +53,7 @@ def health_check():
 app.include_router(auth_routes.router)
 app.include_router(user_routes.router)
 app.include_router(roadmap_routes.router)
+app.include_router(chat_routes.router)
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText, FiHelpCircle } from 'react-icons/fi';
-import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz } from '../api/roadmap';
+import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz, insertRemedialPhase } from '../api/roadmap';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useRef, useState } from 'react';
@@ -135,11 +135,14 @@ function StudyNotesCard({ notes }) {
   );
 }
 
-function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
+function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptRemedial }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [skillsUpdated, setSkillsUpdated] = useState([]);
+  const [recommendation, setRecommendation] = useState(null);
+  const [addingRemedial, setAddingRemedial] = useState(false);
+  const [remedialAdded, setRemedialAdded] = useState(false);
 
   const allAnswered = questions.every((_, i) => answers[i] !== undefined);
   const correctCount = questions.reduce((count, q, i) => count + (answers[i] === q.correct_index ? 1 : 0), 0);
@@ -149,9 +152,20 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
     try {
       const result = await onSubmitScore(questions.length, correctCount);
       setSkillsUpdated(result?.skills_updated || []);
+      setRecommendation(result?.recommendation || null);
     } finally {
       setSubmitting(false);
       setSubmitted(true);
+    }
+  };
+
+  const handleAddRemedial = async () => {
+    setAddingRemedial(true);
+    try {
+      await onAcceptRemedial();
+      setRemedialAdded(true);
+    } finally {
+      setAddingRemedial(false);
     }
   };
 
@@ -172,8 +186,24 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
               <div style={{ textAlign: 'left', marginBottom: 20, padding: 14, borderRadius: 10, background: 'var(--color-accent-soft)' }}>
                 <p style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 6, color: '#a65241' }}>Skill mastery updated:</p>
                 {skillsUpdated.map((s) => (
-                  <p key={s.skill_name} style={{ fontSize: '0.82rem', color: '#a65241' }}>{s.skill_name} → Level {s.new_level}/5</p>
+                  <p key={s.skill_name} style={{ fontSize: '0.82rem', color: '#a65241' }}>
+                    {s.skill_name} → Level {s.new_level}/5 {s.direction === 'down' ? '↓' : '↑'}
+                  </p>
                 ))}
+              </div>
+            )}
+            {recommendation?.type === 'remedial' && !remedialAdded && (
+              <div style={{ textAlign: 'left', marginBottom: 20, padding: 14, borderRadius: 10, background: '#fdecea' }}>
+                <p style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 6, color: '#c0574a' }}>Recommendation</p>
+                <p style={{ fontSize: '0.84rem', color: '#c0574a', marginBottom: 10 }}>{recommendation.message}</p>
+                <button className="btn btn-outline" style={{ width: '100%' }} disabled={addingRemedial} onClick={handleAddRemedial}>
+                  {addingRemedial ? 'Adding review phase...' : 'Add a Quick Review Phase'}
+                </button>
+              </div>
+            )}
+            {remedialAdded && (
+              <div style={{ textAlign: 'left', marginBottom: 20, padding: 14, borderRadius: 10, background: '#eaf6ee' }}>
+                <p style={{ fontSize: '0.84rem', color: '#4d9e6e' }}>Review phase added to your roadmap.</p>
               </div>
             )}
             <div style={{ display: 'grid', gap: 14, textAlign: 'left', marginBottom: 20 }}>
@@ -222,7 +252,12 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
                 </div>
               ))}
             </div>
-            <button className="btn btn-primary" style={{ width: '100%' }} disabled={!allAnswered || submitting} onClick={handleSubmit}>
+            <button
+              className="btn btn-primary"
+              style={{ width: '100%' }}
+              disabled={!allAnswered || submitting}
+              onClick={handleSubmit}
+            >
               {submitting ? 'Submitting...' : 'Submit Quiz'}
             </button>
           </>
@@ -233,8 +268,9 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore }) {
 }
 
 export default function RoadmapPage() {
-  useSessionTimer();
   const navigate = useNavigate();
+  useSessionTimer();
+
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -296,13 +332,23 @@ export default function RoadmapPage() {
     setGeneratingNotes(phaseIndex);
     setNotesError('');
     try {
-      const res = await generateStudyNotes(goalId || roadmap.goal_id || 'default', phaseIndex);
+      const roadmapGoalId = goalId || roadmap?.goal_id;
+
+      if (!roadmapGoalId) {
+        throw new Error('The roadmap goal ID is missing. Please regenerate the roadmap.');
+      }
+
+      const res = await generateStudyNotes(roadmapGoalId, phaseIndex);
       setRoadmap((current) => ({
         ...current,
         phases: current.phases.map((phase, index) => index === phaseIndex ? { ...phase, ai_notes: res.data } : phase),
       }));
     } catch (err) {
-      setNotesError(err.response?.data?.detail || 'Could not generate study notes. Please try again.');
+      setNotesError(
+        err.response?.data?.detail ||
+        err.message ||
+        'Could not generate study notes. Please try again.'
+      );
     } finally {
       setGeneratingNotes(null);
     }
@@ -312,11 +358,21 @@ export default function RoadmapPage() {
     setLoadingQuiz(phaseIndex);
     setQuizError('');
     try {
-      const res = await generateQuiz(goalId || roadmap.goal_id || 'default', phaseIndex);
+      const roadmapGoalId = goalId || roadmap?.goal_id;
+
+      if (!roadmapGoalId) {
+        throw new Error('The roadmap goal ID is missing. Please regenerate the roadmap.');
+      }
+
+      const res = await generateQuiz(roadmapGoalId, phaseIndex);
       setQuizQuestions(res.data.questions);
       setQuizPhaseIndex(phaseIndex);
     } catch (err) {
-      setQuizError(err.response?.data?.detail || 'Could not generate a quiz right now. Please try again.');
+      setQuizError(
+        err.response?.data?.detail ||
+        err.message ||
+        'Could not generate a quiz right now. Please try again.'
+      );
     } finally {
       setLoadingQuiz(null);
     }
@@ -324,11 +380,29 @@ export default function RoadmapPage() {
 
   const handleSubmitQuizScore = async (totalQuestions, correctAnswers) => {
     try {
-      const res = await submitQuiz(goalId || roadmap.goal_id || 'default', quizPhaseIndex, totalQuestions, correctAnswers);
+      const roadmapGoalId = goalId || roadmap?.goal_id;
+
+      if (!roadmapGoalId) {
+        throw new Error('The roadmap goal ID is missing.');
+      }
+
+      const res = await submitQuiz(roadmapGoalId, quizPhaseIndex, totalQuestions, correctAnswers);
       return res.data;
     } catch (err) {
       console.error('Failed to record quiz attempt', err);
       return null;
+    }
+  };
+
+  const handleAcceptRemedial = async () => {
+    try {
+      const roadmapGoalId = goalId || roadmap?.goal_id;
+      if (!roadmapGoalId || quizPhaseIndex === null) return;
+
+      const res = await insertRemedialPhase(roadmapGoalId, quizPhaseIndex);
+      setRoadmap(res.data);
+    } catch (err) {
+      console.error('Failed to insert remedial phase', err);
     }
   };
 
@@ -355,7 +429,7 @@ export default function RoadmapPage() {
   const allPhasesComplete = phases.length > 0 && phases.every(p => p.completed);
   const isRoadmapFinished = roadmap?.is_complete;
 
-    return (
+  return (
     <div className="page">
       {feedbackResource && <FeedbackModal resource={feedbackResource} onClose={() => setFeedbackResource(null)} />}
       {quizPhaseIndex !== null && (
@@ -364,6 +438,7 @@ export default function RoadmapPage() {
           phaseTitle={phases[quizPhaseIndex]?.title || ''}
           onClose={() => setQuizPhaseIndex(null)}
           onSubmitScore={handleSubmitQuizScore}
+          onAcceptRemedial={handleAcceptRemedial}
         />
       )}
 
@@ -387,7 +462,6 @@ export default function RoadmapPage() {
           </button>
         </div>
 
-        {notesError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{notesError}</div>}
         {notesError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{notesError}</div>}
         {quizError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{quizError}</div>}
 
@@ -415,13 +489,16 @@ export default function RoadmapPage() {
                     <div className="card">
                       <div className="phase-header">
                         <span className="badge badge-primary">Phase {i + 1}</span>
+                        {phase.is_remedial && (
+                          <span className="badge" style={{ background: '#fdecea', color: '#c0574a' }}>Review</span>
+                        )}
                         <h3 className="phase-title" style={{ textDecoration: phase.completed ? 'line-through' : 'none', color: phase.completed ? 'var(--color-text-muted)' : 'inherit' }}>{phase.title}</h3>
                         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
                           {phase.duration && (
                             <span className="badge badge-accent" style={{ display: 'flex', alignItems: 'center', gap: 4 }}><FiClock size={12} /> {phase.duration}</span>
                           )}
-                          <button 
-                            className={`btn ${phase.completed ? 'btn-primary' : 'btn-outline'}`} 
+                          <button
+                            className={`btn ${phase.completed ? 'btn-primary' : 'btn-outline'}`}
                             style={{ padding: '4px 12px', fontSize: '0.75rem', height: 'auto', gap: 6 }}
                             onClick={() => handlePhaseToggle(i, phase.completed)}
                           >
@@ -431,15 +508,7 @@ export default function RoadmapPage() {
                             className="btn btn-outline"
                             style={{ padding: '4px 12px', fontSize: '0.75rem', height: 'auto', gap: 6 }}
                             onClick={() => handleGenerateNotes(i)}
-                            disabled={generatingNotes === i}
-                          >
-                            <FiFileText size={14} /> {generatingNotes === i ? 'Creating notes...' : phase.ai_notes ? 'Study notes ready' : 'Generate study notes'}
-                          </button>
-                                                    <button
-                            className="btn btn-outline"
-                            style={{ padding: '4px 12px', fontSize: '0.75rem', height: 'auto', gap: 6 }}
-                            onClick={() => handleGenerateNotes(i)}
-                            disabled={generatingNotes === i}
+                            disabled={generatingNotes === i || !!phase.ai_notes}
                           >
                             <FiFileText size={14} /> {generatingNotes === i ? 'Creating notes...' : phase.ai_notes ? 'Study notes ready' : 'Generate study notes'}
                           </button>
@@ -523,21 +592,21 @@ export default function RoadmapPage() {
               <div className="card" style={{ marginTop: 40, padding: 32, textAlign: 'center', border: allPhasesComplete ? '2px solid var(--color-primary)' : '1px solid var(--color-surface-hover)' }}>
                 <h3 style={{ marginBottom: 12 }}>Roadmap Completion</h3>
                 <p style={{ color: 'var(--color-text-muted)', marginBottom: 24 }}>
-                  {allPhasesComplete 
-                    ? "Great job! You've completed every phase in this roadmap." 
+                  {allPhasesComplete
+                    ? "Great job! You've completed every phase in this roadmap."
                     : "Complete all phases to unlock the final roadmap feedback and completion."}
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
-                  <button 
-                    className="btn btn-primary" 
+                  <button
+                    className="btn btn-primary"
                     disabled={!allPhasesComplete || isRoadmapFinished}
                     onClick={handleCompleteRoadmap}
                     style={{ opacity: allPhasesComplete ? 1 : 0.5 }}
                   >
                     {isRoadmapFinished ? 'Roadmap Completed!' : 'Mark Roadmap as Complete'}
                   </button>
-                  <button 
-                    className="btn btn-outline" 
+                  <button
+                    className="btn btn-outline"
                     disabled={!allPhasesComplete}
                     onClick={() => setFeedbackResource({ title: roadmap.goal_name || 'This Roadmap', type: 'roadmap', url: goalId })}
                     style={{ opacity: allPhasesComplete ? 1 : 0.5 }}
