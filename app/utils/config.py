@@ -100,6 +100,18 @@ class Settings(BaseSettings):
         )
     )
 
+    # Semantic skill matching (sentence-transformer embeddings)
+    EMBEDDING_MODEL: str = os.getenv(
+        "EMBEDDING_MODEL",
+        "all-MiniLM-L6-v2",
+    )
+    EMBEDDING_MATCH_THRESHOLD: float = float(
+        os.getenv(
+            "EMBEDDING_MATCH_THRESHOLD",
+            "0.6",
+        )
+    )
+
     # Embeddings
     EMBEDDINGS_MODEL: str = "all-MiniLM-L6-v2"
 

@@ -1,28 +1,37 @@
 import uuid
 from typing import Dict, List
 
-from rapidfuzz import fuzz, process
-
 from app.db.database import SessionLocal
 from app.db.models import Skill, UserSkill
 from app.models.schemas import ExtractedSkill
+from app.services.embeddings_service import embeddings_service
 from app.services.llm_service import llm_service
 
 
 class SkillExtractionService:
-    def _fuzzy_match_list(self, db, skill_list, master_skills):
+    def _semantic_match_list(self, db, skill_list, master_skills):
         matched_results = []
+
+        # Encode the catalogue once per batch rather than once per skill —
+        # re-encoding the whole catalogue on every lookup is the main
+        # performance trap with embedding-based matching. Skills added to
+        # master_skills partway through this same batch (see below) won't
+        # be matchable against each other within the batch, which mirrors
+        # how the previous fuzzy-matching version behaved in practice.
+        choices = list(master_skills.keys())
+        choice_embeddings = embeddings_service.encode(choices) if choices else None
+
         for skill in skill_list:
             skill_name = skill.get("skill_name", "")
             confidence = skill.get("confidence", 0.8)
 
             best_match_id = None
-            if master_skills and skill_name:
-                choices = list(master_skills.keys())
-                match = process.extractOne(skill_name, choices, scorer=fuzz.token_set_ratio)
+            if choices and skill_name:
+                best_match_string, score = embeddings_service.best_match_precomputed(
+                    skill_name, choices, choice_embeddings
+                )
 
-                if match and match[1] >= 75:
-                    best_match_string = match[0]
+                if best_match_string:
                     best_match_id = master_skills[best_match_string]
 
                     primary = db.query(Skill).filter(Skill.skill_id == best_match_id).first()
@@ -59,8 +68,8 @@ class SkillExtractionService:
                             master_skills[alias.strip()] = s.skill_id
 
             # 3. Fuzzy match
-            matched_extracted = self._fuzzy_match_list(db, extracted, master_skills)
-            matched_desired = self._fuzzy_match_list(db, desired, master_skills)
+            matched_extracted = self._semantic_match_list(db, extracted, master_skills)
+            matched_desired = self._semantic_match_list(db, desired, master_skills)
 
             # 4. Store possessed skills only
             added_skill_ids = set()

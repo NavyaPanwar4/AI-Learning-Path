@@ -23,8 +23,9 @@ chatbot grounded in the learner's own progress.
 **Backend:** FastAPI (Python)
 **Database:** SQLite (via SQLAlchemy)
 **LLM:** Qwen3 via [Ollama](https://ollama.com) (local), with Groq as a cloud fallback
-**Skill matching:** RapidFuzz (fuzzy string matching) — a switch to sentence-transformer
-embeddings is planned but not yet implemented
+**Skill matching:** sentence-transformer embeddings with cosine similarity (`all-MiniLM-L6-v2`
+by default) — matches learner-stated or LLM-extracted skills against the skill catalogue
+semantically, so phrasing differences and abbreviations (e.g. "JS" vs "JavaScript") still match
 **Resource discovery:** Tavily API
 
 ## Prerequisites
@@ -59,6 +60,10 @@ cp .env.example .env
 
 uvicorn app.main:app --reload
 ```
+
+> First run will download the sentence-transformer model (~90 MB) from Hugging Face —
+> needs internet access once, then it's cached locally. `pip install` itself also
+> pulls in PyTorch, which is a large download (700 MB+); this is normal.
 
 Backend runs at `http://localhost:8000`. Interactive API docs at `http://localhost:8000/docs`.
 
@@ -99,8 +104,9 @@ scripts/        One-off maintenance/migration scripts
 ## Known Limitations / In Progress
 
 - Quiz difficulty does not yet adapt to mastery level (only roadmap content does)
-- Skill matching uses fuzzy string similarity (RapidFuzz); a switch to semantic
-  embeddings (sentence-transformers) is planned but not yet wired in
 - No automated test suite yet
 - Mastery is tracked with a weighted-average heuristic; a switch to a proper Bayesian
   Knowledge Tracing model is planned
+- The embedding model runs on CPU by default (no GPU-specific setup); fine for a
+  minor project's scale, but batch operations over a very large skill catalogue would
+  benefit from GPU inference

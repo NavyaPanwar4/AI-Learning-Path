@@ -9,12 +9,17 @@ passlib[bcrypt]==1.7.4
 bcrypt==3.2.2
 python-dotenv==1.2.3
 requests==2.34.2
-rapidfuzz==3.14.6
+
+# Semantic skill matching — replaces plain string similarity so phrasing
+# differences and abbreviations (e.g. "JS" vs "JavaScript") still match.
+# First run downloads the model (~90 MB) from Hugging Face, so it needs
+# internet access once; it's cached locally after that.
+sentence-transformers==6.0.1
+torch==2.14.0
+transformers==5.16.1
 
 # Optional — only required if ENABLE_HF_FALLBACK=true in .env (local Hugging
-# Face text-generation fallback in llm_service.py). Heavy, multi-GB download
-# including model weights. Ollama + Groq already cover the default LLM paths,
-# so most contributors will not need to install these.
-# torch==2.14.0
-# transformers==5.16.1
+# Face text-generation fallback in llm_service.py, separate from the
+# sentence-transformer embeddings above). Ollama + Groq already cover the
+# default LLM paths, so most contributors will not need this.
 # accelerate==1.15.0
