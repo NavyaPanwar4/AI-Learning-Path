@@ -61,6 +61,15 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
+> **First-time setup only:** the "Build Your Learning Plan" goal dropdown reads from a
+> `goals` table that starts empty on a fresh database. Seed it once with:
+> ```
+> python scripts/migrate_csv_to_db.py
+> ```
+> This populates the goal/skill catalog from `dataset/*.csv`. Safe to re-run — it skips
+> rows that already exist. You only need to do this once per database, not on every
+> `git pull`.
+
 > First run will download the sentence-transformer model (~90 MB) from Hugging Face —
 > needs internet access once, then it's cached locally. `pip install` itself also
 > pulls in PyTorch, which is a large download (700 MB+); this is normal.

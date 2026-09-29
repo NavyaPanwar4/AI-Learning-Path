@@ -9,6 +9,16 @@ Safe to re-run — every insert checks for an existing row first, so nothing
 is duplicated. Your original CSV files and JSON cache files are left
 untouched; delete them yourself once you've confirmed the app works
 against the new DB.
+
+NOTE: users.csv, user_skills.csv, and user_feedback.csv are intentionally
+NOT present in this repo — an earlier version of this file contained real
+registered accounts (emails + bcrypt password hashes), which should never
+be committed to a shared repository. The sections below that read those
+files degrade gracefully to a no-op when the files are absent, which is
+what you want on a fresh setup: only the goal/skill catalog (goals.csv,
+skills.csv, goal_skills.csv, skill_dependencies.csv) gets seeded. Don't
+re-add real user exports here — if you need to migrate real user data,
+do it as a private, untracked local file instead.
 """
 import json
 import os

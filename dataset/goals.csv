@@ -1,0 +1,26 @@
+goal_id,goal_name,category,description,estimated_total_hours
+1,Become a Python Developer,Programming Career,Master Python programming fundamentals and data structures to build real-world applications,50
+2,Master Algorithms,Programming Advanced,Learn advanced algorithms and problem-solving techniques for technical interviews,70
+3,Build Math Foundation for Data Science,Mathematics Foundation,Develop strong mathematical background in linear algebra and calculus for data science,85
+4,Complete Programming Fundamentals,Programming Beginner,Establish core programming knowledge with Python basics and data structures,50
+5,Advanced Mathematics Track,Mathematics Advanced,Comprehensive study of calculus and linear algebra for quantitative fields,85
+6,Full Stack Developer Path,Web Development Career,Build complete web applications using modern frontend and backend technologies,80
+7,Competitive Programming Preparation,Programming Advanced,Prepare for programming competitions with algorithms and data structures,70
+8,Data Science Mathematics Foundation,Data Science,Build mathematical foundation required for machine learning and data science,115
+9,Software Engineering Fundamentals,Software Engineering,Essential programming skills for software engineering roles,120
+10,Quantitative Analyst Foundation,Finance,Mathematical and programming skills for quantitative finance,165
+11,ML Engineer Path,AI & Data Career,End-to-end machine learning from data preparation to production deployment,125
+12,Cloud Solutions Architect,Cloud Career,Design scalable cloud architectures on AWS and Kubernetes,100
+13,Cybersecurity Analyst,Security Career,"Develop skills to detect, investigate, and respond to security threats",95
+14,Data Engineer Path,Data Engineering,Build reliable data pipelines and scalable data infrastructure,75
+15,NLP Researcher Foundation,AI Research,Master the skills required to work on natural language processing research,120
+16,Frontend Developer Path,Web Development Career,Become a proficient frontend developer with modern JavaScript frameworks,70
+17,DevOps Engineer Path,Cloud & DevOps Career,Automate software delivery and manage cloud infrastructure at scale,80
+18,Ethical Hacker Certification Prep,Security Career,Prepare for CEH and OSCP certifications with hands-on hacking skills,110
+19,Research Mathematician,Mathematics Research,Develop graduate-level mathematical maturity across analysis and algebra,140
+20,Computer Vision Engineer,AI Vision,Build expertise in visual AI from fundamentals to production deployment,125
+21,AI Product Manager,Product & AI,Understand AI/ML systems well enough to lead product development teams,70
+22,Backend Engineer Path,Software Engineering,Build robust server-side systems and scalable APIs,100
+23,Reinforcement Learning Researcher,AI Research,Deep dive into RL theory and modern deep RL algorithms,120
+24,Data Analyst Track,Data Analytics,Analyze business data and communicate insights through visualizations,60
+25,Secure Software Developer,Security & Dev,Integrate security practices throughout the software development lifecycle,90
