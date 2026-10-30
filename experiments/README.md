@@ -1,87 +1,210 @@
 # Experiments: LLM-only vs. prerequisite-aware, rule-based planning
 
-Harness for the study described in the paper. **Nothing here has been run against a real LLM.**
-All numbers appear only after you run the steps below. Run commands from the repository root.
+This folder holds the harness, data, raw model logs and analysis results for the evaluation study of the
+app's path planner. Run every command from the **repository root**.
+
+**Status:** real runs were made with three models through Groq (`gpt-oss-120b`, `gpt-oss-20b`,
+`qwen3.6-27b`) on the 18 test profiles. The raw logs and all analysis outputs are committed here. The
+learners are **synthetic**: the study measures how well generated paths match a given mastery state, not
+learning gains. No human ratings were collected, and no real learners took part.
 
 ## What is compared
 
 | ID | Condition | How the path is made |
 |----|-----------|----------------------|
-| A | LLM-only | LLM gets goal targets, mastery table, skill catalogue and general personalisation instructions |
-| E | LLM + structure as text | A, plus the prerequisite edges and the exact rules as prompt text; nothing is enforced |
-| D | Proposed system | `app/services/path_planner.py` picks skills/order/actions (enforced); LLM only elaborates titles |
+| A | LLM only | the LLM gets the goal targets, mastery table, skill catalogue and general personalisation instructions |
+| E | LLM + structure as text | A, plus the prerequisite edges and the exact rules in the prompt; nothing is enforced |
+| D | Planner (the app's planner) | `app/services/path_planner.py` picks skills, order and actions (enforced); the LLM only elaborates titles and durations |
 | B | Planner, graph only | planner with mastery ignored (deterministic, no LLM) |
 | C | Mastery only | A's skill list filtered by the mastery rules, no graph (derived from A, no extra LLM call) |
 
-Primary contrasts (confirmatory): **A vs D** and **E vs D** on **PVR** (prerequisite violation rate) and
-**MA** (mastery alignment), Holm-corrected over those 4 tests. Everything else is exploratory.
-Metric definitions are in `experiments/metrics.py` (docstrings) and the paper's Section 5.5.
+Planner rules: R1 closure, R2 order, R3 skip mastered (mastery at or above 0.85), R4 `learn` (below 0.50)
+or `review`.
 
-## Before any real run (human steps)
+**Confirmatory contrasts:** A vs D and E vs D, on PVR (prerequisite violation rate) and MA (mastery
+alignment), with Holm correction over those 4 tests per model. Everything else is exploratory. Metric
+definitions are in the docstrings of `metrics.py`. The unit of analysis is the profile, tested with paired
+Wilcoxon tests, rank-biserial effect sizes and bootstrap confidence intervals.
 
-1. **Review `data/graph_P.json`.** It is a DRAFT (40 skills, 43 edges) written by Claude from your skill
-   catalogue. Edit it until you agree with every edge. Also review `data/goals.json` (3 goals).
-2. **Independent graph E.** Give a second person ONLY the files from
-   `python -c "from experiments.graphs import *; g,raw=load_graph_p(); write_graph_e_template(g, raw['nodes'], 'graph_E_package')"`
-   (skills list + instructions). They must work blind. Put their result at
-   `experiments/data/graph_E_edges.csv`. Until it exists, analysis scores against graph P and labels
-   PVR/OC as NOT INDEPENDENT (circular).
-3. **Freeze.** Commit graph P, goals, profiles, prompts (`conditions.py`), planner, metrics and
-   `config.json`, tag the commit, and write down the analysis plan (see below) BEFORE touching the test split.
-4. Set `GROQ_API_KEY` in `.env`; `openai/gpt-oss-120b` is the experiment harness's default model.
+## Data (`data/`)
 
-## Run
+| File | Contents |
+|------|----------|
+| `graph_P.json` | the planner's prerequisite graph: 40 skills, 43 edges, **drafted by Claude** from the skill catalogue |
+| `graph_E_edges.csv` | scoring graph E: 50 edges, written by ChatGPT from the skills list and instructions in `graph_E_package/` |
+| `graph_E2_edges.csv` | scoring graph E2: 44 edges, written by Gemini 2.5 Flash, used as a second independent check |
+| `graph_E_package/` | the skills list and the exact instructions given to the model that wrote graph E |
+| `goals.json` | the 3 goals used in the study |
+| `profiles.json` | 27 synthetic learner profiles: 18 `test` and 9 `dev` (beginner, intermediate, advanced, uneven, edge cases) |
+| `profiles_rep.json` | 57 extra profiles for a replication set (generated, **not run**) |
+
+All three graphs were written by LLMs, not by domain experts. They agree on most ancestor relations
+(ancestor kappa 0.82 for P vs E, 0.74 for P vs E2, 0.70 for E vs E2) but share only 43-60% of direct edges.
+The planner is built on graph P, so scoring on P is circular for PVR and order consistency; graphs E and E2
+exist to avoid that.
+
+## Reported results
+
+Means over the 18 test profiles (metrics averaged over goals and runs):
+
+**Mastery alignment (higher is better)**
+
+| Scoring graph | Model | A | E | D |
+|---------------|-------|:---:|:---:|:---:|
+| E | gpt-oss-120b | 0.39 | 0.82 | 0.83 |
+| E | gpt-oss-20b | 0.41 | 0.78 | 0.83 |
+| E | qwen3.6-27b | 0.45 | 0.48 | 0.83 |
+| E2 | gpt-oss-120b | 0.35 | 0.81 | 0.81 |
+| E2 | gpt-oss-20b | 0.37 | 0.77 | 0.81 |
+| E2 | qwen3.6-27b | 0.40 | 0.43 | 0.81 |
+
+**Prerequisite violation rate, % (lower is better)**
+
+| Scoring graph | Model | A | E | D |
+|---------------|-------|:---:|:---:|:---:|
+| E | gpt-oss-120b | 18.0 | 12.8 | 13.7 |
+| E | gpt-oss-20b | 20.4 | 15.1 | 13.7 |
+| E | qwen3.6-27b | 13.9 | 10.1 | 13.7 |
+| E2 | gpt-oss-120b | 7.1 | 14.8 | 15.8 |
+| E2 | gpt-oss-20b | 12.9 | 16.4 | 15.8 |
+| E2 | qwen3.6-27b | 10.1 | 11.3 | 15.8 |
+
+How to read them:
+
+- The planner's **mastery alignment** advantage over LLM-only (A) holds for every model and scoring graph.
+- The planner's **violation-rate** advantage is not robust: it is zero by construction on graph P, mostly
+  disappears on graph E, and reverses on graph E2 for `gpt-oss-120b` (A has fewer violations than D). All of
+  D's violations fall on relations where the graphs disagree.
+- D scores the same for every model because its path does not depend on the LLM.
+- MA uses the planner's own 0.85 threshold, so it favours the planner by design. It shows alignment with a
+  mastery state, not learner benefit.
+- `qwen3.6-27b` was run **without thinking mode**, so model family and reasoning mode are not separated.
+- `gpt-oss-20b` had 17 unparseable generations (A: 6, E: 11), from token cut-offs; these are reported in
+  `generation_reliability.csv`.
+- `Llama 3.3 70B` was planned as a third model but was removed from Groq before it could be run; it is not
+  part of the study.
+
+## Reproduce the tables (no API key needed)
+
+The raw LLM outputs are committed, so every number can be regenerated by re-scoring them.
+
+```bash
+# graph E (the main scoring graph)
+python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
+       --out experiments/results/analysis_E_120b --split test --scoring-graph E
+python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-20b__test.jsonl \
+       --out experiments/results/analysis_E_20b --split test --scoring-graph E
+python -m experiments.analyze --logs experiments/results/groq__qwen-qwen3.6-27b__test.jsonl \
+       --out experiments/results/analysis_qwen_E --split test --scoring-graph E
+
+# the planner's own graph P (circular for PVR and OC)
+python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
+       --out experiments/results/analysis_groq__openai-gpt-oss-120b__test --split test --scoring-graph P
+```
+
+Scoring on graph **E2** has no command-line option: `analyze` reads `data/graph_E_edges.csv`. To reproduce
+the E2 results, temporarily put E2's edges in that file, run the same command, and restore it:
+
+```bash
+# macOS / Linux
+cp experiments/data/graph_E_edges.csv /tmp/graph_E_edges.bak
+cp experiments/data/graph_E2_edges.csv experiments/data/graph_E_edges.csv
+python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
+       --out /tmp/analysis_E2_120b --split test --scoring-graph E
+cp /tmp/graph_E_edges.bak experiments/data/graph_E_edges.csv
+```
+
+```powershell
+# Windows PowerShell
+Copy-Item experiments\data\graph_E_edges.csv $env:TEMP\graph_E_edges.bak
+Copy-Item experiments\data\graph_E2_edges.csv experiments\data\graph_E_edges.csv -Force
+python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl --out $env:TEMP\analysis_E2_120b --split test --scoring-graph E
+Copy-Item $env:TEMP\graph_E_edges.bak experiments\data\graph_E_edges.csv -Force
+```
+
+Re-scoring reproduces the committed analysis folders exactly (apart from line endings). Check that
+`git status` shows `graph_E_edges.csv` unchanged afterwards.
+
+Robustness to graph errors (perturbing graph P and re-testing the contrasts):
+
+```bash
+python -m experiments.sensitivity --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
+       --out experiments/results/sensitivity_120b --draws 100
+```
+
+## Run a new generation (needs `GROQ_API_KEY`)
 
 ```bash
 # pipeline smoke test, no LLM (results are flagged mock and refused by analyze.py)
 python -m experiments.run --provider mock --split dev --out /tmp/mock_res
 
-# 1) DEV pilot: tune prompts/rules ONLY on dev profiles, check floor/ceiling effects
-python -m experiments.run --provider groq --split dev
-python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__dev.jsonl \
-       --out experiments/results/analysis_dev --split dev
+# one command: generate, analyse and bundle for one model
+python -m experiments.run_all                                  # gpt-oss-120b, test split
+python -m experiments.run_all --model openai/gpt-oss-20b
+python -m experiments.run_all --model qwen/qwen3.6-27b
 
-# 2) after freezing: TEST split
+# or step by step
 python -m experiments.run --provider groq --split test
 python -m experiments.analyze --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
-       --out experiments/results/analysis_gpt-oss-120b --split test
-
-# 3) human evaluation (blinded)
-python -m experiments.human_eval export --logs experiments/results/groq__openai-gpt-oss-120b__test.jsonl \
-       --out experiments/human_eval/round1
-#    give blinded_items.md + rating_template.csv to 2-3 raters; keep key.json private
-python -m experiments.human_eval analyze --dir experiments/human_eval/round1 --ratings r1.csv r2.csv r3.csv
+       --out experiments/results/analysis_new --split test
 ```
 
-Runs are resumable (existing keys in the JSONL are skipped). Every record stores the raw LLM output, seed,
-prompt hash and latency; `*.meta.json` stores the config, git commit and graph/profile hashes.
-`generate_experiment_json` is strict: no repair prompt or Hugging Face fallback (a failed parse is re-sampled
-once with a new seed, and parse failures are reported). Groq is called with JSON-object mode,
-temperature 0.1 and a per-call seed; `config.json` holds the experiment settings.
+Runs are resumable (existing keys in the log are skipped). Call settings come from `config.json`, not from
+the app's `.env`: temperature 0.1, a per-call seed, 8192 max completion tokens, the system prompt
+"You produce accurate learning content.", `gpt-oss` reasoning effort `medium`, and for Qwen reasoning effort
+`none` with hidden reasoning. Every record stores the raw LLM output, seed, prompt hash and latency, and the
+`*.meta.json` next to each log stores the call settings, git commit and a dirty flag.
+`generate_experiment_json` is strict: no repair prompt and no fallback model; a failed parse is re-sampled
+once with a new seed, and parse failures are reported.
 
-Rough size: per split = profiles x 3 goals x (3 A + 3 E + 1 D) LLM calls (test: 18 x 3 x 7 = 378 calls;
-dev: 189). Time and rate limits depend on your Groq account: measure it on a few dev profiles with
-`--profile-ids beg01,int01 --runs 1` first.
+Size: per split, profiles x 3 goals x (3 A + 3 E + 1 D) LLM calls (test: 18 x 3 x 7 = 378 calls). Time and
+rate limits depend on your Groq account.
 
-## Outputs (in the `--out` directory)
+## Provenance
 
-`summary_by_condition.csv`, `paired_tests.csv` (effect sizes, bootstrap CIs, Holm-adjusted p for the
-confirmatory family), `friedman.csv`, `by_archetype.csv`, `profile_sensitivity.csv`,
-`run_consistency.csv`, `generation_reliability.csv`, `floor_ceiling.csv`, `scored_runs.csv`,
-`analysis_meta.json` (scoring graph, thresholds, graph agreement P vs E).
-Threshold sensitivity: re-run `analyze` with `--weak 0.4 --strong 0.8` etc. (no regeneration needed).
+- The logs were generated from a working tree based on commit `eef3e8a` **with uncommitted changes**, so
+  each `*.meta.json` records `git_dirty: true`. The code state is frozen in the commit tagged `paper-v1`,
+  which includes those changes, but it is not a byte-identical snapshot of the tree that produced the logs.
+- The prerequisite graphs were produced by three different LLMs (P by Claude, E by ChatGPT, E2 by Gemini).
+- The replication set (`profiles_rep.json`, `make_rep_profiles.py`) and the prompt-variant options
+  (`--prompt-variant v2`, `v3`, `prompt_robustness.py`) are implemented and tested but **were not run**, and
+  `human_eval.py` (blinded human rating) was **not used**. They are listed as future work.
 
-## Design notes you should know
+## Outputs of `analyze` (in the `--out` directory)
 
-* Unit of analysis is the **profile** (metrics averaged over goals and runs). Runs of one profile are not independent.
-* D's structure is deterministic, so its run-to-run consistency is trivially 1; one LLM elaboration per unit is made
-  (`d_llm_runs`) to measure how well the LLM keeps to the plan (`adherence` in the log).
-* Empty-plan profiles (e.g. advanced learners on the Data Analyst goal) are valid: an empty path is ideal there.
-  Metrics with an empty denominator are undefined (NaN) and excluded; counts are in `summary_by_condition.csv`.
-* Profile sensitivity is undefined when all paths are identical (a learner-independent path).
-* Mastery values are synthetic (`profiles.py`). They test alignment with a given mastery state, NOT learning gains.
-* The closed loop (quiz -> mastery update -> re-plan) is not evaluated here.
+`summary_by_condition.csv`, `paired_tests.csv` (effect sizes, bootstrap CIs, Holm-adjusted p-values for the
+confirmatory family), `friedman.csv`, `by_archetype.csv`, `profile_sensitivity.csv`, `run_consistency.csv`,
+`generation_reliability.csv`, `floor_ceiling.csv`, `scored_runs.csv`, and `analysis_meta.json` (scoring graph,
+thresholds, and graph agreement). To test threshold sensitivity, re-run `analyze` with `--weak` and
+`--strong` (for example `--weak 0.4 --strong 0.8`); no regeneration is needed.
+
+## Design notes
+
+- The unit of analysis is the **profile**. Runs of one profile are not independent.
+- D's structure is deterministic, so its run-to-run consistency is trivially 1; one LLM elaboration per unit
+  is made (`d_llm_runs`) to measure how well the LLM keeps to the plan (`adherence` in the log).
+- Empty-plan profiles (for example advanced learners on the Data Analyst goal) are valid: an empty path is
+  ideal there. Metrics with an empty denominator are undefined and excluded; counts are in
+  `summary_by_condition.csv`.
+- Profile sensitivity is undefined when all paths are identical (a learner-independent path).
+- Mastery values are synthetic (`profiles.py`). They test alignment with a given mastery state, not learning
+  gains.
+- The closed loop (quiz, mastery update, re-plan) is not evaluated here.
+
+## Layout
+
+```
+experiments/
+  data/        graphs, goals and profiles (see above)
+  results/     raw logs (*.jsonl), run metadata (*.meta.json), analysis_* folders, sensitivity_*.csv
+  run.py       generation harness          run_all.py  one-command run for one model
+  analyze.py   scoring and statistics      stats.py    tests, bootstrap, Holm correction
+  metrics.py   PVR, MA, OC, RR, ...        conditions.py  prompts for A, E, D (and variants)
+  graphs.py    graph loading and agreement sensitivity.py  graph-perturbation robustness
+  profiles.py  profile loading             mock_llm.py   offline mock provider
+```
 
 ## Tests
 
-`python -m pytest tests` (hand-computed metric checks, planner, statistics, and a mock end-to-end pipeline).
+`python -m pytest -q tests/test_experiment_pipeline.py tests/test_metrics.py tests/test_stats.py` runs the
+hand-computed metric checks, the planner and statistics tests, and a mock end-to-end pipeline.
