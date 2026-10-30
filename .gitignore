@@ -24,3 +24,15 @@ frontend/dist/
 .idea/
 .DS_Store
 Thumbs.db
+
+.env*
+!.env.example
+venv/
+.pytest_cache/
+__pycache__/
+*.db
+*.db.bak
+*.bak
+.backup-*/
+node_modules/
+dist/

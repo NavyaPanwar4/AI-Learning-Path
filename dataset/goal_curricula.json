@@ -1,0 +1,1227 @@
+{
+  "1": {
+    "goal_name": "Become a Python Developer",
+    "phases": [
+      {
+        "title": "Python and Developer Workflow",
+        "skill_ids": [
+          "1",
+          "10",
+          "9"
+        ]
+      },
+      {
+        "title": "Core Python Programming",
+        "skill_ids": [
+          "4",
+          "5"
+        ]
+      },
+      {
+        "title": "Data Structures and Algorithms",
+        "skill_ids": [
+          "2",
+          "3"
+        ]
+      },
+      {
+        "title": "Debugging and Reliable Code",
+        "skill_ids": [
+          "12",
+          "8",
+          "13"
+        ]
+      },
+      {
+        "title": "Working with Data and APIs",
+        "skill_ids": [
+          "15",
+          "14"
+        ]
+      },
+      {
+        "title": "Application Design and Optimization",
+        "skill_ids": [
+          "7",
+          "19",
+          "20"
+        ]
+      }
+    ]
+  },
+  "2": {
+    "goal_name": "Master Algorithms",
+    "phases": [
+      {
+        "title": "Programming and Complexity Foundations",
+        "skill_ids": [
+          "1",
+          "2"
+        ]
+      },
+      {
+        "title": "Discrete Mathematics for Algorithms",
+        "skill_ids": [
+          "130",
+          "145"
+        ]
+      },
+      {
+        "title": "Core Algorithmic Techniques",
+        "skill_ids": [
+          "3",
+          "5"
+        ]
+      },
+      {
+        "title": "Graphs and Number-Theoretic Algorithms",
+        "skill_ids": [
+          "142",
+          "141"
+        ]
+      },
+      {
+        "title": "Correctness, Testing and Optimization",
+        "skill_ids": [
+          "12",
+          "8",
+          "20"
+        ]
+      }
+    ]
+  },
+  "3": {
+    "goal_name": "Build Math Foundation for Data Science",
+    "phases": [
+      {
+        "title": "Linear Algebra and Calculus",
+        "skill_ids": [
+          "126",
+          "127"
+        ]
+      },
+      {
+        "title": "Probability and Statistics",
+        "skill_ids": [
+          "128",
+          "129"
+        ]
+      },
+      {
+        "title": "Discrete Mathematics and Numerical Methods",
+        "skill_ids": [
+          "130",
+          "131"
+        ]
+      },
+      {
+        "title": "Optimization and Stochastic Processes",
+        "skill_ids": [
+          "132",
+          "143"
+        ]
+      },
+      {
+        "title": "Signals and Information",
+        "skill_ids": [
+          "144",
+          "133"
+        ]
+      }
+    ]
+  },
+  "4": {
+    "goal_name": "Complete Programming Fundamentals",
+    "phases": [
+      {
+        "title": "Programming Setup and Workflow",
+        "skill_ids": [
+          "1",
+          "10",
+          "9"
+        ]
+      },
+      {
+        "title": "Programming Paradigms and Functions",
+        "skill_ids": [
+          "4",
+          "5"
+        ]
+      },
+      {
+        "title": "Data Structures and Algorithms",
+        "skill_ids": [
+          "2",
+          "3"
+        ]
+      },
+      {
+        "title": "Debugging and Testing",
+        "skill_ids": [
+          "12",
+          "8"
+        ]
+      },
+      {
+        "title": "Data Persistence and APIs",
+        "skill_ids": [
+          "15",
+          "14"
+        ]
+      }
+    ]
+  },
+  "5": {
+    "goal_name": "Advanced Mathematics Track",
+    "phases": [
+      {
+        "title": "Linear Algebra and Calculus",
+        "skill_ids": [
+          "126",
+          "127"
+        ]
+      },
+      {
+        "title": "Probability and Mathematical Statistics",
+        "skill_ids": [
+          "128",
+          "129",
+          "143"
+        ]
+      },
+      {
+        "title": "Numerical and Optimization Methods",
+        "skill_ids": [
+          "131",
+          "132",
+          "164"
+        ]
+      },
+      {
+        "title": "Differential Equations and Analysis",
+        "skill_ids": [
+          "134",
+          "136",
+          "137"
+        ]
+      },
+      {
+        "title": "Algebra, Number Theory and Discrete Structures",
+        "skill_ids": [
+          "135",
+          "141",
+          "145",
+          "140",
+          "142"
+        ]
+      },
+      {
+        "title": "Advanced Structures and Measure",
+        "skill_ids": [
+          "138",
+          "162",
+          "163"
+        ]
+      }
+    ]
+  },
+  "6": {
+    "goal_name": "Full Stack Developer Path",
+    "phases": [
+      {
+        "title": "Developer Workflow and Web Foundations",
+        "skill_ids": [
+          "10",
+          "9",
+          "66",
+          "67",
+          "83"
+        ]
+      },
+      {
+        "title": "Modern JavaScript and TypeScript",
+        "skill_ids": [
+          "68",
+          "25"
+        ]
+      },
+      {
+        "title": "React and Frontend Engineering",
+        "skill_ids": [
+          "69",
+          "81",
+          "82",
+          "75"
+        ]
+      },
+      {
+        "title": "Server-Side Development and APIs",
+        "skill_ids": [
+          "71",
+          "72",
+          "74",
+          "14",
+          "19"
+        ]
+      },
+      {
+        "title": "Data Persistence, Authentication and Security",
+        "skill_ids": [
+          "15",
+          "36",
+          "78",
+          "79"
+        ]
+      },
+      {
+        "title": "Deployment and Production Readiness",
+        "skill_ids": [
+          "90",
+          "93",
+          "86",
+          "104",
+          "98",
+          "80"
+        ]
+      }
+    ]
+  },
+  "7": {
+    "goal_name": "Competitive Programming Preparation",
+    "phases": [
+      {
+        "title": "Competitive Programming Language Foundations",
+        "skill_ids": [
+          "24",
+          "10"
+        ]
+      },
+      {
+        "title": "Core Data Structures and Algorithms",
+        "skill_ids": [
+          "2",
+          "3"
+        ]
+      },
+      {
+        "title": "Discrete Mathematics and Combinatorics",
+        "skill_ids": [
+          "130",
+          "145"
+        ]
+      },
+      {
+        "title": "Graph Algorithms and Number Theory",
+        "skill_ids": [
+          "142",
+          "141"
+        ]
+      },
+      {
+        "title": "Complexity and Performance",
+        "skill_ids": [
+          "20",
+          "16"
+        ]
+      },
+      {
+        "title": "Debugging and Reliable Submissions",
+        "skill_ids": [
+          "12",
+          "8"
+        ]
+      }
+    ]
+  },
+  "8": {
+    "goal_name": "Data Science Mathematics Foundation",
+    "phases": [
+      {
+        "title": "Linear Algebra and Calculus",
+        "skill_ids": [
+          "126",
+          "127"
+        ]
+      },
+      {
+        "title": "Probability and Statistics",
+        "skill_ids": [
+          "128",
+          "129"
+        ]
+      },
+      {
+        "title": "Discrete Mathematics and Numerical Methods",
+        "skill_ids": [
+          "130",
+          "131"
+        ]
+      },
+      {
+        "title": "Optimization and Stochastic Processes",
+        "skill_ids": [
+          "132",
+          "143"
+        ]
+      },
+      {
+        "title": "Fourier Analysis and Information Theory",
+        "skill_ids": [
+          "144",
+          "133"
+        ]
+      }
+    ]
+  },
+  "9": {
+    "goal_name": "Software Engineering Fundamentals",
+    "phases": [
+      {
+        "title": "Programming Foundations and Git",
+        "skill_ids": [
+          "1",
+          "9",
+          "10"
+        ]
+      },
+      {
+        "title": "Core Programming and Problem Solving",
+        "skill_ids": [
+          "4",
+          "2",
+          "3"
+        ]
+      },
+      {
+        "title": "Debugging, Testing and Quality",
+        "skill_ids": [
+          "12",
+          "8",
+          "13"
+        ]
+      },
+      {
+        "title": "API and Database Engineering",
+        "skill_ids": [
+          "14",
+          "15"
+        ]
+      },
+      {
+        "title": "Design Patterns and Architecture",
+        "skill_ids": [
+          "7",
+          "19"
+        ]
+      },
+      {
+        "title": "Performance and Production Readiness",
+        "skill_ids": [
+          "20",
+          "18"
+        ]
+      }
+    ]
+  },
+  "10": {
+    "goal_name": "Quantitative Analyst Foundation",
+    "phases": [
+      {
+        "title": "Programming for Quantitative Work",
+        "skill_ids": [
+          "1",
+          "2"
+        ]
+      },
+      {
+        "title": "Linear Algebra and Calculus",
+        "skill_ids": [
+          "126",
+          "127"
+        ]
+      },
+      {
+        "title": "Probability, Statistics and Stochastic Models",
+        "skill_ids": [
+          "30",
+          "129",
+          "143"
+        ]
+      },
+      {
+        "title": "Numerical Optimization and Game Theory",
+        "skill_ids": [
+          "131",
+          "132",
+          "139"
+        ]
+      },
+      {
+        "title": "Data Analysis with Python and SQL",
+        "skill_ids": [
+          "26",
+          "27",
+          "34"
+        ]
+      },
+      {
+        "title": "Time Series, Bayesian Methods and Reproducible Research",
+        "skill_ids": [
+          "32",
+          "39",
+          "20",
+          "8"
+        ]
+      }
+    ]
+  },
+  "11": {
+    "goal_name": "ML Engineer Path",
+    "phases": [
+      {
+        "title": "Python, Data Handling and Exploration",
+        "skill_ids": [
+          "1",
+          "26",
+          "34",
+          "27",
+          "28"
+        ]
+      },
+      {
+        "title": "Math Foundations for Machine Learning",
+        "skill_ids": [
+          "126",
+          "128",
+          "129"
+        ]
+      },
+      {
+        "title": "Supervised Learning and Model Evaluation",
+        "skill_ids": [
+          "46",
+          "47",
+          "48",
+          "55"
+        ]
+      },
+      {
+        "title": "Neural Networks, Deep Learning and Transfer Learning",
+        "skill_ids": [
+          "50",
+          "51",
+          "57"
+        ]
+      },
+      {
+        "title": "Model Tuning and Responsible AI",
+        "skill_ids": [
+          "56",
+          "60",
+          "63"
+        ]
+      },
+      {
+        "title": "Production ML and MLOps",
+        "skill_ids": [
+          "59",
+          "90",
+          "93"
+        ]
+      }
+    ]
+  },
+  "12": {
+    "goal_name": "Cloud Solutions Architect",
+    "phases": [
+      {
+        "title": "Cloud Fundamentals, AWS and Networking",
+        "skill_ids": [
+          "86",
+          "87",
+          "95",
+          "104"
+        ]
+      },
+      {
+        "title": "Containers and Orchestration",
+        "skill_ids": [
+          "90",
+          "91"
+        ]
+      },
+      {
+        "title": "Infrastructure Automation and CI/CD",
+        "skill_ids": [
+          "92",
+          "93"
+        ]
+      },
+      {
+        "title": "Cloud Databases and Security",
+        "skill_ids": [
+          "100",
+          "96"
+        ]
+      },
+      {
+        "title": "Observability and Cost Optimization",
+        "skill_ids": [
+          "98",
+          "97",
+          "159"
+        ]
+      },
+      {
+        "title": "Resilience and Distributed Architecture",
+        "skill_ids": [
+          "101",
+          "102",
+          "105"
+        ]
+      }
+    ]
+  },
+  "13": {
+    "goal_name": "Cybersecurity Analyst",
+    "phases": [
+      {
+        "title": "Security and Network Foundations",
+        "skill_ids": [
+          "106",
+          "107"
+        ]
+      },
+      {
+        "title": "Cryptography and Vulnerability Management",
+        "skill_ids": [
+          "108",
+          "119"
+        ]
+      },
+      {
+        "title": "Security Operations and Threat Intelligence",
+        "skill_ids": [
+          "115",
+          "124"
+        ]
+      },
+      {
+        "title": "Incident Response and Digital Forensics",
+        "skill_ids": [
+          "114",
+          "113"
+        ]
+      },
+      {
+        "title": "Identity and Web Application Security",
+        "skill_ids": [
+          "116",
+          "111"
+        ]
+      },
+      {
+        "title": "Risk, Compliance and Cloud Security",
+        "skill_ids": [
+          "121",
+          "125",
+          "96"
+        ]
+      }
+    ]
+  },
+  "14": {
+    "goal_name": "Data Engineer Path",
+    "phases": [
+      {
+        "title": "Python, SQL and Data Wrangling",
+        "skill_ids": [
+          "1",
+          "34",
+          "26",
+          "27"
+        ]
+      },
+      {
+        "title": "Data Quality and Pipeline Design",
+        "skill_ids": [
+          "153",
+          "35"
+        ]
+      },
+      {
+        "title": "Distributed and NoSQL Data Systems",
+        "skill_ids": [
+          "36",
+          "152",
+          "151"
+        ]
+      },
+      {
+        "title": "Containerized Pipelines and CI/CD",
+        "skill_ids": [
+          "90",
+          "93"
+        ]
+      },
+      {
+        "title": "Cloud Data Platforms",
+        "skill_ids": [
+          "100",
+          "104"
+        ]
+      },
+      {
+        "title": "Monitoring and Cost Management",
+        "skill_ids": [
+          "98",
+          "97"
+        ]
+      }
+    ]
+  },
+  "15": {
+    "goal_name": "NLP Researcher Foundation",
+    "phases": [
+      {
+        "title": "Python, Data Preparation and Math for NLP",
+        "skill_ids": [
+          "1",
+          "26",
+          "126",
+          "128",
+          "129"
+        ]
+      },
+      {
+        "title": "Machine Learning and Evaluation",
+        "skill_ids": [
+          "46",
+          "55"
+        ]
+      },
+      {
+        "title": "Deep Learning and NLP Fundamentals",
+        "skill_ids": [
+          "51",
+          "52"
+        ]
+      },
+      {
+        "title": "Transfer Learning and Generative Models",
+        "skill_ids": [
+          "57",
+          "58"
+        ]
+      },
+      {
+        "title": "Speech Recognition and Information Theory",
+        "skill_ids": [
+          "154",
+          "133"
+        ]
+      },
+      {
+        "title": "Responsible AI and Deployment",
+        "skill_ids": [
+          "63",
+          "59"
+        ]
+      }
+    ]
+  },
+  "16": {
+    "goal_name": "Frontend Developer Path",
+    "phases": [
+      {
+        "title": "HTML, CSS and Browser Foundations",
+        "skill_ids": [
+          "66",
+          "67",
+          "83"
+        ]
+      },
+      {
+        "title": "JavaScript and TypeScript",
+        "skill_ids": [
+          "68",
+          "25"
+        ]
+      },
+      {
+        "title": "React and Styling Systems",
+        "skill_ids": [
+          "69",
+          "81"
+        ]
+      },
+      {
+        "title": "Accessible and Reusable Components",
+        "skill_ids": [
+          "75",
+          "84"
+        ]
+      },
+      {
+        "title": "Frontend Testing and Performance",
+        "skill_ids": [
+          "82",
+          "80"
+        ]
+      },
+      {
+        "title": "Modern Routing and Web Applications",
+        "skill_ids": [
+          "72",
+          "76"
+        ]
+      }
+    ]
+  },
+  "17": {
+    "goal_name": "DevOps Engineer Path",
+    "phases": [
+      {
+        "title": "Command Line, Git, Cloud and Containers",
+        "skill_ids": [
+          "10",
+          "9",
+          "86",
+          "90"
+        ]
+      },
+      {
+        "title": "Delivery Pipelines and Infrastructure as Code",
+        "skill_ids": [
+          "93",
+          "92"
+        ]
+      },
+      {
+        "title": "Orchestration and Platform Engineering",
+        "skill_ids": [
+          "91",
+          "158"
+        ]
+      },
+      {
+        "title": "Networking and Observability",
+        "skill_ids": [
+          "95",
+          "98"
+        ]
+      },
+      {
+        "title": "Security and Resilience",
+        "skill_ids": [
+          "96",
+          "105"
+        ]
+      },
+      {
+        "title": "Operations and Cost Optimization",
+        "skill_ids": [
+          "103",
+          "97",
+          "159"
+        ]
+      }
+    ]
+  },
+  "18": {
+    "goal_name": "Ethical Hacker Certification Prep",
+    "phases": [
+      {
+        "title": "Security and Networking Foundations",
+        "skill_ids": [
+          "106",
+          "107"
+        ]
+      },
+      {
+        "title": "Cryptography and Ethical Hacking Workflow",
+        "skill_ids": [
+          "108",
+          "110"
+        ]
+      },
+      {
+        "title": "Penetration Testing and Web Security",
+        "skill_ids": [
+          "109",
+          "111"
+        ]
+      },
+      {
+        "title": "Vulnerability Management and Threat Intelligence",
+        "skill_ids": [
+          "119",
+          "124"
+        ]
+      },
+      {
+        "title": "Forensics and Incident Response",
+        "skill_ids": [
+          "113",
+          "114"
+        ]
+      },
+      {
+        "title": "Red Team, Blue Team and Risk",
+        "skill_ids": [
+          "123",
+          "121"
+        ]
+      }
+    ]
+  },
+  "19": {
+    "goal_name": "Research Mathematician",
+    "phases": [
+      {
+        "title": "Logic, Discrete Mathematics and Graphs",
+        "skill_ids": [
+          "130",
+          "140",
+          "142"
+        ]
+      },
+      {
+        "title": "Linear Algebra, Calculus and Probability",
+        "skill_ids": [
+          "126",
+          "127",
+          "129",
+          "143"
+        ]
+      },
+      {
+        "title": "Real and Complex Analysis",
+        "skill_ids": [
+          "136",
+          "137"
+        ]
+      },
+      {
+        "title": "Algebra and Number Theory",
+        "skill_ids": [
+          "135",
+          "141",
+          "145"
+        ]
+      },
+      {
+        "title": "Topology and Algebraic Topology",
+        "skill_ids": [
+          "138",
+          "163"
+        ]
+      },
+      {
+        "title": "Measure Theory and Convex Analysis",
+        "skill_ids": [
+          "162",
+          "164"
+        ]
+      }
+    ]
+  },
+  "20": {
+    "goal_name": "Computer Vision Engineer",
+    "phases": [
+      {
+        "title": "Python, Data Preparation, Linear Algebra and Statistics",
+        "skill_ids": [
+          "1",
+          "26",
+          "126",
+          "129"
+        ]
+      },
+      {
+        "title": "Machine Learning, Evaluation and Tuning",
+        "skill_ids": [
+          "46",
+          "55",
+          "56"
+        ]
+      },
+      {
+        "title": "Neural Networks and Deep Learning",
+        "skill_ids": [
+          "50",
+          "51"
+        ]
+      },
+      {
+        "title": "Computer Vision and Transfer Learning",
+        "skill_ids": [
+          "53",
+          "57"
+        ]
+      },
+      {
+        "title": "Production ML and MLOps",
+        "skill_ids": [
+          "59"
+        ]
+      },
+      {
+        "title": "Responsible and Causal AI Considerations",
+        "skill_ids": [
+          "63",
+          "65"
+        ]
+      }
+    ]
+  },
+  "21": {
+    "goal_name": "AI Product Manager",
+    "phases": [
+      {
+        "title": "AI System and Evaluation Fundamentals",
+        "skill_ids": [
+          "46",
+          "55"
+        ]
+      },
+      {
+        "title": "Generative AI, Ethics and Fairness",
+        "skill_ids": [
+          "58",
+          "63"
+        ]
+      },
+      {
+        "title": "Experimentation and Causal Reasoning",
+        "skill_ids": [
+          "33",
+          "65"
+        ]
+      },
+      {
+        "title": "Business Intelligence and Data Storytelling",
+        "skill_ids": [
+          "44",
+          "45"
+        ]
+      },
+      {
+        "title": "Software Architecture and API Literacy",
+        "skill_ids": [
+          "19",
+          "14"
+        ]
+      },
+      {
+        "title": "Delivery, Deployment and Operations",
+        "skill_ids": [
+          "59",
+          "103"
+        ]
+      }
+    ]
+  },
+  "22": {
+    "goal_name": "Backend Engineer Path",
+    "phases": [
+      {
+        "title": "Programming Foundations and Developer Workflow",
+        "skill_ids": [
+          "1",
+          "10",
+          "9",
+          "4",
+          "2"
+        ]
+      },
+      {
+        "title": "Node.js, Express and REST APIs",
+        "skill_ids": [
+          "71",
+          "74",
+          "14"
+        ]
+      },
+      {
+        "title": "Relational and NoSQL Databases",
+        "skill_ids": [
+          "15",
+          "36"
+        ]
+      },
+      {
+        "title": "Authentication, Testing and Security",
+        "skill_ids": [
+          "78",
+          "8",
+          "79"
+        ]
+      },
+      {
+        "title": "Architecture and Performance",
+        "skill_ids": [
+          "19",
+          "20"
+        ]
+      },
+      {
+        "title": "Containerization and Delivery",
+        "skill_ids": [
+          "90",
+          "93"
+        ]
+      }
+    ]
+  },
+  "23": {
+    "goal_name": "Reinforcement Learning Researcher",
+    "phases": [
+      {
+        "title": "Python, Linear Algebra, Probability and Statistics",
+        "skill_ids": [
+          "1",
+          "126",
+          "128",
+          "129"
+        ]
+      },
+      {
+        "title": "Discrete, Numerical and Optimization Methods",
+        "skill_ids": [
+          "130",
+          "131",
+          "132",
+          "143"
+        ]
+      },
+      {
+        "title": "Machine Learning and Deep Learning",
+        "skill_ids": [
+          "46",
+          "51"
+        ]
+      },
+      {
+        "title": "Reinforcement Learning, Evaluation and Tuning",
+        "skill_ids": [
+          "54",
+          "55",
+          "56"
+        ]
+      },
+      {
+        "title": "Generative AI and LLMs",
+        "skill_ids": [
+          "58"
+        ]
+      },
+      {
+        "title": "Deployment and Experiment Quality",
+        "skill_ids": [
+          "59",
+          "65"
+        ]
+      }
+    ]
+  },
+  "24": {
+    "goal_name": "Data Analyst Track",
+    "phases": [
+      {
+        "title": "SQL and Python for Data Analysis",
+        "skill_ids": [
+          "34",
+          "26"
+        ]
+      },
+      {
+        "title": "Exploratory Analysis and Data Cleaning",
+        "skill_ids": [
+          "27",
+          "28"
+        ]
+      },
+      {
+        "title": "Statistics and Probability",
+        "skill_ids": [
+          "29",
+          "30"
+        ]
+      },
+      {
+        "title": "Visualization and Business Intelligence",
+        "skill_ids": [
+          "31",
+          "44"
+        ]
+      },
+      {
+        "title": "Experimentation and Time Series",
+        "skill_ids": [
+          "33",
+          "32"
+        ]
+      },
+      {
+        "title": "Data Storytelling and Responsible Practice",
+        "skill_ids": [
+          "45",
+          "38"
+        ]
+      }
+    ]
+  },
+  "25": {
+    "goal_name": "Secure Software Developer",
+    "phases": [
+      {
+        "title": "Programming and Version Control",
+        "skill_ids": [
+          "1",
+          "9",
+          "10"
+        ]
+      },
+      {
+        "title": "Debugging, Testing and Code Review",
+        "skill_ids": [
+          "12",
+          "8",
+          "13"
+        ]
+      },
+      {
+        "title": "API and Database Security Foundations",
+        "skill_ids": [
+          "14",
+          "15"
+        ]
+      },
+      {
+        "title": "Secure Development Principles",
+        "skill_ids": [
+          "106",
+          "120"
+        ]
+      },
+      {
+        "title": "Authentication and Web Application Security",
+        "skill_ids": [
+          "78",
+          "79",
+          "111"
+        ]
+      },
+      {
+        "title": "Vulnerability, Risk, Cloud and Container Security",
+        "skill_ids": [
+          "119",
+          "121",
+          "96",
+          "122"
+        ]
+      }
+    ]
+  }
+}

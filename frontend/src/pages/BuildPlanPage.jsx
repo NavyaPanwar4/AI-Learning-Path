@@ -69,11 +69,11 @@ export default function BuildPlanPage() {
             {error && <div className="alert alert-error" style={{ marginBottom: 16 }}>{error}</div>}
             
             <div className="input-group" style={{ marginBottom: 20 }}>
-              <label>What do you want to achieve?</label>
-              <select value={selectedGoalId} onChange={(e) => setSelectedGoalId(e.target.value)}>
+              <label htmlFor="plan-goal">What do you want to achieve?</label>
+              <select id="plan-goal" value={selectedGoalId} onChange={(e) => setSelectedGoalId(e.target.value)}>
                 {goals.map((g) => (
                   <option key={g.goal_id} value={g.goal_id}>
-                    {g.goal_name} ({g.category})
+                    {g.goal_name}
                   </option>
                 ))}
               </select>
@@ -81,24 +81,25 @@ export default function BuildPlanPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 24 }}>
               <div className="input-group">
-                <label>Experience Level</label>
-                <select value={experience} onChange={(e) => setExperience(e.target.value)}>
+                <label htmlFor="plan-experience">Experience Level</label>
+                <select id="plan-experience" value={experience} onChange={(e) => setExperience(e.target.value)}>
                   {EXPERIENCE_OPTS.map((o) => (
                     <option key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</option>
                   ))}
                 </select>
               </div>
               <div className="input-group">
-                <label>Learning Style</label>
-                <select value={style} onChange={(e) => setStyle(e.target.value)}>
+                <label htmlFor="plan-style">Learning Style</label>
+                <select id="plan-style" value={style} onChange={(e) => setStyle(e.target.value)}>
                   {STYLE_OPTS.map((o) => (
                     <option key={o} value={o}>{o.charAt(0).toUpperCase() + o.slice(1)}</option>
                   ))}
                 </select>
               </div>
               <div className="input-group">
-                <label>Hours Available Per Week</label>
+                <label htmlFor="plan-hours">Hours Available Per Week</label>
                 <input 
+                  id="plan-hours"
                   type="number" 
                   min="5" 
                   max="80" 

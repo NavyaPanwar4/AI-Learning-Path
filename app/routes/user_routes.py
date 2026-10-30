@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from app.routes.auth_routes import get_current_user
 from app.models.schemas import ExtractSkillsRequest, ExtractSkillsResponse, UserProfileUpdate, ChangePasswordRequest, PersonalInfoUpdate, SessionLogRequest
 from app.services.skill_extraction import skill_extraction_service
+from app.services.llm_service import LLMError
 from app.services.auth_service import auth_service
 from app.services.dashboard_service import dashboard_service
+from app.services.dashboard_activity_service import dashboard_activity_service
 from app.services.activity_service import activity_service
 from app.db.database import SessionLocal
 from app.db.models import Skill, UserSkill, Goal
@@ -25,6 +27,8 @@ def extract_skills(request: ExtractSkillsRequest, current_user_id: str = Depends
         )
     except HTTPException as he:
         raise he
+    except LLMError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
     except Exception as e:
         logger.error(f"Error in extract-skills: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -33,10 +37,14 @@ def extract_skills(request: ExtractSkillsRequest, current_user_id: str = Depends
 def get_user_skills(current_user_id: str = Depends(get_current_user)):
     db = SessionLocal()
     try:
-        rows = db.query(UserSkill).filter(UserSkill.user_id == str(current_user_id)).all()
+        rows = (
+            db.query(UserSkill, Skill)
+            .join(Skill, UserSkill.skill_id == Skill.skill_id)
+            .filter(UserSkill.user_id == str(current_user_id))
+            .all()
+        )
         skills = []
-        for row in rows:
-            skill = db.query(Skill).filter(Skill.skill_id == row.skill_id).first()
+        for row, skill in rows:
             skills.append({
                 "skill_id": row.skill_id,
                 "skill_name": skill.skill_name if skill else "Unknown Skill",
@@ -55,6 +63,8 @@ def get_user_skills(current_user_id: str = Depends(get_current_user)):
 def update_profile(profile: UserProfileUpdate, current_user_id: str = Depends(get_current_user)):
     try:
         return auth_service.update_user_profile(current_user_id, profile)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error updating profile: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -104,13 +114,24 @@ def change_password(request: ChangePasswordRequest, current_user_id: str = Depen
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/dashboard")
-def get_dashboard(current_user_id: str = Depends(get_current_user)):
+def get_dashboard(
+    tz_offset_minutes: int = Query(0, ge=-840, le=840, description="Minutes east of UTC; used to count streak days in your timezone"),
+    current_user_id: str = Depends(get_current_user),
+):
     try:
-        return dashboard_service.get_dashboard(current_user_id)
+        return dashboard_service.get_dashboard(current_user_id, tz_offset_minutes)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         logger.error(f"Error building dashboard: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get("/dashboard/activity")
+def get_dashboard_activity(current_user_id: str = Depends(get_current_user)):
+    try:
+        return dashboard_activity_service.get_summary(current_user_id)
+    except Exception as e:
+        logger.error(f"Error building dashboard activity: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.put("/personal-info")
@@ -125,8 +146,7 @@ def update_personal_info(info: PersonalInfoUpdate, current_user_id: str = Depend
 
 @router.post("/activity/session")
 def log_session(request: SessionLogRequest, current_user_id: str = Depends(get_current_user)):
-    if request.duration_minutes and request.duration_minutes >= 0.1:
-        activity_service.log_activity(current_user_id, "session", request.duration_minutes)
+    activity_service.log_activity(current_user_id, "session", min(request.duration_minutes, 720))
     return {"status": "ok"}
 
 @router.delete("/skills/{skill_id}")

@@ -1,0 +1,8 @@
+Task: independently author a prerequisite graph for these skills.
+Add one row to graph_E_edges.csv for every DIRECT prerequisite relation
+(prerequisite_id -> skill_id) meaning: a typical learner should know the
+prerequisite before starting the skill.
+- Only direct prerequisites; omit relations implied by a chain (A->B->C: do not add A->C).
+- The graph must be acyclic.
+- Work alone and do not look at any existing graph, an LLM-made graph, or the project repository.
+- Use your own knowledge or textbooks and record the sources you used in a separate note.

@@ -1,10 +1,13 @@
 import json
 
+from app.services.phase_identity import ensure_phase_ids, backfill_attempt_phase_ids, shift_attempt_indices_after_insertion
+
 from app.db.database import SessionLocal
 from app.db.models import QuizAttempt, Roadmap
 from app.services.auth_service import auth_service
 from app.services.dashboard_service import dashboard_service
 from app.services.link_validator import filter_valid_resources
+from app.services.link_validator import deduplicate_resources_across_phases
 from app.services.llm_service import llm_service
 from app.services.web_search_service import web_search_service
 from app.utils.logger import logger
@@ -12,6 +15,10 @@ from app.utils.logger import logger
 WEAK_MASTERY_THRESHOLD = 50   # below this, a skill counts as "weak"
 STRONG_MASTERY_THRESHOLD = 85  # at/above this, learner may be ready to move faster
 LOW_QUIZ_THRESHOLD = 50        # quiz score below this signals real struggle
+QUIZ_DIFFICULTIES = ("beginner", "intermediate", "advanced")
+MIN_BKT_EVIDENCE = 4           # labelled answers needed before mastery may move the quiz level
+HIGH_MASTERY_FOR_HARDER = 80   # average phase mastery (%) at/above which quizzes get harder
+LOW_MASTERY_FOR_EASIER = 40    # average phase mastery (%) below which quizzes get lighter
 
 
 class AdaptiveService:
@@ -22,9 +29,110 @@ class AdaptiveService:
     'what should I learn next' answer all read from this same place —
     that's what makes the recommendation adaptive rather than decorative."""
 
+    @staticmethod
+    def _latest_attempt_for_phase(db, user_id: str, goal_id: str, phase: dict, phase_index: int):
+        from sqlalchemy import and_, or_
+        query = db.query(QuizAttempt).filter(QuizAttempt.user_id == str(user_id), QuizAttempt.goal_id == str(goal_id))
+        phase_id = phase.get("phase_id") if isinstance(phase, dict) else None
+        if phase_id:
+            query = query.filter(or_(QuizAttempt.phase_id == phase_id, and_(QuizAttempt.phase_id.is_(None), QuizAttempt.phase_index == phase_index)))
+        else:
+            query = query.filter(QuizAttempt.phase_index == phase_index)
+        return query.order_by(QuizAttempt.created_at.desc()).first()
+
     # ------------------------------------------------------------------
     # Recommendation
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _skill_label(skill) -> str:
+        if isinstance(skill, dict):
+            skill = skill.get("name") or skill.get("skill_name") or ""
+        return str(skill or "").strip().lower()
+
+    @staticmethod
+    def difficulty_step(latest_score, average_mastery, evidence_count):
+        """Return (step, reason) with step in {-1, 0, +1}.
+
+        Two independent signals: the latest quiz score for this phase, and the
+        goal-scoped BKT mastery of the phase's skills. Mastery is trusted only
+        once there are at least MIN_BKT_EVIDENCE labelled answers behind it;
+        one lucky or unlucky quiz must not swing the level on its own. When the
+        two signals disagree they cancel, and when they agree the level moves
+        by one step, never two.
+        """
+        score_step, score_note = 0, None
+        if latest_score is not None:
+            if latest_score < LOW_QUIZ_THRESHOLD:
+                score_step, score_note = -1, f"your latest score was {latest_score}%"
+            elif latest_score >= STRONG_MASTERY_THRESHOLD:
+                score_step, score_note = 1, f"your latest score was {latest_score}%"
+            else:
+                score_note = f"your latest score was {latest_score}%"
+
+        mastery_step, mastery_note = 0, None
+        if average_mastery is not None and evidence_count >= MIN_BKT_EVIDENCE:
+            if average_mastery >= HIGH_MASTERY_FOR_HARDER:
+                mastery_step, mastery_note = 1, f"your tracked mastery of this phase is {average_mastery}%"
+            elif average_mastery < LOW_MASTERY_FOR_EASIER:
+                mastery_step, mastery_note = -1, f"your tracked mastery of this phase is {average_mastery}%"
+            else:
+                mastery_note = f"your tracked mastery of this phase is {average_mastery}%"
+
+        total = score_step + mastery_step
+        step = max(-1, min(1, total))
+        notes = [n for n in (score_note, mastery_note) if n]
+        if not notes:
+            return 0, "Based on your profile"
+        joined = " and ".join(notes)
+        joined = joined[0].upper() + joined[1:]
+        if step > 0:
+            return step, f"{joined}, so the next quiz is harder."
+        if step < 0:
+            return step, f"{joined}, so the next quiz is lighter."
+        if score_step and mastery_step:
+            return 0, f"{joined} point in different directions, so the quiz stays at a steady level."
+        return 0, f"{joined}, so the quiz stays at a steady level."
+
+    def get_quiz_difficulty(self, user_id: str, goal_id: str, phase_index: int) -> dict:
+        """Choose the next quiz level from the profile, the latest score and BKT mastery."""
+        profile = auth_service.get_user_by_id(user_id) or {}
+        preferred = (profile.get("preferred_difficulty") or profile.get("experience_level") or "beginner").lower()
+        aliases = {"basic": "beginner", "easy": "beginner", "medium": "intermediate", "hard": "advanced"}
+        difficulty = aliases.get(preferred, preferred)
+        if difficulty not in QUIZ_DIFFICULTIES:
+            difficulty = "beginner"
+
+        roadmap = self._load_roadmap(user_id, goal_id)
+        phases = (roadmap or {}).get("phases", []) if roadmap else []
+        phase_skills = phases[phase_index].get("skills", []) if 0 <= phase_index < len(phases) else []
+        wanted = {self._skill_label(skill) for skill in phase_skills} - {""}
+
+        # Goal-scoped (never another goal's) decayed mastery for this phase's skills.
+        mastery_rows = dashboard_service._skills_mastery(user_id, goal_id)
+        phase_rows = [row for row in mastery_rows if row["skill_name"].strip().lower() in wanted]
+        mastery_values = [row["mastery_pct"] for row in phase_rows]
+        average_mastery = round(sum(mastery_values) / len(mastery_values)) if mastery_values else None
+        evidence_count = sum(int(row.get("bkt_observations") or 0) for row in phase_rows)
+
+        db = SessionLocal()
+        try:
+            phase = phases[phase_index] if 0 <= phase_index < len(phases) else {}
+            latest_quiz = self._latest_attempt_for_phase(db, user_id, goal_id, phase, phase_index)
+            latest_score = latest_quiz.score_pct if latest_quiz else None
+        finally:
+            db.close()
+
+        step, reason = self.difficulty_step(latest_score, average_mastery, evidence_count)
+        difficulty = QUIZ_DIFFICULTIES[max(0, min(len(QUIZ_DIFFICULTIES) - 1, QUIZ_DIFFICULTIES.index(difficulty) + step))]
+
+        return {
+            "difficulty": difficulty,
+            "reason": reason,
+            "average_mastery": average_mastery,
+            "evidence_count": evidence_count,
+            "confident": evidence_count >= MIN_BKT_EVIDENCE,
+        }
 
     def _resolve_goal_id(self, profile: dict, goal_id: str = None) -> str:
         return goal_id or (profile.get("goal_id") if profile else None)
@@ -40,7 +148,12 @@ class AdaptiveService:
             if not row:
                 return None
             try:
-                return json.loads(row.data)
+                roadmap = json.loads(row.data)
+                changed = ensure_phase_ids(roadmap)
+                if changed:
+                    row.data = json.dumps(roadmap, ensure_ascii=False)
+                    db.commit()
+                return roadmap
             except (json.JSONDecodeError, TypeError):
                 return None
         finally:
@@ -71,16 +184,8 @@ class AdaptiveService:
 
         db = SessionLocal()
         try:
-            latest_quiz = (
-                db.query(QuizAttempt)
-                .filter(
-                    QuizAttempt.user_id == str(user_id),
-                    QuizAttempt.goal_id == str(goal_id),
-                    QuizAttempt.phase_index == phase_index,
-                )
-                .order_by(QuizAttempt.created_at.desc())
-                .first()
-            )
+            phase = phases[phase_index] if 0 <= phase_index < len(phases) else {}
+            latest_quiz = self._latest_attempt_for_phase(db, user_id, goal_id, phase, phase_index)
         finally:
             db.close()
 
@@ -212,21 +317,22 @@ class AdaptiveService:
             if not row:
                 raise ValueError("Roadmap not found")
 
-            roadmap = json.loads(row.data)
+            try:
+                roadmap = json.loads(row.data)
+            except (json.JSONDecodeError, TypeError) as exc:
+                raise ValueError("Saved roadmap data is invalid. Please regenerate the roadmap.") from exc
+            ensure_phase_ids(roadmap)
             phases = roadmap.get("phases", [])
             if not 0 <= phase_index < len(phases):
                 raise ValueError("Phase not found")
 
-            latest_quiz = (
-                db.query(QuizAttempt)
-                .filter(
-                    QuizAttempt.user_id == str(user_id),
-                    QuizAttempt.goal_id == str(goal_id),
-                    QuizAttempt.phase_index == phase_index,
-                )
-                .order_by(QuizAttempt.created_at.desc())
-                .first()
-            )
+            source_title = phases[phase_index].get("title")
+            if phase_index + 1 < len(phases):
+                next_phase = phases[phase_index + 1]
+                if next_phase.get("is_remedial") and next_phase.get("remedial_for") == source_title:
+                    return roadmap
+
+            latest_quiz = self._latest_attempt_for_phase(db, user_id, goal_id, phases[phase_index], phase_index)
 
             try:
                 verified_resources = web_search_service.search_courses(weak_skills)
@@ -247,21 +353,21 @@ class AdaptiveService:
                 remedial_phase["resources"] = filter_valid_resources(remedial_phase["resources"])
             remedial_phase["completed"] = False
             remedial_phase["is_remedial"] = True
+            remedial_phase["remedial_for"] = source_title
+            import uuid
+            remedial_phase.setdefault("phase_id", str(uuid.uuid4()))
+
+            # Resolve index-only attempts to stable IDs before changing ordinals.
+            goal_attempts = db.query(QuizAttempt).filter(QuizAttempt.user_id == str(user_id), QuizAttempt.goal_id == str(goal_id)).all()
+            backfill_attempt_phase_ids(goal_attempts, phases)
 
             phases.insert(phase_index + 1, remedial_phase)
             roadmap["phases"] = phases
+            roadmap = deduplicate_resources_across_phases(roadmap)
 
-            # Any quiz attempts recorded against phases AFTER the insertion
-            # point now point at the wrong phase unless shifted forward.
-            (
-                db.query(QuizAttempt)
-                .filter(
-                    QuizAttempt.user_id == str(user_id),
-                    QuizAttempt.goal_id == str(goal_id),
-                    QuizAttempt.phase_index > phase_index,
-                )
-                .update({QuizAttempt.phase_index: QuizAttempt.phase_index + 1}, synchronize_session=False)
-            )
+            # Keep legacy ordinal indices aligned; phase_id remains the identity.
+            shift_attempt_indices_after_insertion(goal_attempts, phase_index)
+            # QuizQuestionHistory follows attempt_id; ReviewSchedule is skill-scoped, not phase-indexed.
 
             row.data = json.dumps(roadmap)
             db.commit()

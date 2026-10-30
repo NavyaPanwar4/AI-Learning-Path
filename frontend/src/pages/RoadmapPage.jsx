@@ -1,24 +1,37 @@
 import { useParams } from 'react-router-dom';
-import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText, FiHelpCircle } from 'react-icons/fi';
-import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz, insertRemedialPhase } from '../api/roadmap';
+import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText, FiHelpCircle, FiDownload, FiBarChart2, FiCalendar } from 'react-icons/fi';
+import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz, insertRemedialPhase, downloadLearningReport } from '../api/roadmap';
+import { setRoadmapDeadline } from '../api/learning';
+import { explainQuizAnswer } from '../api/chat';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useRef, useState } from 'react';
 import { useEffect } from 'react';
 import useSessionTimer from '../hooks/useSessionTimer';
 
+function formatDeadline(value) {
+  if (!value) return '';
+  const dateOnly = String(value).slice(0, 10);
+  const date = new Date(`${dateOnly}T12:00:00`);
+  return Number.isNaN(date.getTime())
+    ? dateOnly
+    : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function StarRating({ value, onChange }) {
   const [hovered, setHovered] = useState(0);
   return (
     <div className="star-rating">
       {[1, 2, 3, 4, 5].map((s) => (
-        <span
+        <button
+          type="button"
           key={s}
           className={`star ${s <= (hovered || value) ? 'active' : ''}`}
+          aria-label={`${s} star${s === 1 ? '' : 's'}`}
           onMouseEnter={() => setHovered(s)}
           onMouseLeave={() => setHovered(0)}
           onClick={() => onChange(s)}
-        >★</span>
+        >★</button>
       ))}
     </div>
   );
@@ -36,7 +49,7 @@ function FeedbackModal({ resource, onClose }) {
     try {
       await submitFeedback({
         content_id: resource.url || resource.title,
-        content_type: resource.type || 'resource',
+        content_type: 'resource',
         rating,
         comments,
       });
@@ -52,7 +65,7 @@ function FeedbackModal({ resource, onClose }) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(45,58,53,0.4)', backdropFilter: 'blur(4px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div className="card" style={{ maxWidth: 440, width: '100%', position: 'relative' }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
+        <button aria-label="Close feedback dialog" onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
           <FiX size={20} />
         </button>
         {done ? (
@@ -65,8 +78,8 @@ function FeedbackModal({ resource, onClose }) {
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: 20 }}>{resource.title}</p>
             <StarRating value={rating} onChange={setRating} />
             <div className="input-group" style={{ marginTop: 16, marginBottom: 20 }}>
-              <label>Comments (optional)</label>
-              <textarea value={comments} onChange={(e) => setComments(e.target.value)} placeholder="What did you think?" style={{ minHeight: 80 }} />
+              <label htmlFor="feedback-comments">Comments (optional)</label>
+              <textarea id="feedback-comments" value={comments} onChange={(e) => setComments(e.target.value)} placeholder="What did you think?" style={{ minHeight: 80 }} />
             </div>
             <button className="btn btn-primary" style={{ width: '100%' }} disabled={!rating || submitting} onClick={handleSubmit}>
               {submitting ? 'Submitting...' : 'Submit Feedback'}
@@ -135,7 +148,7 @@ function StudyNotesCard({ notes }) {
   );
 }
 
-function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptRemedial }) {
+function QuizModal({ quizId, questions, phaseTitle, difficulty, onClose, onSubmitScore, onAcceptRemedial }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -143,19 +156,43 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptReme
   const [recommendation, setRecommendation] = useState(null);
   const [addingRemedial, setAddingRemedial] = useState(false);
   const [remedialAdded, setRemedialAdded] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [quizResult, setQuizResult] = useState(null);
+  const [gradedQuestions, setGradedQuestions] = useState([]);
+  const [explanations, setExplanations] = useState({});
 
-  const allAnswered = questions.every((_, i) => answers[i] !== undefined);
-  const correctCount = questions.reduce((count, q, i) => count + (answers[i] === q.correct_index ? 1 : 0), 0);
+  const handleExplain = async (q) => {
+    setExplanations((prev) => ({ ...prev, [q.question_id]: { loading: true } }));
+    try {
+      const { data } = await explainQuizAnswer(quizId, q.question_id, q.selected_index);
+      setExplanations((prev) => ({ ...prev, [q.question_id]: { text: data.reply } }));
+    } catch (error) {
+      const message = error?.response?.data?.detail || 'The tutor could not explain this right now. Please try again.';
+      setExplanations((prev) => ({ ...prev, [q.question_id]: { error: message } }));
+    }
+  };
+
+  const allAnswered = questions.every((question) => answers[question.question_id] !== undefined);
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    setSubmitError('');
     try {
-      const result = await onSubmitScore(questions.length, correctCount);
+      const submittedAnswers = questions.map((question) => ({
+        question_id: question.question_id,
+        selected_index: answers[question.question_id],
+      }));
+      const result = await onSubmitScore(quizId, submittedAnswers);
+      if (!result) throw new Error('The quiz result could not be saved. Please try again.');
+      setQuizResult(result);
+      setGradedQuestions(result.graded_questions || []);
       setSkillsUpdated(result?.skills_updated || []);
       setRecommendation(result?.recommendation || null);
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error.message || 'The quiz result could not be saved. Please try again.');
     } finally {
       setSubmitting(false);
-      setSubmitted(true);
     }
   };
 
@@ -164,6 +201,8 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptReme
     try {
       await onAcceptRemedial();
       setRemedialAdded(true);
+    } catch (error) {
+      setSubmitError(error.message || 'The review phase could not be added. Please try again.');
     } finally {
       setAddingRemedial(false);
     }
@@ -171,17 +210,18 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptReme
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(45,58,53,0.4)', backdropFilter: 'blur(4px)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, overflowY: 'auto' }}>
-      <div className="card" style={{ maxWidth: 560, width: '100%', position: 'relative', maxHeight: '85vh', overflowY: 'auto' }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
+      <div className="card" role="dialog" aria-modal="true" aria-labelledby="quiz-title" style={{ maxWidth: 560, width: '100%', position: 'relative', maxHeight: '85vh', overflowY: 'auto' }}>
+        <button aria-label="Close quiz dialog" onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}>
           <FiX size={20} />
         </button>
-        <h3 style={{ marginBottom: 4 }}>Practice Quiz</h3>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: 20 }}>{phaseTitle}</p>
+        <h3 id="quiz-title" style={{ marginBottom: 4 }}>Practice Quiz</h3>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem', marginBottom: 20 }}>{phaseTitle} <span className="badge badge-accent" style={{ marginLeft: 8 }}>{difficulty}</span></p>
+        {submitError && <div className="alert alert-error" role="alert" style={{ marginBottom: 16 }}>{submitError}</div>}
 
         {submitted ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <h2 style={{ marginBottom: 8 }}>{correctCount} / {questions.length} correct</h2>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: 24 }}>Score: {Math.round((correctCount / questions.length) * 100)}%</p>
+            <h2 style={{ marginBottom: 8 }}>{quizResult?.correct_answers ?? 0} / {quizResult?.total_questions ?? questions.length} correct</h2>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 24 }}>Score: {quizResult?.score_pct ?? 0}%</p>
             {skillsUpdated.length > 0 && (
               <div style={{ textAlign: 'left', marginBottom: 20, padding: 14, borderRadius: 10, background: 'var(--color-accent-soft)' }}>
                 <p style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 6, color: '#a65241' }}>Skill mastery updated:</p>
@@ -207,18 +247,31 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptReme
               </div>
             )}
             <div style={{ display: 'grid', gap: 14, textAlign: 'left', marginBottom: 20 }}>
-              {questions.map((q, i) => {
-                const isCorrect = answers[i] === q.correct_index;
-                return (
-                  <div key={i} style={{ padding: 12, borderRadius: 8, background: isCorrect ? '#eaf6ee' : '#fdecea' }}>
-                    <p style={{ fontWeight: 600, fontSize: '0.88rem', marginBottom: 4 }}>{q.question}</p>
-                    <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
-                      Correct answer: {q.options[q.correct_index]}
-                      {q.explanation ? ` — ${q.explanation}` : ''}
-                    </p>
-                  </div>
-                );
-              })}
+              {gradedQuestions.map((q, i) => (
+                <div key={q.question_id || i} style={{ padding: 12, borderRadius: 8, background: q.is_correct ? '#eaf6ee' : '#fdecea' }}>
+                  <p style={{ fontWeight: 600, fontSize: '0.88rem', marginBottom: 4 }}>{q.question}</p>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)' }}>
+                    Your answer: {q.options[q.selected_index]} · Correct answer: {q.options[q.correct_index]}
+                    {q.explanation ? ` — ${q.explanation}` : ''}
+                  </p>
+                  {!q.is_correct && !explanations[q.question_id]?.text && (
+                    <button
+                      className="btn btn-outline"
+                      style={{ marginTop: 8, padding: '4px 10px', fontSize: '0.8rem' }}
+                      disabled={explanations[q.question_id]?.loading}
+                      onClick={() => handleExplain(q)}
+                    >
+                      {explanations[q.question_id]?.loading ? 'Asking the tutor...' : 'Explain this to me'}
+                    </button>
+                  )}
+                  {explanations[q.question_id]?.error && (
+                    <p style={{ marginTop: 6, fontSize: '0.8rem', color: '#c0574a' }}>{explanations[q.question_id].error}</p>
+                  )}
+                  {explanations[q.question_id]?.text && (
+                    <p style={{ marginTop: 8, fontSize: '0.84rem', whiteSpace: 'pre-wrap' }}>{explanations[q.question_id].text}</p>
+                  )}
+                </div>
+              ))}
             </div>
             <button className="btn btn-primary" style={{ width: '100%' }} onClick={onClose}>Close</button>
           </div>
@@ -234,16 +287,16 @@ function QuizModal({ questions, phaseTitle, onClose, onSubmitScore, onAcceptReme
                         key={oi}
                         style={{
                           display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderRadius: 8,
-                          border: `1px solid ${answers[i] === oi ? 'var(--color-primary)' : 'var(--color-surface-hover)'}`,
-                          background: answers[i] === oi ? 'var(--color-accent)' : 'transparent',
+                          border: `1px solid ${answers[q.question_id] === oi ? 'var(--color-primary)' : 'var(--color-surface-hover)'}`,
+                          background: answers[q.question_id] === oi ? 'var(--color-accent)' : 'transparent',
                           cursor: 'pointer', fontSize: '0.86rem',
                         }}
                       >
                         <input
                           type="radio"
-                          name={`quiz-q-${i}`}
-                          checked={answers[i] === oi}
-                          onChange={() => setAnswers((prev) => ({ ...prev, [i]: oi }))}
+                          name={`quiz-q-${q.question_id}`}
+                          checked={answers[q.question_id] === oi}
+                          onChange={() => setAnswers((prev) => ({ ...prev, [q.question_id]: oi }))}
                         />
                         {opt}
                       </label>
@@ -273,14 +326,21 @@ export default function RoadmapPage() {
 
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [generationStatus, setGenerationStatus] = useState('queued');
   const [error, setError] = useState('');
   const [feedbackResource, setFeedbackResource] = useState(null);
   const [generatingNotes, setGeneratingNotes] = useState(null);
   const [notesError, setNotesError] = useState('');
   const [quizPhaseIndex, setQuizPhaseIndex] = useState(null);
   const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizId, setQuizId] = useState(null);
+  const [quizDifficulty, setQuizDifficulty] = useState('beginner');
   const [loadingQuiz, setLoadingQuiz] = useState(null);
   const [quizError, setQuizError] = useState('');
+  const [deadlineDraft, setDeadlineDraft] = useState('');
+  const [managementBusy, setManagementBusy] = useState(false);
+  const [managementError, setManagementError] = useState('');
+  const [managementMessage, setManagementMessage] = useState('');
   const fetchedRoadmapKey = useRef(null);
 
   const { goalId } = useParams();
@@ -294,15 +354,18 @@ export default function RoadmapPage() {
       if (goalId) {
         res = await getSavedRoadmap(goalId);
       } else {
-        res = await generateRoadmap();
+        res = await generateRoadmap({ onStatus: setGenerationStatus });
       }
       setRoadmap(res.data);
+      setDeadlineDraft(typeof res.data.deadline === 'string' ? res.data.deadline.slice(0, 10) : '');
+      setManagementError('');
+      setManagementMessage('');
     } catch (err) {
       const detail = err.response?.data?.detail;
       if (err.response?.status === 400 || (detail && detail.includes('profile'))) {
         navigate('/onboarding');
       } else {
-        setError(detail || 'Failed to generate or retrieve roadmap.');
+        setError(detail || err.message || 'Failed to generate or retrieve roadmap.');
       }
     } finally {
       setLoading(false);
@@ -366,6 +429,8 @@ export default function RoadmapPage() {
 
       const res = await generateQuiz(roadmapGoalId, phaseIndex);
       setQuizQuestions(res.data.questions);
+      setQuizId(res.data.quiz_id);
+      setQuizDifficulty(res.data.difficulty || 'beginner');
       setQuizPhaseIndex(phaseIndex);
     } catch (err) {
       setQuizError(
@@ -378,32 +443,96 @@ export default function RoadmapPage() {
     }
   };
 
-  const handleSubmitQuizScore = async (totalQuestions, correctAnswers) => {
+  const getCurrentGoalId = () => goalId || roadmap?.goal_id;
+
+  const handleSaveDeadline = async () => {
+    const roadmapGoalId = getCurrentGoalId();
+    if (!roadmapGoalId) {
+      setManagementError('This roadmap does not have a goal ID yet. Open a saved roadmap and try again.');
+      return;
+    }
+    if (!deadlineDraft) {
+      setManagementError('Choose a target completion date, or use Remove deadline to clear the saved date.');
+      return;
+    }
+    setManagementBusy(true);
+    setManagementError('');
+    setManagementMessage('');
     try {
-      const roadmapGoalId = goalId || roadmap?.goal_id;
-
-      if (!roadmapGoalId) {
-        throw new Error('The roadmap goal ID is missing.');
-      }
-
-      const res = await submitQuiz(roadmapGoalId, quizPhaseIndex, totalQuestions, correctAnswers);
-      return res.data;
+      const response = await setRoadmapDeadline(roadmapGoalId, deadlineDraft);
+      setRoadmap(response.data);
+      const savedDeadline = typeof response.data.deadline === 'string' ? response.data.deadline.slice(0, 10) : deadlineDraft;
+      setDeadlineDraft(savedDeadline);
+      setManagementMessage(`Target completion date saved: ${formatDeadline(savedDeadline)}.`);
     } catch (err) {
-      console.error('Failed to record quiz attempt', err);
-      return null;
+      setManagementError(err.response?.data?.detail || 'Could not save the roadmap deadline.');
+    } finally {
+      setManagementBusy(false);
     }
   };
 
-  const handleAcceptRemedial = async () => {
-    try {
-      const roadmapGoalId = goalId || roadmap?.goal_id;
-      if (!roadmapGoalId || quizPhaseIndex === null) return;
-
-      const res = await insertRemedialPhase(roadmapGoalId, quizPhaseIndex);
-      setRoadmap(res.data);
-    } catch (err) {
-      console.error('Failed to insert remedial phase', err);
+  const handleRemoveDeadline = async () => {
+    const roadmapGoalId = getCurrentGoalId();
+    if (!roadmapGoalId) {
+      setManagementError('This roadmap does not have a goal ID yet. Open a saved roadmap and try again.');
+      return;
     }
+    if (!roadmap?.deadline) {
+      setDeadlineDraft('');
+      return;
+    }
+    if (!window.confirm(`Remove the target completion date${formatDeadline(roadmap.deadline) ? ` (${formatDeadline(roadmap.deadline)})` : ''}?`)) return;
+    setManagementBusy(true);
+    setManagementError('');
+    setManagementMessage('');
+    try {
+      const response = await setRoadmapDeadline(roadmapGoalId, null);
+      setRoadmap(response.data);
+      setDeadlineDraft('');
+      setManagementMessage('Target completion date removed.');
+    } catch (err) {
+      setManagementError(err.response?.data?.detail || 'Could not remove the roadmap deadline.');
+    } finally {
+      setManagementBusy(false);
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    const roadmapGoalId = goalId || roadmap?.goal_id;
+    if (!roadmapGoalId) return;
+    try {
+      const res = await downloadLearningReport(roadmapGoalId);
+      const url = URL.createObjectURL(res.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `learning-report-${roadmapGoalId}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Could not generate your learning report.');
+    }
+  };
+
+  const handleSubmitQuizScore = async (issuedQuizId, answers) => {
+    const roadmapGoalId = goalId || roadmap?.goal_id;
+
+    if (!roadmapGoalId) {
+      throw new Error('The roadmap goal ID is missing.');
+    }
+    if (!issuedQuizId) {
+      throw new Error('The quiz session is missing. Please generate a new quiz.');
+    }
+
+    const res = await submitQuiz(roadmapGoalId, quizPhaseIndex, issuedQuizId, answers);
+    return res.data;
+  };
+
+  const handleAcceptRemedial = async () => {
+    const roadmapGoalId = goalId || roadmap?.goal_id;
+    if (!roadmapGoalId || quizPhaseIndex === null) throw new Error('The roadmap goal ID is missing.');
+
+    const res = await insertRemedialPhase(roadmapGoalId, quizPhaseIndex);
+    setRoadmap(res.data);
   };
 
   useEffect(() => {
@@ -413,7 +542,9 @@ export default function RoadmapPage() {
     fetchRoadmap();
   }, [fetchRoadmap, goalId]);
 
-  if (loading) return <LoadingSpinner message="Generating your personalized roadmap... This may take up to 30 seconds" />;
+  if (loading) return <LoadingSpinner message={goalId
+    ? "Loading your saved roadmap..."
+    : `Roadmap generation ${generationStatus}. This may take a few minutes.`} />;
 
   if (error) return (
     <div className="page">
@@ -434,8 +565,10 @@ export default function RoadmapPage() {
       {feedbackResource && <FeedbackModal resource={feedbackResource} onClose={() => setFeedbackResource(null)} />}
       {quizPhaseIndex !== null && (
         <QuizModal
+          quizId={quizId}
           questions={quizQuestions}
           phaseTitle={phases[quizPhaseIndex]?.title || ''}
+          difficulty={quizDifficulty}
           onClose={() => setQuizPhaseIndex(null)}
           onSubmitScore={handleSubmitQuizScore}
           onAcceptRemedial={handleAcceptRemedial}
@@ -452,18 +585,76 @@ export default function RoadmapPage() {
                   {isRoadmapFinished ? 'Completed' : 'In Progress'}
                 </span>
               )}
+              {roadmap?.deadline && (
+                <span className="badge badge-accent roadmap-target-badge" title="Target completion date">
+                  Target: {formatDeadline(roadmap.deadline)}
+                </span>
+              )}
             </h1>
             <p style={{ color: 'var(--color-text-muted)' }}>
               {phases.length} phases • Personalized just for you
             </p>
           </div>
-          <button className="btn btn-outline" onClick={fetchRoadmap} style={{ gap: 8 }}>
-            <FiRefreshCw size={16} /> Regenerate
-          </button>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button className="btn btn-outline" onClick={handleDownloadReport} style={{ gap: 8 }}>
+              <FiDownload size={16} /> Learning Report
+            </button>
+            <button className="btn btn-outline" onClick={() => navigate(`/insights/${goalId || roadmap?.goal_id}`)} style={{ gap: 8 }}>
+              <FiBarChart2 size={16} /> Insights
+            </button>
+            <button className="btn btn-outline" onClick={fetchRoadmap} style={{ gap: 8 }}>
+              <FiRefreshCw size={16} /> Refresh
+            </button>
+          </div>
         </div>
 
         {notesError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{notesError}</div>}
         {quizError && <div className="alert alert-error" style={{ marginBottom: 18 }}>{quizError}</div>}
+        {managementError && <div className="alert alert-error" role="alert" style={{ marginBottom: 18 }}>{managementError}</div>}
+        {managementMessage && <div className="alert alert-success" role="status" style={{ marginBottom: 18 }}>{managementMessage}</div>}
+
+        <section className="card roadmap-management-card" aria-labelledby="roadmap-management-title">
+          <div className="roadmap-management-heading">
+            <div>
+              <h3 id="roadmap-management-title"><FiCalendar /> Plan and manage</h3>
+              <p>Set or update your target completion date, or remove it when your schedule changes.</p>
+            </div>
+            <button className="btn btn-outline roadmap-planner-link" onClick={() => navigate('/study-planner')}>
+              <FiCalendar size={15} /> Study planner
+            </button>
+          </div>
+
+          <div className="roadmap-current-deadline" role="status" aria-live="polite">
+            <span className="roadmap-current-deadline-label">Current target completion date</span>
+            {roadmap?.deadline ? (
+              <strong>{formatDeadline(roadmap.deadline)}</strong>
+            ) : (
+              <span className="roadmap-no-deadline">No target date set</span>
+            )}
+          </div>
+
+          <form className="roadmap-deadline-form" onSubmit={(event) => { event.preventDefault(); handleSaveDeadline(); }}>
+            <div className="input-group roadmap-deadline-field">
+              <label htmlFor="roadmap-deadline">Target completion date</label>
+              <input
+                id="roadmap-deadline"
+                type="date"
+                value={deadlineDraft}
+                onChange={(event) => { setDeadlineDraft(event.target.value); setManagementMessage(''); setManagementError(''); }}
+              />
+            </div>
+            <div className="roadmap-deadline-actions">
+              <button className="btn btn-primary" type="submit" disabled={managementBusy || !deadlineDraft}>
+                {managementBusy ? 'Saving…' : 'Save deadline'}
+              </button>
+              {roadmap?.deadline && (
+                <button className="btn btn-ghost" type="button" disabled={managementBusy} onClick={handleRemoveDeadline}>
+                  Remove deadline
+                </button>
+              )}
+            </div>
+          </form>
+        </section>
 
         {phases.length === 0 && !roadmap?.roadmap_text ? (
           <div className="card" style={{ textAlign: 'center', padding: 60 }}>

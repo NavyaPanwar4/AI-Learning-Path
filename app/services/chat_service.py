@@ -1,11 +1,12 @@
 import json
+import logging
 
 from app.db.database import SessionLocal
-from app.db.models import ChatMessage, Goal, QuizAttempt, Roadmap
+from app.db.models import ChatMessage, Goal, IssuedQuiz, QuizAttempt, Roadmap
 from app.services.adaptive_service import adaptive_service
 from app.services.auth_service import auth_service
 from app.services.dashboard_service import dashboard_service
-from app.services.llm_service import llm_service
+from app.services.llm_service import llm_service, LLMError
 
 MAX_HISTORY_TURNS = 12  # messages of context sent to the model each turn
 
@@ -21,7 +22,16 @@ class ChatService:
     # ------------------------------------------------------------------
 
     def _resolve_goal_id(self, profile: dict, goal_id: str = None) -> str:
-        return goal_id or profile.get("goal_id")
+        target = goal_id or profile.get("goal_id")
+        if goal_id and goal_id != profile.get("goal_id"):
+            db = SessionLocal()
+            try:
+                owns_roadmap = db.query(Roadmap).filter(Roadmap.user_id == profile.get("user_id"), Roadmap.goal_id == goal_id).first()
+            finally:
+                db.close()
+            if not owns_roadmap:
+                raise ValueError("You do not have access to this learning goal")
+        return target
 
     def _build_context(self, user_id: str, goal_id: str = None) -> dict:
         profile = auth_service.get_user_by_id(user_id)
@@ -69,7 +79,7 @@ class ChatService:
             finally:
                 db.close()
 
-        skills_mastery = dashboard_service._skills_mastery(user_id)
+        skills_mastery = dashboard_service._skills_mastery(user_id, target_goal_id)
         strong_skills = [s["skill_name"] for s in skills_mastery if s["mastery_pct"] >= 70][:5]
         weak_skills = [s["skill_name"] for s in skills_mastery if s["mastery_pct"] < 70][:5]
 
@@ -77,7 +87,7 @@ class ChatService:
         try:
             recent_quizzes = (
                 db.query(QuizAttempt)
-                .filter(QuizAttempt.user_id == str(user_id))
+                .filter(QuizAttempt.user_id == str(user_id), QuizAttempt.goal_id == str(target_goal_id))
                 .order_by(QuizAttempt.created_at.desc())
                 .limit(5)
                 .all()
@@ -193,7 +203,24 @@ class ChatService:
         finally:
             db.close()
 
-        reply = llm_service.chat(system_prompt, history, message.strip())
+        try:
+            reply = llm_service.chat(system_prompt, history, message.strip())
+        except LLMError:
+            # Do not leave an unanswered user turn in the saved history.
+            db = SessionLocal()
+            try:
+                last = (
+                    db.query(ChatMessage)
+                    .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id, ChatMessage.role == "user")
+                    .order_by(ChatMessage.created_at.desc())
+                    .first()
+                )
+                if last is not None:
+                    db.delete(last)
+                    db.commit()
+            finally:
+                db.close()
+            raise
 
         db = SessionLocal()
         try:
@@ -202,6 +229,157 @@ class ChatService:
         finally:
             db.close()
 
+        return {"reply": reply, "goal_id": scoped_goal_id}
+
+    def stream_message(self, user_id: str, message: str, goal_id: str = None):
+        """Prepare a chat turn and return an iterator of SSE event payloads.
+
+        Validation/context lookup runs before a StreamingResponse is returned;
+        the nested iterator streams tokens and persists the final assistant turn.
+        """
+        if not message or not message.strip():
+            raise ValueError("Message cannot be empty")
+
+        ctx = self._build_context(user_id, goal_id)
+        system_prompt = self._build_system_prompt(ctx)
+        scoped_goal_id = ctx["goal_id"]
+        db = SessionLocal()
+        try:
+            rows = (
+                db.query(ChatMessage)
+                .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id)
+                .order_by(ChatMessage.created_at.desc())
+                .limit(MAX_HISTORY_TURNS)
+                .all()
+            )
+            history = [{"role": r.role, "content": r.content} for r in reversed(rows)]
+            db.add(ChatMessage(user_id=str(user_id), goal_id=scoped_goal_id, role="user", content=message.strip()))
+            db.commit()
+        finally:
+            db.close()
+
+        def events():
+            pieces = []
+            try:
+                for piece in llm_service.chat_stream(system_prompt, history, message.strip()):
+                    if not piece:
+                        continue
+                    pieces.append(piece)
+                    yield {"type": "delta", "content": piece}
+                reply = "".join(pieces).strip()
+                if reply:
+                    db = SessionLocal()
+                    try:
+                        db.add(ChatMessage(user_id=str(user_id), goal_id=scoped_goal_id, role="assistant", content=reply))
+                        db.commit()
+                    finally:
+                        db.close()
+                yield {"type": "done", "goal_id": scoped_goal_id}
+            except LLMError as exc:
+                logging.getLogger("learning_path_generator").warning("Tutor streaming failed: %s", exc.kind)
+                yield {"type": "error", "message": str(exc)}
+            except Exception:
+                logging.getLogger("learning_path_generator").exception("Tutor streaming failed")
+                # Preserve partial output if the model fails after yielding tokens.
+                partial = "".join(pieces).strip()
+                if partial:
+                    db = SessionLocal()
+                    try:
+                        db.add(ChatMessage(user_id=str(user_id), goal_id=scoped_goal_id, role="assistant", content=partial))
+                        db.commit()
+                    finally:
+                        db.close()
+                yield {"type": "error", "message": "Tutor stream interrupted. Please send a new message to continue."}
+        return events()
+
+    # ------------------------------------------------------------------
+    # Explain a quiz answer
+    # ------------------------------------------------------------------
+
+    def explain_answer(self, user_id: str, quiz_id: str, question_id: str, selected_index: int) -> dict:
+        """Have the tutor explain one question from a quiz the learner has submitted.
+
+        Only submitted quizzes are readable (so the answer key can never be
+        fetched before answering), and only by the learner they were issued to.
+        The saved chat shows a short request; the model receives the full
+        question, the learner's pick, the correct answer and the stored
+        explanation.
+        """
+        db = SessionLocal()
+        try:
+            issued = (
+                db.query(IssuedQuiz)
+                .filter(IssuedQuiz.quiz_id == str(quiz_id), IssuedQuiz.user_id == str(user_id))
+                .first()
+            )
+            if issued is None or issued.submitted_at is None:
+                raise ValueError("Submit the quiz before asking for an explanation.")
+            try:
+                questions = json.loads(issued.questions_json)
+            except (TypeError, json.JSONDecodeError):
+                raise ValueError("This quiz's questions are no longer available.")
+            quiz_goal_id = issued.goal_id
+        finally:
+            db.close()
+
+        question = next((q for q in questions if str(q.get("question_id")) == str(question_id)), None)
+        if question is None:
+            raise ValueError("That question is not part of this quiz.")
+        options = question.get("options") or []
+        if not 0 <= int(selected_index) < len(options):
+            raise ValueError("That answer option does not exist.")
+        correct_index = int(question["correct_index"])
+        picked = int(selected_index)
+        letters = "ABCD"
+
+        lines = [
+            "The learner just finished a quiz and wants help with one question.",
+            f"Skill: {question.get('skill') or 'General foundations'}",
+            f"Question: {question.get('question', '')}",
+            "Options:",
+            *[f"  {letters[i]}. {text}" for i, text in enumerate(options)],
+            f"The learner chose: {letters[picked]}. {options[picked]}",
+            f"The correct answer is: {letters[correct_index]}. {options[correct_index]}",
+        ]
+        if question.get("explanation"):
+            lines.append(f"Reference explanation: {question['explanation']}")
+        if picked == correct_index:
+            lines.append("The learner was right. Briefly confirm why, then add one deeper insight or common pitfall.")
+        else:
+            lines.append(
+                "Explain in plain words why the learner's choice is wrong (name the likely misunderstanding), "
+                "then why the correct option is right, with one short example. End with one quick question "
+                "they can answer to check they understood. Keep it under about 180 words."
+            )
+        instruction = "\n".join(lines)
+
+        ctx = self._build_context(user_id, quiz_goal_id)
+        system_prompt = self._build_system_prompt(ctx)
+        scoped_goal_id = ctx["goal_id"]
+        saved_request = f"Explain this quiz question: {str(question.get('question', ''))[:300]}"
+
+        db = SessionLocal()
+        try:
+            rows = (
+                db.query(ChatMessage)
+                .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id)
+                .order_by(ChatMessage.created_at.desc())
+                .limit(MAX_HISTORY_TURNS)
+                .all()
+            )
+            history = [{"role": r.role, "content": r.content} for r in reversed(rows)]
+        finally:
+            db.close()
+
+        reply = llm_service.chat(system_prompt, history, instruction)  # LLMError propagates; nothing saved yet
+
+        db = SessionLocal()
+        try:
+            db.add(ChatMessage(user_id=str(user_id), goal_id=scoped_goal_id, role="user", content=saved_request))
+            db.add(ChatMessage(user_id=str(user_id), goal_id=scoped_goal_id, role="assistant", content=reply))
+            db.commit()
+        finally:
+            db.close()
         return {"reply": reply, "goal_id": scoped_goal_id}
 
     def get_history(self, user_id: str, goal_id: str = None) -> list:

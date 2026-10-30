@@ -1,0 +1,460 @@
+{
+ "_status": "DRAFT authored by Claude for the authors to review and correct. Not yet reviewed by a human.",
+ "domain": "Data science and machine learning foundations",
+ "nodes": [
+  {
+   "id": "1",
+   "name": "Python Basics",
+   "track": "programming",
+   "difficulty": 1,
+   "hours": 20.0
+  },
+  {
+   "id": "2",
+   "name": "Data Structures",
+   "track": "programming",
+   "difficulty": 2,
+   "hours": 30.0
+  },
+  {
+   "id": "3",
+   "name": "Algorithms",
+   "track": "programming",
+   "difficulty": 3,
+   "hours": 40.0
+  },
+  {
+   "id": "4",
+   "name": "Object-Oriented Programming",
+   "track": "programming",
+   "difficulty": 2,
+   "hours": 25.0
+  },
+  {
+   "id": "8",
+   "name": "Testing & TDD",
+   "track": "programming",
+   "difficulty": 2,
+   "hours": 20.0
+  },
+  {
+   "id": "9",
+   "name": "Version Control (Git)",
+   "track": "programming",
+   "difficulty": 1,
+   "hours": 10.0
+  },
+  {
+   "id": "10",
+   "name": "Command Line & Shell Scripting",
+   "track": "programming",
+   "difficulty": 1,
+   "hours": 15.0
+  },
+  {
+   "id": "15",
+   "name": "Database Programming",
+   "track": "programming",
+   "difficulty": 2,
+   "hours": 25.0
+  },
+  {
+   "id": "26",
+   "name": "Data Wrangling with Pandas",
+   "track": "data",
+   "difficulty": 2,
+   "hours": 25.0
+  },
+  {
+   "id": "27",
+   "name": "Exploratory Data Analysis",
+   "track": "data",
+   "difficulty": 2,
+   "hours": 20.0
+  },
+  {
+   "id": "28",
+   "name": "Feature Engineering",
+   "track": "data",
+   "difficulty": 3,
+   "hours": 30.0
+  },
+  {
+   "id": "31",
+   "name": "Data Visualization",
+   "track": "data",
+   "difficulty": 1,
+   "hours": 15.0
+  },
+  {
+   "id": "32",
+   "name": "Time Series Analysis",
+   "track": "data",
+   "difficulty": 3,
+   "hours": 35.0
+  },
+  {
+   "id": "34",
+   "name": "SQL for Data Science",
+   "track": "data",
+   "difficulty": 1,
+   "hours": 20.0
+  },
+  {
+   "id": "40",
+   "name": "Dimensionality Reduction",
+   "track": "data",
+   "difficulty": 3,
+   "hours": 25.0
+  },
+  {
+   "id": "153",
+   "name": "Data Quality & Validation",
+   "track": "data",
+   "difficulty": 2,
+   "hours": 15.0
+  },
+  {
+   "id": "126",
+   "name": "Linear Algebra",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 40.0
+  },
+  {
+   "id": "127",
+   "name": "Calculus",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 45.0
+  },
+  {
+   "id": "129",
+   "name": "Statistics",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 30.0
+  },
+  {
+   "id": "30",
+   "name": "Probability Theory",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 30.0
+  },
+  {
+   "id": "29",
+   "name": "Statistical Inference",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 35.0
+  },
+  {
+   "id": "33",
+   "name": "A/B Testing",
+   "track": "math",
+   "difficulty": 2,
+   "hours": 20.0
+  },
+  {
+   "id": "39",
+   "name": "Bayesian Statistics",
+   "track": "math",
+   "difficulty": 3,
+   "hours": 40.0
+  },
+  {
+   "id": "132",
+   "name": "Optimization Theory",
+   "track": "math",
+   "difficulty": 3,
+   "hours": 40.0
+  },
+  {
+   "id": "46",
+   "name": "Machine Learning Fundamentals",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 40.0
+  },
+  {
+   "id": "47",
+   "name": "Linear & Logistic Regression",
+   "track": "ml",
+   "difficulty": 1,
+   "hours": 20.0
+  },
+  {
+   "id": "48",
+   "name": "Decision Trees & Random Forests",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 25.0
+  },
+  {
+   "id": "49",
+   "name": "Support Vector Machines",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 25.0
+  },
+  {
+   "id": "50",
+   "name": "Neural Networks Basics",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 30.0
+  },
+  {
+   "id": "51",
+   "name": "Deep Learning",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 50.0
+  },
+  {
+   "id": "52",
+   "name": "Natural Language Processing",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 45.0
+  },
+  {
+   "id": "53",
+   "name": "Computer Vision",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 45.0
+  },
+  {
+   "id": "54",
+   "name": "Reinforcement Learning",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 50.0
+  },
+  {
+   "id": "55",
+   "name": "Model Evaluation & Metrics",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 20.0
+  },
+  {
+   "id": "56",
+   "name": "Hyperparameter Tuning",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 20.0
+  },
+  {
+   "id": "57",
+   "name": "Transfer Learning",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 30.0
+  },
+  {
+   "id": "58",
+   "name": "Generative AI & LLMs",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 40.0
+  },
+  {
+   "id": "59",
+   "name": "MLOps",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 35.0
+  },
+  {
+   "id": "60",
+   "name": "Explainable AI",
+   "track": "ml",
+   "difficulty": 3,
+   "hours": 30.0
+  },
+  {
+   "id": "63",
+   "name": "AI Ethics & Fairness",
+   "track": "ml",
+   "difficulty": 2,
+   "hours": 20.0
+  }
+ ],
+ "edges": [
+  [
+   "1",
+   "15"
+  ],
+  [
+   "1",
+   "2"
+  ],
+  [
+   "1",
+   "26"
+  ],
+  [
+   "1",
+   "31"
+  ],
+  [
+   "1",
+   "4"
+  ],
+  [
+   "1",
+   "47"
+  ],
+  [
+   "1",
+   "8"
+  ],
+  [
+   "10",
+   "59"
+  ],
+  [
+   "126",
+   "132"
+  ],
+  [
+   "126",
+   "40"
+  ],
+  [
+   "126",
+   "47"
+  ],
+  [
+   "127",
+   "132"
+  ],
+  [
+   "127",
+   "30"
+  ],
+  [
+   "129",
+   "29"
+  ],
+  [
+   "129",
+   "32"
+  ],
+  [
+   "129",
+   "40"
+  ],
+  [
+   "129",
+   "47"
+  ],
+  [
+   "2",
+   "3"
+  ],
+  [
+   "26",
+   "153"
+  ],
+  [
+   "26",
+   "27"
+  ],
+  [
+   "26",
+   "32"
+  ],
+  [
+   "27",
+   "28"
+  ],
+  [
+   "29",
+   "33"
+  ],
+  [
+   "29",
+   "39"
+  ],
+  [
+   "30",
+   "129"
+  ],
+  [
+   "31",
+   "27"
+  ],
+  [
+   "34",
+   "15"
+  ],
+  [
+   "46",
+   "48"
+  ],
+  [
+   "46",
+   "49"
+  ],
+  [
+   "46",
+   "50"
+  ],
+  [
+   "46",
+   "54"
+  ],
+  [
+   "46",
+   "55"
+  ],
+  [
+   "46",
+   "63"
+  ],
+  [
+   "47",
+   "46"
+  ],
+  [
+   "50",
+   "51"
+  ],
+  [
+   "51",
+   "52"
+  ],
+  [
+   "51",
+   "53"
+  ],
+  [
+   "51",
+   "57"
+  ],
+  [
+   "52",
+   "58"
+  ],
+  [
+   "55",
+   "56"
+  ],
+  [
+   "55",
+   "59"
+  ],
+  [
+   "55",
+   "60"
+  ],
+  [
+   "9",
+   "59"
+  ]
+ ]
+}

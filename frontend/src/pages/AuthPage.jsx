@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FiCompass, FiEye, FiEyeOff } from 'react-icons/fi';
 import { login, register } from '../api/auth';
+import { useAuth } from '../context/useAuth';
 
 function getPasswordStrength(pw) {
   if (!pw) return null;
@@ -16,6 +17,7 @@ function getPasswordStrength(pw) {
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const { signIn } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
@@ -44,13 +46,14 @@ export default function AuthPage() {
     setLoading(true);
     setError('');
     try {
-      let res;
       if (isLogin) {
-        res = await login({ username: form.username, password: form.password });
+        const response = await login({ username: form.username, password: form.password });
+        sessionStorage.setItem('access_token', response.data.access_token);
       } else {
-        res = await register({ username: form.username, email: form.email, password: form.password });
+        const response = await register({ username: form.username, email: form.email, password: form.password });
+        sessionStorage.setItem('access_token', response.data.access_token);
       }
-      localStorage.setItem('token', res.data.access_token);
+      signIn();
 
       if (isLogin) {
         // Decode JWT to check goal_id (we use a simple heuristic: try to get profile)
@@ -98,9 +101,10 @@ export default function AuthPage() {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             <div className="input-group">
-              <label>{isLogin ? 'Username or Email' : 'Username'}</label>
+              <label htmlFor="auth-username">{isLogin ? 'Username or Email' : 'Username'}</label>
               <input
                 name="username"
+                id="auth-username"
                 type="text"
                 placeholder={isLogin ? 'Enter your username or email' : 'Choose a username'}
                 value={form.username}
@@ -112,9 +116,10 @@ export default function AuthPage() {
 
             {!isLogin && (
               <div className="input-group">
-                <label>Email Address</label>
+                <label htmlFor="auth-email">Email Address</label>
                 <input
                   name="email"
+                  id="auth-email"
                   type="email"
                   placeholder="you@example.com"
                   value={form.email}
@@ -126,10 +131,11 @@ export default function AuthPage() {
             )}
 
             <div className="input-group">
-              <label>Password</label>
+              <label htmlFor="auth-password">Password</label>
               <div style={{ position: 'relative' }}>
                 <input
                   name="password"
+                  id="auth-password"
                   type={showPw ? 'text' : 'password'}
                   placeholder={isLogin ? 'Enter your password' : 'Min 8 chars, 1 uppercase, 1 number'}
                   value={form.password}
@@ -141,6 +147,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
+                  aria-label={showPw ? 'Hide password' : 'Show password'}
                   style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)' }}
                 >
                   {showPw ? <FiEyeOff size={18} /> : <FiEye size={18} />}

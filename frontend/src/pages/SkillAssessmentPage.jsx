@@ -16,6 +16,8 @@ export default function SkillAssessmentPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const uniqueSkills = (skills) => Array.from(new Map((skills || []).map((skill) => [skill.matched_skill_id || skill.skill_name.trim().toLowerCase(), skill])).values());
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!text.trim()) {
@@ -95,12 +97,12 @@ export default function SkillAssessmentPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
                   <FiCheckCircle size={20} color="var(--color-success)" />
                   <h3 style={{ fontSize: '1rem' }}>Skills You Know</h3>
-                  <span className="badge badge-primary" style={{ marginLeft: 'auto' }}>{result.extracted_skills?.length || 0}</span>
+                  <span className="badge badge-primary" style={{ marginLeft: 'auto' }}>{uniqueSkills(result.extracted_skills).length}</span>
                 </div>
                 {(!result.extracted_skills || result.extracted_skills.length === 0) && (
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem' }}>No existing skills detected.</p>
                 )}
-                {result.extracted_skills && result.extracted_skills.map((s, i) => (
+                {uniqueSkills(result.extracted_skills).map((s, i) => (
                   <div key={i} className="skill-item">
                     <span className="skill-name">{s.skill_name}</span>
                     <div className="confidence-bar">

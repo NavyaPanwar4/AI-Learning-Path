@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { FiArrowRight, FiBookOpen, FiCheck, FiCompass, FiFileText, FiMap, FiZap } from 'react-icons/fi';
+import { useAuth } from '../context/useAuth';
 
 const highlights = [
   ['Set the direction', 'Choose a goal, your experience, and the time you can realistically commit.'],
@@ -9,7 +10,7 @@ const highlights = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const isSignedIn = Boolean(localStorage.getItem('token'));
+  const { authenticated: isSignedIn } = useAuth();
   const destination = isSignedIn ? '/home' : '/login';
 
   return (

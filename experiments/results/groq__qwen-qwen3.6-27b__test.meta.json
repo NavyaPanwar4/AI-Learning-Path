@@ -1,0 +1,50 @@
+{
+ "provider": "groq",
+ "model": "qwen/qwen3.6-27b",
+ "mock": false,
+ "config": {
+  "seed": 20261018,
+  "thresholds": {
+   "weak": 0.5,
+   "strong": 0.85
+  },
+  "conditions": [
+   "A",
+   "E",
+   "D",
+   "B",
+   "C"
+  ],
+  "runs": 3,
+  "max_phases": 7,
+  "items_per_phase": 4,
+  "temperature": 0.1,
+  "max_attempts": 2,
+  "d_llm_runs": 1,
+  "models": {
+   "groq": "openai/gpt-oss-120b"
+  },
+  "groq_call": {
+   "reasoning_effort": "medium",
+   "max_completion_tokens": 8192,
+   "system_prompt": "You produce accurate learning content."
+  }
+ },
+ "split": "test",
+ "git_commit": "eef3e8adb2be2a473916394fc32e99753dfc5379",
+ "git_dirty": true,
+ "prompt_variant": "v1",
+ "call_settings": {
+  "temperature": 0.1,
+  "reasoning_effort": "none",
+  "max_completion_tokens": 8192,
+  "system_prompt": "You produce accurate learning content.",
+  "reasoning_format": "hidden",
+  "seed": "per call (see each record)",
+  "json_mode": "prompt-level JSON instruction; parsed locally"
+ },
+ "graph_P_hash": "8322b0b2df815cad",
+ "profiles_hash": "e0d8d949fc3196b6",
+ "python": "3.14.5",
+ "started": "2026-10-29T11:55:09"
+}

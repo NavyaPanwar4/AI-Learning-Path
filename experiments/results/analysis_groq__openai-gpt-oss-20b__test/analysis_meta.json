@@ -1,0 +1,19 @@
+{
+ "banner": "",
+ "scoring_graph": "P (requested)",
+ "weak": 0.5,
+ "strong": 0.85,
+ "split": "test",
+ "n_profiles": 18,
+ "conditions": [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E"
+ ],
+ "graph_agreement_P_vs_E": null,
+ "logs": [
+  "C:\\Users\\Navya\\Downloads\\LearningPath_updated\\Learning Path\\experiments\\results\\groq__openai-gpt-oss-20b__test.jsonl"
+ ]
+}

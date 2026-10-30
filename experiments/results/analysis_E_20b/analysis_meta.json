@@ -1,0 +1,27 @@
+{
+ "banner": "",
+ "scoring_graph": "E (independent)",
+ "weak": 0.5,
+ "strong": 0.85,
+ "split": "test",
+ "n_profiles": 18,
+ "conditions": [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E"
+ ],
+ "graph_agreement_P_vs_E": {
+  "edges_a": 43,
+  "edges_b": 50,
+  "edge_jaccard": 0.6034,
+  "ancestor_pairs_a": 167,
+  "ancestor_pairs_b": 188,
+  "ancestor_agreement": 0.9635,
+  "ancestor_kappa": 0.8189
+ },
+ "logs": [
+  "experiments\\results\\groq__openai-gpt-oss-20b__test.jsonl"
+ ]
+}

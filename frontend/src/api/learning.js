@@ -1,0 +1,22 @@
+import api from './axios';
+
+export const getLearningAnalytics = (goalId) => api.get(`/learning/${goalId}/analytics`);
+export const getReviewQueue = (goalId) => api.get('/learning/review-queue', { params: goalId ? { goal_id: goalId } : {} });
+export const getReminders = () => api.get('/learning/reminders');
+export const createReminder = (data) => api.post('/learning/reminders', data);
+export const setReminderCompleted = (id, completed) => api.patch(`/learning/reminders/${id}/complete`, { completed });
+export const completeReminder = (id) => setReminderCompleted(id, true);
+export const deleteReminder = (id) => api.delete(`/learning/reminders/${id}`);
+export const downloadCalendar = () => api.get('/learning/calendar.ics', { responseType: 'blob' });
+export const exportRoadmap = (goalId) => api.get(`/learning/${goalId}/export`);
+export const setRoadmapDeadline = (goalId, deadline) => api.post(`/learning/${goalId}/deadline`, { deadline });
+export const getRoadmapVersions = (goalId) => api.get(`/learning/${goalId}/versions`);
+export const restoreRoadmapVersion = (goalId, versionNumber) => api.post(`/learning/${goalId}/versions/${versionNumber}/restore`);
+export const importRoadmap = (goalId, roadmap) => api.post(`/learning/${goalId}/import`, { roadmap });
+export const reportResource = (resourceUrl, reason) => api.post('/learning/resource-report', { resource_url: resourceUrl, reason });
+export const getEmailPreferences = () => api.get('/learning/email-preferences');
+export const setEmailPreferences = (emailReminders) => api.put('/learning/email-preferences', { email_reminders: emailReminders });
+export const getShareLink = (goalId) => api.get(`/learning/${goalId}/share`);
+export const createShareLink = (goalId) => api.post(`/learning/${goalId}/share`);
+export const revokeShareLink = (goalId) => api.delete(`/learning/${goalId}/share`);
+export const getSharedProgress = (token) => api.get(`/share/${encodeURIComponent(token)}`);

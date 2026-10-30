@@ -1,0 +1,1544 @@
+{
+  "_note": "Hand-picked, authoritative resources for core skills. They are added to live search results as top candidates, but each link is still reachability-checked at runtime and dropped if dead. Keys are exact skill names from dataset/skills.csv. Check links with: python scripts/check_curated_resources.py Videos were checked against YouTube oEmbed when added (title and channel as returned then).",
+  "skills": {
+    "Python Basics": [
+      {
+        "title": "Python Tutorial (official docs)",
+        "url": "https://docs.python.org/3/tutorial/",
+        "type": "documentation"
+      },
+      {
+        "title": "CS50's Introduction to Programming with Python",
+        "url": "https://cs50.harvard.edu/python/",
+        "type": "course"
+      },
+      {
+        "title": "Automate the Boring Stuff with Python",
+        "url": "https://automatetheboringstuff.com/",
+        "type": "book"
+      },
+      {
+        "title": "Python for Beginners – Full Course [Programming Tutorial]",
+        "url": "https://www.youtube.com/watch?v=eWRfhZUzrAc",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Command Line & Shell Scripting": [
+      {
+        "title": "The Missing Semester of Your CS Education: Shell Tools and Scripting",
+        "url": "https://missing.csail.mit.edu/",
+        "type": "course"
+      },
+      {
+        "title": "GNU Bash Reference Manual",
+        "url": "https://www.gnu.org/software/bash/manual/bash.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Bash Scripting Tutorial for Beginners",
+        "url": "https://www.youtube.com/watch?v=tK9Oc6AEnR4",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Version Control (Git)": [
+      {
+        "title": "Pro Git book",
+        "url": "https://git-scm.com/book/en/v2",
+        "type": "book"
+      },
+      {
+        "title": "Git documentation",
+        "url": "https://git-scm.com/doc",
+        "type": "documentation"
+      },
+      {
+        "title": "GitHub Skills: Git and GitHub courses",
+        "url": "https://skills.github.com/",
+        "type": "course"
+      },
+      {
+        "title": "Git and GitHub for Beginners - Crash Course",
+        "url": "https://www.youtube.com/watch?v=RGOj5yH7evk",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Data Structures": [
+      {
+        "title": "Python Data Structures tutorial (official docs)",
+        "url": "https://docs.python.org/3/tutorial/datastructures.html",
+        "type": "documentation"
+      },
+      {
+        "title": "MIT 6.006 Introduction to Algorithms: data structures",
+        "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+        "type": "course"
+      },
+      {
+        "title": "VisuAlgo: data structures and algorithms visualised",
+        "url": "https://visualgo.net/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Data Structures - Computer Science Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=zg9ih6SVACc",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Algorithms": [
+      {
+        "title": "MIT 6.006 Introduction to Algorithms",
+        "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+        "type": "course"
+      },
+      {
+        "title": "Algorithms by Jeff Erickson",
+        "url": "https://jeffe.cs.illinois.edu/teaching/algorithms/",
+        "type": "book"
+      },
+      {
+        "title": "Khan Academy: Algorithms",
+        "url": "https://www.khanacademy.org/computing/computer-science/algorithms",
+        "type": "course"
+      },
+      {
+        "title": "Data Structures and Algorithms in Python - Full Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=pkYVOmU3MgA",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Testing & TDD": [
+      {
+        "title": "pytest documentation: getting started",
+        "url": "https://docs.pytest.org/en/stable/getting-started.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Python unittest documentation",
+        "url": "https://docs.python.org/3/library/unittest.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Martin Fowler: Test Driven Development",
+        "url": "https://martinfowler.com/bliki/TestDrivenDevelopment.html",
+        "type": "tutorial"
+      }
+    ],
+    "API Design": [
+      {
+        "title": "Microsoft Azure: web API design best practices",
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design",
+        "type": "documentation"
+      },
+      {
+        "title": "Google API Design Guide",
+        "url": "https://cloud.google.com/apis/design",
+        "type": "documentation"
+      },
+      {
+        "title": "OpenAPI: learn API design with OpenAPI",
+        "url": "https://learn.openapis.org/",
+        "type": "tutorial"
+      }
+    ],
+    "Debugging Techniques": [
+      {
+        "title": "Python debugger (pdb) documentation",
+        "url": "https://docs.python.org/3/library/pdb.html",
+        "type": "documentation"
+      },
+      {
+        "title": "The Missing Semester: Debugging and Profiling",
+        "url": "https://missing.csail.mit.edu/2020/debugging-profiling/",
+        "type": "course"
+      },
+      {
+        "title": "Chrome DevTools: debug JavaScript",
+        "url": "https://developer.chrome.com/docs/devtools/javascript",
+        "type": "documentation"
+      }
+    ],
+    "Database Programming": [
+      {
+        "title": "PostgreSQL tutorial (official docs)",
+        "url": "https://www.postgresql.org/docs/current/tutorial.html",
+        "type": "documentation"
+      },
+      {
+        "title": "SQLBolt: interactive SQL lessons",
+        "url": "https://sqlbolt.com/",
+        "type": "tutorial"
+      },
+      {
+        "title": "SQLite SQL language documentation",
+        "url": "https://www.sqlite.org/lang.html",
+        "type": "documentation"
+      },
+      {
+        "title": "SQL Tutorial for Beginners (and Technical Interview Questions Solved)",
+        "url": "https://www.youtube.com/watch?v=-fW2X7fh7Yg",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Performance Optimization": [
+      {
+        "title": "Python profilers documentation",
+        "url": "https://docs.python.org/3/library/profile.html",
+        "type": "documentation"
+      },
+      {
+        "title": "web.dev: Learn Performance",
+        "url": "https://web.dev/learn/performance",
+        "type": "course"
+      },
+      {
+        "title": "The Missing Semester: Debugging and Profiling",
+        "url": "https://missing.csail.mit.edu/2020/debugging-profiling/",
+        "type": "course"
+      }
+    ],
+    "Discrete Mathematics": [
+      {
+        "title": "MIT 6.042J Mathematics for Computer Science",
+        "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+        "type": "course"
+      },
+      {
+        "title": "Discrete Mathematics: An Open Introduction",
+        "url": "https://discrete.openmathbooks.org/dmoi3.html",
+        "type": "book"
+      },
+      {
+        "title": "Discrete Mathematics Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=G9JxuWk7BDA",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Probability Theory2": [
+      {
+        "title": "Harvard Stat 110: Probability",
+        "url": "https://projects.iq.harvard.edu/stat110",
+        "type": "course"
+      },
+      {
+        "title": "Khan Academy: Probability",
+        "url": "https://www.khanacademy.org/math/statistics-probability/probability-library",
+        "type": "course"
+      },
+      {
+        "title": "Seeing Theory: a visual introduction to probability",
+        "url": "https://seeing-theory.brown.edu/",
+        "type": "tutorial"
+      },
+      {
+        "title": "1. Probability Models and Axioms",
+        "url": "https://www.youtube.com/watch?v=j9WZyLZCBzs",
+        "type": "video",
+        "channel": "MIT OpenCourseWare"
+      }
+    ],
+    "Statistics": [
+      {
+        "title": "Khan Academy: Statistics and probability",
+        "url": "https://www.khanacademy.org/math/statistics-probability",
+        "type": "course"
+      },
+      {
+        "title": "OpenIntro Statistics",
+        "url": "https://www.openintro.org/book/os/",
+        "type": "book"
+      },
+      {
+        "title": "Statistics - A Full University Course on Data Science Basics",
+        "url": "https://www.youtube.com/watch?v=xxpc-HPKN28",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Linear Algebra": [
+      {
+        "title": "MIT 18.06 Linear Algebra",
+        "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+        "type": "course"
+      },
+      {
+        "title": "3Blue1Brown: Essence of linear algebra",
+        "url": "https://www.3blue1brown.com/topics/linear-algebra",
+        "type": "course"
+      },
+      {
+        "title": "Khan Academy: Linear algebra",
+        "url": "https://www.khanacademy.org/math/linear-algebra",
+        "type": "course"
+      },
+      {
+        "title": "Linear Algebra - Full College Course",
+        "url": "https://www.youtube.com/watch?v=JnTa9XtvmfI",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Calculus": [
+      {
+        "title": "MIT 18.01SC Single Variable Calculus",
+        "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+        "type": "course"
+      },
+      {
+        "title": "3Blue1Brown: Essence of calculus",
+        "url": "https://www.3blue1brown.com/topics/calculus",
+        "type": "course"
+      },
+      {
+        "title": "Khan Academy: Calculus 1",
+        "url": "https://www.khanacademy.org/math/calculus-1",
+        "type": "course"
+      },
+      {
+        "title": "Calculus 1 - Full College Course",
+        "url": "https://www.youtube.com/watch?v=HfACrKJ_Y2w",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Containerization with Docker": [
+      {
+        "title": "Docker: Get started",
+        "url": "https://docs.docker.com/get-started/",
+        "type": "documentation"
+      },
+      {
+        "title": "Docker Compose: get started",
+        "url": "https://docs.docker.com/compose/gettingstarted/",
+        "type": "documentation"
+      },
+      {
+        "title": "Docker Tutorial for Beginners - A Full DevOps Course on How to Run Applications in Containers",
+        "url": "https://www.youtube.com/watch?v=fqMOX6JJhGo",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "CI/CD Pipelines": [
+      {
+        "title": "GitHub Actions documentation",
+        "url": "https://docs.github.com/en/actions",
+        "type": "documentation"
+      },
+      {
+        "title": "GitLab CI/CD documentation",
+        "url": "https://docs.gitlab.com/ee/ci/",
+        "type": "documentation"
+      },
+      {
+        "title": "Atlassian: continuous delivery guide",
+        "url": "https://www.atlassian.com/continuous-delivery",
+        "type": "tutorial"
+      },
+      {
+        "title": "CI/CD in Production with Jenkins – Complete DevOps Course",
+        "url": "https://www.youtube.com/watch?v=uHNOqKdqQas",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Data Wrangling with Pandas": [
+      {
+        "title": "pandas: getting started tutorials",
+        "url": "https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "pandas: 10 minutes to pandas",
+        "url": "https://pandas.pydata.org/docs/user_guide/10min.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Kaggle Learn: Pandas",
+        "url": "https://www.kaggle.com/learn/pandas",
+        "type": "course"
+      },
+      {
+        "title": "Data Analysis with Python - Full Course for Beginners (Numpy, Pandas, Matplotlib, Seaborn)",
+        "url": "https://www.youtube.com/watch?v=r-uOLxNrNk8",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Software Architecture": [
+      {
+        "title": "Martin Fowler: software architecture guide",
+        "url": "https://martinfowler.com/architecture/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Azure Architecture Center: architecture guides",
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/",
+        "type": "documentation"
+      },
+      {
+        "title": "AWS Well-Architected Framework",
+        "url": "https://aws.amazon.com/architecture/well-architected/",
+        "type": "documentation"
+      },
+      {
+        "title": "Design Software Systems Like a Senior Engineer – Complete Course",
+        "url": "https://www.youtube.com/watch?v=soTfFFIQQ8U",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Numerical Methods": [
+      {
+        "title": "MIT 18.330 Introduction to Numerical Analysis",
+        "url": "https://ocw.mit.edu/courses/18-330-introduction-to-numerical-analysis-spring-2012/",
+        "type": "course"
+      },
+      {
+        "title": "Scipy Lecture Notes",
+        "url": "https://scipy-lectures.org/",
+        "type": "tutorial"
+      }
+    ],
+    "Optimization Theory": [
+      {
+        "title": "Convex Optimization by Boyd and Vandenberghe",
+        "url": "https://web.stanford.edu/~boyd/cvxbook/",
+        "type": "book"
+      },
+      {
+        "title": "SciPy optimization tutorial",
+        "url": "https://docs.scipy.org/doc/scipy/tutorial/optimize.html",
+        "type": "documentation"
+      }
+    ],
+    "Machine Learning Fundamentals": [
+      {
+        "title": "scikit-learn user guide",
+        "url": "https://scikit-learn.org/stable/user_guide.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Google Machine Learning Crash Course",
+        "url": "https://developers.google.com/machine-learning/crash-course",
+        "type": "course"
+      },
+      {
+        "title": "Machine Learning Specialization (Andrew Ng)",
+        "url": "https://www.coursera.org/specializations/machine-learning-introduction",
+        "type": "course"
+      },
+      {
+        "title": "Machine Learning for Everybody – Full Course",
+        "url": "https://www.youtube.com/watch?v=i_LwzRVP7bg",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Model Evaluation & Metrics": [
+      {
+        "title": "scikit-learn: model evaluation",
+        "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+        "type": "documentation"
+      },
+      {
+        "title": "scikit-learn: cross-validation",
+        "url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Machine Learning Fundamentals: The Confusion Matrix",
+        "url": "https://www.youtube.com/watch?v=Kdsp6soqA7o",
+        "type": "video",
+        "channel": "StatQuest with Josh Starmer"
+      }
+    ],
+    "MLOps": [
+      {
+        "title": "MLOps principles (ml-ops.org)",
+        "url": "https://ml-ops.org/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Google Cloud: MLOps continuous delivery and automation pipelines",
+        "url": "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
+        "type": "documentation"
+      },
+      {
+        "title": "MLflow documentation",
+        "url": "https://mlflow.org/docs/latest/index.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Made With ML: MLOps course",
+        "url": "https://madewithml.com/",
+        "type": "course"
+      },
+      {
+        "title": "MLOps Course – Build Machine Learning Production Grade Projects",
+        "url": "https://www.youtube.com/watch?v=-dJPoLm_gtE",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Object-Oriented Programming": [
+      {
+        "title": "Python classes tutorial (official docs)",
+        "url": "https://docs.python.org/3/tutorial/classes.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Real Python: object-oriented programming in Python",
+        "url": "https://realpython.com/python3-object-oriented-programming/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Object Oriented Programming with Python - Full Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=Ej_02ICOIgs",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Combinatorics": [
+      {
+        "title": "MIT 6.042J Mathematics for Computer Science: counting",
+        "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+        "type": "course"
+      },
+      {
+        "title": "Khan Academy: Counting, permutations and combinations",
+        "url": "https://www.khanacademy.org/math/statistics-probability/counting-permutations-and-combinations",
+        "type": "course"
+      },
+      {
+        "title": "Discrete Mathematics Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=G9JxuWk7BDA",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Graph Theory": [
+      {
+        "title": "VisuAlgo: graph data structures",
+        "url": "https://visualgo.net/en/graphds",
+        "type": "tutorial"
+      },
+      {
+        "title": "CP-Algorithms: graph algorithms",
+        "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "MIT 6.042J Mathematics for Computer Science: graph theory",
+        "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+        "type": "course"
+      },
+      {
+        "title": "Algorithms Course - Graph Theory Tutorial from a Google Engineer",
+        "url": "https://www.youtube.com/watch?v=09_LlHjoEiY",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Number Theory": [
+      {
+        "title": "CP-Algorithms: Euclidean algorithm and number theory",
+        "url": "https://cp-algorithms.com/algebra/euclid-algorithm.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "MIT 6.042J Mathematics for Computer Science: number theory",
+        "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+        "type": "course"
+      },
+      {
+        "title": "Discrete Mathematics Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=G9JxuWk7BDA",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Observability & Monitoring": [
+      {
+        "title": "OpenTelemetry: observability primer",
+        "url": "https://opentelemetry.io/docs/concepts/observability-primer/",
+        "type": "documentation"
+      },
+      {
+        "title": "Prometheus overview",
+        "url": "https://prometheus.io/docs/introduction/overview/",
+        "type": "documentation"
+      },
+      {
+        "title": "Google SRE book: monitoring distributed systems",
+        "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+        "type": "book"
+      },
+      {
+        "title": "OpenTelemetry Course - Understand Software Performance",
+        "url": "https://www.youtube.com/watch?v=r8UvWSX3KA8",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Exploratory Data Analysis": [
+      {
+        "title": "Kaggle Learn: Data Cleaning",
+        "url": "https://www.kaggle.com/learn/data-cleaning",
+        "type": "course"
+      },
+      {
+        "title": "seaborn tutorial",
+        "url": "https://seaborn.pydata.org/tutorial.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "pandas: 10 minutes to pandas",
+        "url": "https://pandas.pydata.org/docs/user_guide/10min.html",
+        "type": "documentation"
+      }
+    ],
+    "SQL for Data Science": [
+      {
+        "title": "Kaggle Learn: Intro to SQL",
+        "url": "https://www.kaggle.com/learn/intro-to-sql",
+        "type": "course"
+      },
+      {
+        "title": "Mode: SQL tutorial",
+        "url": "https://mode.com/sql-tutorial",
+        "type": "tutorial"
+      },
+      {
+        "title": "SQLBolt: interactive SQL lessons",
+        "url": "https://sqlbolt.com/",
+        "type": "tutorial"
+      },
+      {
+        "title": "SQL Tutorial for Beginners (and Technical Interview Questions Solved)",
+        "url": "https://www.youtube.com/watch?v=-fW2X7fh7Yg",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Deep Learning": [
+      {
+        "title": "Dive into Deep Learning",
+        "url": "https://d2l.ai/",
+        "type": "book"
+      },
+      {
+        "title": "PyTorch tutorials",
+        "url": "https://pytorch.org/tutorials/",
+        "type": "tutorial"
+      },
+      {
+        "title": "fast.ai: Practical Deep Learning",
+        "url": "https://course.fast.ai/",
+        "type": "course"
+      },
+      {
+        "title": "The spelled-out intro to neural networks and backpropagation: building micrograd",
+        "url": "https://www.youtube.com/watch?v=VMj-3S1tku0",
+        "type": "video",
+        "channel": "Andrej Karpathy"
+      }
+    ],
+    "AI Ethics & Fairness": [
+      {
+        "title": "Google Machine Learning Crash Course: fairness",
+        "url": "https://developers.google.com/machine-learning/crash-course/fairness",
+        "type": "course"
+      },
+      {
+        "title": "Fairness and Machine Learning (fairmlbook)",
+        "url": "https://fairmlbook.org/",
+        "type": "book"
+      },
+      {
+        "title": "Microsoft Responsible AI principles",
+        "url": "https://www.microsoft.com/en-us/ai/responsible-ai",
+        "type": "documentation"
+      }
+    ],
+    "Cloud Security": [
+      {
+        "title": "AWS shared responsibility model",
+        "url": "https://aws.amazon.com/compliance/shared-responsibility-model/",
+        "type": "documentation"
+      },
+      {
+        "title": "Cloud Security Alliance: security guidance",
+        "url": "https://cloudsecurityalliance.org/research/guidance",
+        "type": "documentation"
+      }
+    ],
+    "Functional Programming": [
+      {
+        "title": "Python functional programming HOWTO",
+        "url": "https://docs.python.org/3/howto/functional.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Learn You a Haskell for Great Good",
+        "url": "http://learnyouahaskell.com/",
+        "type": "book"
+      },
+      {
+        "title": "Functional Programming in Java - Full Course",
+        "url": "https://www.youtube.com/watch?v=rPSL1alFIjI",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Code Review Best Practices": [
+      {
+        "title": "Google Engineering Practices: code review",
+        "url": "https://google.github.io/eng-practices/review/",
+        "type": "documentation"
+      }
+    ],
+    "Information Theory": [
+      {
+        "title": "Information Theory, Inference, and Learning Algorithms (MacKay)",
+        "url": "http://www.inference.org.uk/mackay/itila/book.html",
+        "type": "book"
+      },
+      {
+        "title": "Khan Academy: Information theory",
+        "url": "https://www.khanacademy.org/computing/computer-science/informationtheory",
+        "type": "course"
+      }
+    ],
+    "NoSQL Databases": [
+      {
+        "title": "MongoDB manual",
+        "url": "https://www.mongodb.com/docs/manual/",
+        "type": "documentation"
+      },
+      {
+        "title": "MongoDB University",
+        "url": "https://learn.mongodb.com/",
+        "type": "course"
+      },
+      {
+        "title": "Redis documentation",
+        "url": "https://redis.io/docs/",
+        "type": "documentation"
+      },
+      {
+        "title": "NoSQL Database Tutorial – Full Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=xh4gy1lbL2k",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Authentication & Authorization": [
+      {
+        "title": "OWASP Authentication Cheat Sheet",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+        "type": "documentation"
+      },
+      {
+        "title": "MDN: HTTP authentication",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication",
+        "type": "documentation"
+      },
+      {
+        "title": "OAuth 2.0 Simplified",
+        "url": "https://www.oauth.com/",
+        "type": "book"
+      },
+      {
+        "title": "ASP.NET Web API – Token Based Authentication Tutorial",
+        "url": "https://www.youtube.com/watch?v=QSFWSjBHIkw",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      },
+      {
+        "title": "User Authentication in Web Apps (Passport.js, Node, Express)",
+        "url": "https://www.youtube.com/watch?v=F-sFp_AvHc8",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Web Security": [
+      {
+        "title": "OWASP Top Ten",
+        "url": "https://owasp.org/www-project-top-ten/",
+        "type": "documentation"
+      },
+      {
+        "title": "PortSwigger Web Security Academy",
+        "url": "https://portswigger.net/web-security",
+        "type": "course"
+      },
+      {
+        "title": "MDN: Web security",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security",
+        "type": "documentation"
+      },
+      {
+        "title": "JavaScript Security Vulnerabilities Tutorial  – With Code Examples",
+        "url": "https://www.youtube.com/watch?v=ypNKKYUJE5o",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Cloud Fundamentals": [
+      {
+        "title": "AWS: what is cloud computing",
+        "url": "https://aws.amazon.com/what-is-cloud-computing/",
+        "type": "documentation"
+      },
+      {
+        "title": "Google Cloud: get started",
+        "url": "https://cloud.google.com/docs/get-started",
+        "type": "documentation"
+      },
+      {
+        "title": "Microsoft Learn: Azure training",
+        "url": "https://learn.microsoft.com/en-us/training/azure/",
+        "type": "course"
+      },
+      {
+        "title": "Cloud Computing Full Course In 11 Hours | Cloud Computing Tutorial For Beginners | Edureka",
+        "url": "https://www.youtube.com/watch?v=2LaAJq1lB1Q",
+        "type": "video",
+        "channel": "edureka!"
+      }
+    ],
+    "Cloud Storage & CDN": [
+      {
+        "title": "Amazon S3 user guide",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Cloudflare: what is a CDN",
+        "url": "https://www.cloudflare.com/learning/cdn/what-is-a-cdn/",
+        "type": "tutorial"
+      }
+    ],
+    "Transfer Learning": [
+      {
+        "title": "PyTorch: transfer learning tutorial",
+        "url": "https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "TensorFlow: transfer learning and fine-tuning",
+        "url": "https://www.tensorflow.org/tutorials/images/transfer_learning",
+        "type": "tutorial"
+      },
+      {
+        "title": "Hugging Face course: fine-tuning a pretrained model",
+        "url": "https://huggingface.co/learn/nlp-course/chapter3/1",
+        "type": "course"
+      },
+      {
+        "title": "Transfer Learning (PyTorch Tutorial)",
+        "url": "https://www.youtube.com/watch?v=Lxm8x35vlM0",
+        "type": "video",
+        "channel": "AiCore"
+      }
+    ],
+    "Hyperparameter Tuning": [
+      {
+        "title": "scikit-learn: tuning hyper-parameters",
+        "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Optuna tutorial",
+        "url": "https://optuna.readthedocs.io/en/stable/tutorial/index.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "Hyperparameter Optimization: This Tutorial Is All You Need",
+        "url": "https://www.youtube.com/watch?v=5nYqK-HaoKY",
+        "type": "video",
+        "channel": "Abhishek Thakur"
+      }
+    ],
+    "Cost Optimization": [
+      {
+        "title": "AWS Well-Architected: cost optimization pillar",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+        "type": "documentation"
+      },
+      {
+        "title": "FinOps Foundation: what is FinOps",
+        "url": "https://www.finops.org/introduction/what-is-finops/",
+        "type": "tutorial"
+      }
+    ],
+    "FinOps & Cloud Cost Management": [
+      {
+        "title": "FinOps Foundation: what is FinOps",
+        "url": "https://www.finops.org/introduction/what-is-finops/",
+        "type": "tutorial"
+      },
+      {
+        "title": "AWS Well-Architected: cost optimization pillar",
+        "url": "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+        "type": "documentation"
+      },
+      {
+        "title": "FinOps Explained: Master Cloud Cost Management & Optimization for Beginners",
+        "url": "https://www.youtube.com/watch?v=472D_UGqdxA",
+        "type": "video",
+        "channel": "CodeLucky"
+      }
+    ],
+    "Security Fundamentals": [
+      {
+        "title": "CISA: cybersecurity best practices",
+        "url": "https://www.cisa.gov/topics/cybersecurity-best-practices",
+        "type": "documentation"
+      },
+      {
+        "title": "NIST Cybersecurity Framework",
+        "url": "https://www.nist.gov/cyberframework",
+        "type": "documentation"
+      },
+      {
+        "title": "Cyber Security Full Course for Beginners in 11 Hours - 2025 Edition",
+        "url": "https://www.youtube.com/watch?v=v3iUx2SNspY",
+        "type": "video",
+        "channel": "WsCube Cyber Security"
+      }
+    ],
+    "Vulnerability Management": [
+      {
+        "title": "NIST National Vulnerability Database",
+        "url": "https://nvd.nist.gov/",
+        "type": "documentation"
+      },
+      {
+        "title": "FIRST: Common Vulnerability Scoring System (CVSS)",
+        "url": "https://www.first.org/cvss/",
+        "type": "documentation"
+      },
+      {
+        "title": "CompTIA Security+ Full Course for Beginners - Module 8 - Vulnerability Management",
+        "url": "https://www.youtube.com/watch?v=AwKuIqkkxks",
+        "type": "video",
+        "channel": "BurningIceTech"
+      }
+    ],
+    "Web Application Security": [
+      {
+        "title": "OWASP Top Ten",
+        "url": "https://owasp.org/www-project-top-ten/",
+        "type": "documentation"
+      },
+      {
+        "title": "PortSwigger Web Security Academy",
+        "url": "https://portswigger.net/web-security",
+        "type": "course"
+      },
+      {
+        "title": "OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/",
+        "type": "documentation"
+      },
+      {
+        "title": "Web Application Security and OWASP - Top 10 Security Flaws with Examples",
+        "url": "https://www.youtube.com/watch?v=j5PuYFCS0Iw",
+        "type": "video",
+        "channel": "in28minutes"
+      }
+    ],
+    "Risk Management": [
+      {
+        "title": "NIST Risk Management Framework",
+        "url": "https://csrc.nist.gov/projects/risk-management/about-rmf",
+        "type": "documentation"
+      }
+    ],
+    "Generative AI & LLMs": [
+      {
+        "title": "Hugging Face LLM course",
+        "url": "https://huggingface.co/learn/llm-course",
+        "type": "course"
+      },
+      {
+        "title": "Prompt engineering overview (Anthropic docs)",
+        "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+        "type": "documentation"
+      },
+      {
+        "title": "DeepLearning.AI short courses",
+        "url": "https://www.deeplearning.ai/short-courses/",
+        "type": "course"
+      },
+      {
+        "title": "Generative AI Full Course 2025 (Learn to Build LLM From Scratch) | Generative AI Course |Intellipaat",
+        "url": "https://www.youtube.com/watch?v=95G5j2FW5aM",
+        "type": "video",
+        "channel": "Intellipaat"
+      }
+    ],
+    "Causal Inference": [
+      {
+        "title": "Causal Inference: The Mixtape",
+        "url": "https://mixtape.scunning.com/",
+        "type": "book"
+      },
+      {
+        "title": "The Effect: an introduction to research design and causality",
+        "url": "https://theeffectbook.net/",
+        "type": "book"
+      },
+      {
+        "title": "Brady Neal: introduction to causal inference course",
+        "url": "https://www.bradyneal.com/causal-inference-course",
+        "type": "course"
+      },
+      {
+        "title": "Causal Inference",
+        "url": "https://www.youtube.com/watch?v=NzBTnzWiQno",
+        "type": "video",
+        "channel": "The Foundations of Biomedical Data Science"
+      }
+    ],
+    "Design Patterns": [
+      {
+        "title": "Refactoring Guru: design patterns",
+        "url": "https://refactoring.guru/design-patterns",
+        "type": "tutorial"
+      },
+      {
+        "title": "Master Design Patterns in 6 Hours⏰ | Complete Design Patterns Tutorial | TestMu AI",
+        "url": "https://www.youtube.com/watch?v=ssmy-ZgZ52M",
+        "type": "video",
+        "channel": "TestMu AI (Formerly LambdaTest)"
+      }
+    ],
+    "HTML & CSS Fundamentals": [
+      {
+        "title": "web.dev: Learn HTML",
+        "url": "https://web.dev/learn/html",
+        "type": "course"
+      },
+      {
+        "title": "web.dev: Learn CSS",
+        "url": "https://web.dev/learn/css",
+        "type": "course"
+      },
+      {
+        "title": "MDN: Learn web development",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn",
+        "type": "documentation"
+      },
+      {
+        "title": "Full HTML & CSS Course For Beginners (6+ HOURS!) | Build Your First Website Today!",
+        "url": "https://www.youtube.com/watch?v=0kS3M8a6kP8",
+        "type": "video",
+        "channel": "Zero To Mastery"
+      }
+    ],
+    "Responsive Web Design": [
+      {
+        "title": "web.dev: Learn Responsive Design",
+        "url": "https://web.dev/learn/design",
+        "type": "course"
+      },
+      {
+        "title": "MDN: Responsive design",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design",
+        "type": "documentation"
+      },
+      {
+        "title": "Responsive Web Development Complete Course for Beginners | Tutorial + Full Project",
+        "url": "https://www.youtube.com/watch?v=J_r6hBo9lO4",
+        "type": "video",
+        "channel": "Sheryians Coding School"
+      }
+    ],
+    "Browser DevTools": [
+      {
+        "title": "Chrome DevTools documentation",
+        "url": "https://developer.chrome.com/docs/devtools",
+        "type": "documentation"
+      },
+      {
+        "title": "Firefox DevTools user docs",
+        "url": "https://firefox-source-docs.mozilla.org/devtools-user/",
+        "type": "documentation"
+      },
+      {
+        "title": "Google Chrome Developer Tools Crash Course",
+        "url": "https://www.youtube.com/watch?v=x4q86IjJFag",
+        "type": "video",
+        "channel": "Traversy Media"
+      }
+    ],
+    "JavaScript Fundamentals": [
+      {
+        "title": "The Modern JavaScript Tutorial",
+        "url": "https://javascript.info/",
+        "type": "tutorial"
+      },
+      {
+        "title": "MDN: JavaScript guide",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+        "type": "documentation"
+      },
+      {
+        "title": "Learn JavaScript - Full Course for Beginners",
+        "url": "https://www.youtube.com/watch?v=PkZNo7MFNFg",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "TypeScript": [
+      {
+        "title": "TypeScript handbook",
+        "url": "https://www.typescriptlang.org/docs/handbook/intro.html",
+        "type": "documentation"
+      },
+      {
+        "title": "TypeScript for JavaScript programmers",
+        "url": "https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "Learn TypeScript – Full Tutorial",
+        "url": "https://www.youtube.com/watch?v=30LWjhZzg50",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "React.js": [
+      {
+        "title": "React: learn",
+        "url": "https://react.dev/learn",
+        "type": "documentation"
+      },
+      {
+        "title": "React: tutorial (tic-tac-toe)",
+        "url": "https://react.dev/learn/tutorial-tic-tac-toe",
+        "type": "tutorial"
+      },
+      {
+        "title": "React JS Full Course for Beginners | Complete All-in-One Tutorial | 9 Hours",
+        "url": "https://www.youtube.com/watch?v=RVFAyFWO4go",
+        "type": "video",
+        "channel": "Dave Gray"
+      }
+    ],
+    "CSS Frameworks (Tailwind)": [
+      {
+        "title": "Tailwind CSS documentation: installation",
+        "url": "https://tailwindcss.com/docs/installation",
+        "type": "documentation"
+      },
+      {
+        "title": "Tailwind CSS: utility-first fundamentals",
+        "url": "https://tailwindcss.com/docs/styling-with-utility-classes",
+        "type": "documentation"
+      },
+      {
+        "title": "Tailwind CSS Full Course for Beginners | Complete All-in-One Tutorial | 3 Hours",
+        "url": "https://www.youtube.com/watch?v=lCxcTsOHrjo",
+        "type": "video",
+        "channel": "Dave Gray"
+      }
+    ],
+    "Testing Frontend Apps": [
+      {
+        "title": "React Testing Library introduction",
+        "url": "https://testing-library.com/docs/react-testing-library/intro/",
+        "type": "documentation"
+      },
+      {
+        "title": "Vitest guide",
+        "url": "https://vitest.dev/guide/",
+        "type": "documentation"
+      },
+      {
+        "title": "Jest: getting started",
+        "url": "https://jestjs.io/docs/getting-started",
+        "type": "documentation"
+      },
+      {
+        "title": "React Testing for Beginners: Start Here!",
+        "url": "https://www.youtube.com/watch?v=8Xwq35cPwYg",
+        "type": "video",
+        "channel": "Programming with Mosh"
+      }
+    ],
+    "Web Accessibility (a11y)": [
+      {
+        "title": "web.dev: Learn Accessibility",
+        "url": "https://web.dev/learn/accessibility",
+        "type": "course"
+      },
+      {
+        "title": "W3C WAI: introduction to web accessibility",
+        "url": "https://www.w3.org/WAI/fundamentals/accessibility-intro/",
+        "type": "documentation"
+      },
+      {
+        "title": "Learn Accessibility - Full a11y Tutorial",
+        "url": "https://www.youtube.com/watch?v=e2nkq3h1P68",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Node.js & Express": [
+      {
+        "title": "Node.js: introduction to Node.js",
+        "url": "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs",
+        "type": "documentation"
+      },
+      {
+        "title": "Express: installing and hello world",
+        "url": "https://expressjs.com/en/starter/installing.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Express: routing guide",
+        "url": "https://expressjs.com/en/guide/routing.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Node.js and Express.js - Full Course",
+        "url": "https://www.youtube.com/watch?v=Oe421EPjeBE",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "RESTful API Development": [
+      {
+        "title": "REST API tutorial (restfulapi.net)",
+        "url": "https://restfulapi.net/",
+        "type": "tutorial"
+      },
+      {
+        "title": "MDN: HTTP overview",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+        "type": "documentation"
+      },
+      {
+        "title": "FastAPI tutorial",
+        "url": "https://fastapi.tiangolo.com/tutorial/",
+        "type": "tutorial"
+      },
+      {
+        "title": "REST API Design - The Complete Guide Course (1/67)",
+        "url": "https://www.youtube.com/watch?v=f3aOT8LGdfE",
+        "type": "video",
+        "channel": "Memi Lavi - The Software Architect"
+      }
+    ],
+    "Frontend Performance": [
+      {
+        "title": "web.dev: Learn Performance",
+        "url": "https://web.dev/learn/performance",
+        "type": "course"
+      },
+      {
+        "title": "web.dev: Core Web Vitals",
+        "url": "https://web.dev/articles/vitals",
+        "type": "documentation"
+      },
+      {
+        "title": "The ultimate guide to web performance",
+        "url": "https://www.youtube.com/watch?v=0fONene3OIA",
+        "type": "video",
+        "channel": "Beyond Fireship"
+      }
+    ],
+    "Time Series Analysis": [
+      {
+        "title": "Forecasting: Principles and Practice (3rd ed)",
+        "url": "https://otexts.com/fpp3/",
+        "type": "book"
+      },
+      {
+        "title": "statsmodels: time series analysis",
+        "url": "https://www.statsmodels.org/stable/tsa.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Time Series Analysis Crash Course: Predict the Future with Python",
+        "url": "https://www.youtube.com/watch?v=eKiXtGzEjos",
+        "type": "video",
+        "channel": "Data Heroes"
+      }
+    ],
+    "Feature Engineering": [
+      {
+        "title": "Kaggle Learn: Feature Engineering",
+        "url": "https://www.kaggle.com/learn/feature-engineering",
+        "type": "course"
+      },
+      {
+        "title": "scikit-learn: preprocessing data",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Feature Engineering Full Course - in 1 Hour | Beginner Level",
+        "url": "https://www.youtube.com/watch?v=uu8um0JmYA8",
+        "type": "video",
+        "channel": "Analytics Vidhya"
+      }
+    ],
+    "Neural Networks Basics": [
+      {
+        "title": "3Blue1Brown: neural networks",
+        "url": "https://www.3blue1brown.com/topics/neural-networks",
+        "type": "course"
+      },
+      {
+        "title": "Neural Networks and Deep Learning (Nielsen)",
+        "url": "http://neuralnetworksanddeeplearning.com/",
+        "type": "book"
+      },
+      {
+        "title": "But what is a neural network? | Deep learning chapter 1",
+        "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+        "type": "video",
+        "channel": "3Blue1Brown"
+      }
+    ],
+    "Kubernetes": [
+      {
+        "title": "Kubernetes basics tutorial",
+        "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Kubernetes: overview",
+        "url": "https://kubernetes.io/docs/concepts/overview/",
+        "type": "documentation"
+      },
+      {
+        "title": "Learn Kubernetes in 6 Hours – Full Course with Real-World Project",
+        "url": "https://www.youtube.com/watch?v=_4uQI4ihGVU",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      },
+      {
+        "title": "Kubernetes Course - Full Beginners Tutorial (Containerize Your Apps!)",
+        "url": "https://www.youtube.com/watch?v=d6WC5n9G_sM",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Infrastructure as Code (Terraform)": [
+      {
+        "title": "Terraform tutorials (HashiCorp)",
+        "url": "https://developer.hashicorp.com/terraform/tutorials",
+        "type": "tutorial"
+      },
+      {
+        "title": "Terraform: introduction",
+        "url": "https://developer.hashicorp.com/terraform/intro",
+        "type": "documentation"
+      },
+      {
+        "title": "Terraform Tutorial for Beginners | FULL COURSE in 1 Hour",
+        "url": "https://www.youtube.com/watch?v=HbG3zVBVYvM",
+        "type": "video",
+        "channel": "TeKanAid - Platform Engineering and AI"
+      }
+    ],
+    "AWS Core Services": [
+      {
+        "title": "AWS: getting started",
+        "url": "https://aws.amazon.com/getting-started/",
+        "type": "documentation"
+      },
+      {
+        "title": "AWS Certified Cloud Practitioner Certification Course 2026 (CLF-C02) - Pass the Exam!",
+        "url": "https://www.youtube.com/watch?v=7HKot-brXFE",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Linear & Logistic Regression": [
+      {
+        "title": "scikit-learn: linear models",
+        "url": "https://scikit-learn.org/stable/modules/linear_model.html",
+        "type": "documentation"
+      },
+      {
+        "title": "Google Machine Learning Crash Course: linear regression",
+        "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+        "type": "course"
+      },
+      {
+        "title": "Linear Regression, Clearly Explained!!!",
+        "url": "https://www.youtube.com/watch?v=7ArmBVF2dCs",
+        "type": "video",
+        "channel": "StatQuest with Josh Starmer"
+      },
+      {
+        "title": "StatQuest: Logistic Regression",
+        "url": "https://www.youtube.com/watch?v=yIYKR4sgzI8",
+        "type": "video",
+        "channel": "StatQuest with Josh Starmer"
+      }
+    ],
+    "Decision Trees & Random Forests": [
+      {
+        "title": "scikit-learn: decision trees",
+        "url": "https://scikit-learn.org/stable/modules/tree.html",
+        "type": "documentation"
+      },
+      {
+        "title": "scikit-learn: ensembles and random forests",
+        "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+        "type": "documentation"
+      },
+      {
+        "title": "StatQuest: Decision Trees",
+        "url": "https://www.youtube.com/watch?v=7VeUPuFGJHk",
+        "type": "video",
+        "channel": "StatQuest with Josh Starmer"
+      },
+      {
+        "title": "StatQuest: Random Forests Part 1 - Building, Using and Evaluating",
+        "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
+        "type": "video",
+        "channel": "StatQuest with Josh Starmer"
+      }
+    ],
+    "Bayesian Statistics": [
+      {
+        "title": "Think Bayes (Allen Downey)",
+        "url": "https://allendowney.github.io/ThinkBayes2/",
+        "type": "book"
+      },
+      {
+        "title": "Statistical Rethinking",
+        "url": "https://xcelab.net/rm/",
+        "type": "course"
+      },
+      {
+        "title": "Bayesian Statistics For Beginners Complete Course | Full University Course",
+        "url": "https://www.youtube.com/watch?v=ERjV-xUI5Sw",
+        "type": "video",
+        "channel": "Nerd's Academy"
+      }
+    ],
+    "Natural Language Processing": [
+      {
+        "title": "Hugging Face NLP course",
+        "url": "https://huggingface.co/learn/nlp-course",
+        "type": "course"
+      },
+      {
+        "title": "Stanford CS224N: NLP with deep learning",
+        "url": "http://web.stanford.edu/class/cs224n/",
+        "type": "course"
+      },
+      {
+        "title": "Speech and Language Processing (Jurafsky and Martin)",
+        "url": "https://web.stanford.edu/~jurafsky/slp3/",
+        "type": "book"
+      },
+      {
+        "title": "Natural Language Processing (NLP) Full Course | Learn NLP in Deep Learning Tutorial",
+        "url": "https://www.youtube.com/watch?v=-33oXx0TwHI",
+        "type": "video",
+        "channel": "WsCube Tech"
+      }
+    ],
+    "Computer Vision": [
+      {
+        "title": "Stanford CS231n: deep learning for computer vision",
+        "url": "https://cs231n.github.io/",
+        "type": "course"
+      },
+      {
+        "title": "OpenCV tutorials",
+        "url": "https://docs.opencv.org/4.x/d9/df8/tutorial_root.html",
+        "type": "tutorial"
+      },
+      {
+        "title": "TensorFlow for Computer Vision Course - Full Python Tutorial for Beginners",
+        "url": "https://www.youtube.com/watch?v=cPmjQ9V6Hbk",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Reinforcement Learning": [
+      {
+        "title": "Reinforcement Learning: An Introduction (Sutton and Barto)",
+        "url": "http://incompleteideas.net/book/the-book-2nd.html",
+        "type": "book"
+      },
+      {
+        "title": "OpenAI Spinning Up in Deep RL",
+        "url": "https://spinningup.openai.com/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Hugging Face Deep RL course",
+        "url": "https://huggingface.co/learn/deep-rl-course",
+        "type": "course"
+      },
+      {
+        "title": "Reinforcement Learning Course - Full Machine Learning Tutorial",
+        "url": "https://www.youtube.com/watch?v=ELE2_Mftqoc",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ],
+    "Data Visualization": [
+      {
+        "title": "From Data to Viz",
+        "url": "https://www.data-to-viz.com/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Kaggle Learn: Data Visualization",
+        "url": "https://www.kaggle.com/learn/data-visualization",
+        "type": "course"
+      },
+      {
+        "title": "Complete Data Visualization Course for Beginners |  Matplotlib & Seaborn | Sheryians AI School",
+        "url": "https://www.youtube.com/watch?v=-jTD74eEy2I",
+        "type": "video",
+        "channel": "Sheryians AI School"
+      }
+    ],
+    "A/B Testing": [
+      {
+        "title": "Evan Miller: A/B testing tools and guides",
+        "url": "https://www.evanmiller.org/ab-testing/",
+        "type": "tutorial"
+      }
+    ],
+    "Cryptography": [
+      {
+        "title": "Cryptography I (Stanford, Coursera)",
+        "url": "https://www.coursera.org/learn/crypto",
+        "type": "course"
+      },
+      {
+        "title": "Cloudflare: what is encryption",
+        "url": "https://www.cloudflare.com/learning/ssl/what-is-encryption/",
+        "type": "tutorial"
+      },
+      {
+        "title": "Cryptography for Beginners - Full Python Course (SHA-256, AES, RSA, Passwords)",
+        "url": "https://www.youtube.com/watch?v=kb_scuDUHls",
+        "type": "video",
+        "channel": "freeCodeCamp.org"
+      }
+    ]
+  }
+}

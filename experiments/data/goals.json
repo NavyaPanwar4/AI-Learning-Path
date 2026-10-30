@@ -1,0 +1,32 @@
+{
+ "_status": "DRAFT; targets are skill ids in graph_P.json",
+ "goals": [
+  {
+   "id": "ml_engineer",
+   "name": "Machine Learning Engineer",
+   "targets": [
+    "59",
+    "51",
+    "56"
+   ]
+  },
+  {
+   "id": "data_analyst",
+   "name": "Data Analyst",
+   "targets": [
+    "34",
+    "27",
+    "33",
+    "32"
+   ]
+  },
+  {
+   "id": "nlp_llm",
+   "name": "NLP and LLM Engineer",
+   "targets": [
+    "58",
+    "52"
+   ]
+  }
+ ]
+}

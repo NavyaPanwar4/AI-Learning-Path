@@ -99,3 +99,97 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 760px) { .navbar { position: sticky; width: 100%; height: auto; min-height: 64px; padding: 10px 15px; flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--color-border); }.navbar-brand { padding: 0; margin-right: auto; }.navbar-links { flex-direction: row; gap: 1px; }.nav-section-label, .logout-button { display: none !important; }.navbar .btn { width: 37px; min-height: 37px; padding: 8px; justify-content: center; font-size: 0; }.navbar .btn svg { width: 17px; height: 17px; }.page { margin-left: 0; padding: 34px 18px; }.loading-center { margin-left: 0; min-height: calc(100vh - 64px); }.skills-grid, .phase-body, .study-notes-grid { grid-template-columns: 1fr; }.card { padding: 20px; }.landing-nav, .landing-hero, .landing-how, .landing-tools, .landing-footer { width: min(100% - 32px, 560px); }.landing-nav { padding: 17px 0; }.landing-hero { min-height: 0; margin-top: 32px; grid-template-columns: 1fr; gap: 46px; }.landing-copy { max-width: none; }.landing-copy h1 { font-size: clamp(2.65rem, 12vw, 4rem); }.landing-preview { width: calc(100% - 12px); margin: 0 auto; transform: rotate(0); }.landing-how { margin-top: 64px; padding: 42px 0; }.landing-feature-grid, .landing-tools { grid-template-columns: 1fr; }.landing-feature { min-height: auto; }.landing-feature h3 { margin-top: 20px; }.landing-tools { gap: 26px; margin-bottom: 34px; }.landing-footer { padding-bottom: 20px; } }
 @media (max-width: 430px) { .navbar-brand { font-size: .98rem; }.navbar .btn:nth-of-type(4) { display: none; }.page { padding: 28px 14px; }.phase-header > div { width: 100%; margin-left: 0 !important; } }
+
+
+/* Align the management card with the left edge of Phase 1's card.
+   The timeline uses 32px of left padding, so mirror that offset here. */
+.roadmap-management-card {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: calc(100% - 32px);
+  min-width: 0;
+  margin: 0 0 28px 32px;
+  overflow: hidden;
+}
+.roadmap-management-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  min-width: 0;
+}
+.roadmap-management-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 5px;
+}
+.roadmap-management-heading p {
+  color: var(--color-text-muted);
+  font-size: .84rem;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.roadmap-current-deadline {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-bottom: 17px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-soft);
+  min-width: 0;
+}
+.roadmap-current-deadline-label {
+  color: var(--color-text-muted);
+  font-size: .78rem;
+}
+.roadmap-current-deadline strong {
+  color: var(--color-primary);
+  font-size: .94rem;
+}
+.roadmap-no-deadline {
+  color: var(--color-text-muted);
+  font-size: .87rem;
+}
+.roadmap-deadline-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+.roadmap-deadline-field {
+  width: min(100%, 400px);
+  max-width: 100%;
+  min-width: 0;
+  flex: 1 1 260px;
+  margin: 0;
+}
+.roadmap-deadline-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.roadmap-deadline-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.roadmap-target-badge { white-space: nowrap; }
+@media (max-width: 760px) {
+  .roadmap-management-card { padding: 20px; }
+  .roadmap-planner-link { max-width: 100%; }
+  .roadmap-deadline-form { align-items: stretch; }
+  .roadmap-deadline-field { flex: 1 1 100%; }
+  .roadmap-deadline-actions { width: 100%; }
+  .roadmap-deadline-actions .btn { max-width: 100%; }
+}

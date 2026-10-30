@@ -1,4 +1,5 @@
 from typing import List, Optional, Tuple
+from collections import OrderedDict
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -21,6 +22,7 @@ class EmbeddingsService:
         self.model_name = getattr(settings, "EMBEDDING_MODEL", "all-MiniLM-L6-v2")
         self.default_threshold = float(getattr(settings, "EMBEDDING_MATCH_THRESHOLD", 0.6))
         self._model: Optional[SentenceTransformer] = None
+        self._encoded_cache = OrderedDict()
 
     @property
     def model(self) -> SentenceTransformer:
@@ -36,7 +38,15 @@ class EmbeddingsService:
         query is the main performance trap with this approach."""
         if not texts:
             return None
-        return self.model.encode(texts, convert_to_tensor=True)
+        cache_key = tuple(texts)
+        if cache_key in self._encoded_cache:
+            self._encoded_cache.move_to_end(cache_key)
+            return self._encoded_cache[cache_key]
+        encoded = self.model.encode(texts, convert_to_tensor=True)
+        self._encoded_cache[cache_key] = encoded
+        while len(self._encoded_cache) > 16:
+            self._encoded_cache.popitem(last=False)
+        return encoded
 
     def best_match(self, query: str, choices: List[str], threshold: float = None) -> Tuple[Optional[str], float]:
         """Encodes choices itself — convenient for a one-off lookup, but

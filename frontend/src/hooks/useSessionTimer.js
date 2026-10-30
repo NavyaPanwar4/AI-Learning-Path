@@ -9,13 +9,30 @@ const MIN_LOGGABLE_MINUTES = 0.1; // ~6 seconds — filters out quick nav-throug
  * Time" and contributes to "Day Streak" on the profile dashboard.
  */
 export default function useSessionTimer() {
-  const startRef = useRef(Date.now());
+  const startRef = useRef(null);
+  const accumulatedRef = useRef(0);
 
   useEffect(() => {
-    startRef.current = Date.now();
+    const start = () => {
+      if (document.visibilityState === 'visible' && startRef.current === null) startRef.current = Date.now();
+    };
+    const pause = () => {
+      if (startRef.current !== null) {
+        accumulatedRef.current += Date.now() - startRef.current;
+        startRef.current = null;
+      }
+    };
+    start();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') start();
+      else pause();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      const minutes = (Date.now() - startRef.current) / 60000;
+      pause();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      const minutes = accumulatedRef.current / 60000;
       if (minutes >= MIN_LOGGABLE_MINUTES) {
         logSession(minutes).catch(() => {});
       }

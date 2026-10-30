@@ -1,0 +1,41 @@
+skill_id,skill_name,difficulty,estimated_hours
+1,Python Basics,1,20.0
+2,Data Structures,2,30.0
+3,Algorithms,3,40.0
+4,Object-Oriented Programming,2,25.0
+8,Testing & TDD,2,20.0
+9,Version Control (Git),1,10.0
+10,Command Line & Shell Scripting,1,15.0
+15,Database Programming,2,25.0
+26,Data Wrangling with Pandas,2,25.0
+27,Exploratory Data Analysis,2,20.0
+28,Feature Engineering,3,30.0
+31,Data Visualization,1,15.0
+32,Time Series Analysis,3,35.0
+34,SQL for Data Science,1,20.0
+40,Dimensionality Reduction,3,25.0
+153,Data Quality & Validation,2,15.0
+126,Linear Algebra,2,40.0
+127,Calculus,2,45.0
+129,Statistics,2,30.0
+30,Probability Theory,2,30.0
+29,Statistical Inference,2,35.0
+33,A/B Testing,2,20.0
+39,Bayesian Statistics,3,40.0
+132,Optimization Theory,3,40.0
+46,Machine Learning Fundamentals,2,40.0
+47,Linear & Logistic Regression,1,20.0
+48,Decision Trees & Random Forests,2,25.0
+49,Support Vector Machines,2,25.0
+50,Neural Networks Basics,2,30.0
+51,Deep Learning,3,50.0
+52,Natural Language Processing,3,45.0
+53,Computer Vision,3,45.0
+54,Reinforcement Learning,3,50.0
+55,Model Evaluation & Metrics,2,20.0
+56,Hyperparameter Tuning,2,20.0
+57,Transfer Learning,3,30.0
+58,Generative AI & LLMs,3,40.0
+59,MLOps,3,35.0
+60,Explainable AI,3,30.0
+63,AI Ethics & Fairness,2,20.0

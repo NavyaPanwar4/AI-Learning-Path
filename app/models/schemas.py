@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from typing import List, Optional
 import re
 
@@ -19,34 +19,55 @@ class UserCreate(BaseModel):
         return v
 
 class UserLogin(BaseModel):
-    username: str
-    password: str
+    username: str = Field(..., min_length=1, max_length=120)
+    password: str = Field(..., min_length=1, max_length=256)
 
 class UserProfileUpdate(BaseModel):
-    goal_id: str
-    experience_level: str = "beginner"
-    available_hours_per_week: int = 10
-    learning_style: str = "visual"
+    goal_id: str = Field(..., min_length=1, max_length=100)
+    experience_level: str = Field("beginner", min_length=1, max_length=30)
+    available_hours_per_week: int = Field(10, ge=1, le=168)
+    learning_style: str = Field("visual", min_length=1, max_length=30)
     # Optional — onboarding doesn't send these, the profile page's
     # "Learning Preferences" edit does.
-    session_length: Optional[str] = None
-    preferred_content: Optional[str] = None
-    learning_pace: Optional[str] = None
-    preferred_difficulty: Optional[str] = None
+    session_length: Optional[str] = Field(None, max_length=40)
+    preferred_content: Optional[str] = Field(None, max_length=300)
+    learning_pace: Optional[str] = Field(None, max_length=30)
+    preferred_difficulty: Optional[str] = Field(None, max_length=30)
 
 class PersonalInfoUpdate(BaseModel):
-    bio: Optional[str] = ""
-    title: Optional[str] = ""
-    education: Optional[str] = ""
-    language: Optional[str] = "English"
-    avatar_url: Optional[str] = ""
+    bio: Optional[str] = Field("", max_length=1000)
+    title: Optional[str] = Field("", max_length=120)
+    education: Optional[str] = Field("", max_length=200)
+    language: Optional[str] = Field("English", max_length=60)
+    avatar_url: Optional[str] = Field("", max_length=500)
 
 class SessionLogRequest(BaseModel):
-    duration_minutes: float
+    duration_minutes: float = Field(..., gt=0, le=720)
+
+class QuizAnswerSubmission(BaseModel):
+    """One answer to a server-issued quiz question."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    question_id: str = Field(..., min_length=1, max_length=64)
+    selected_index: int = Field(..., ge=0, le=3)
+
 
 class QuizSubmission(BaseModel):
-    total_questions: int
-    correct_answers: int
+    """Client supplies answers only; the server calculates all grading data."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    quiz_id: str = Field(..., min_length=1, max_length=64)
+    answers: List[QuizAnswerSubmission] = Field(..., min_length=1, max_length=100)
+
+    @field_validator("answers")
+    @classmethod
+    def answers_must_have_unique_question_ids(cls, value):
+        question_ids = [answer.question_id for answer in value]
+        if len(question_ids) != len(set(question_ids)):
+            raise ValueError("Each quiz question may be answered only once")
+        return value
 
 class Token(BaseModel):
     access_token: str
@@ -94,7 +115,7 @@ class UserProfileResponse(BaseModel):
 
 # Skill Schemas
 class ExtractSkillsRequest(BaseModel):
-    free_text: str
+    free_text: str = Field(..., min_length=1, max_length=4000)
 
 class ExtractedSkill(BaseModel):
     skill_name: str
@@ -134,6 +155,8 @@ class StudyNotes(BaseModel):
 
 class RoadmapPhase(BaseModel):
     title: str
+    phase_id: Optional[str] = None
+    remedial_for: Optional[str] = None
     duration: str = "Flexible"
     skills: List[str] = Field(default_factory=list)
     resources: List[ResourceSchema] = Field(default_factory=list)
@@ -147,13 +170,14 @@ class RoadmapResponse(BaseModel):
     phases: Optional[List[RoadmapPhase]] = []
     roadmap_text: Optional[str] = None
     is_complete: bool = False
+    deadline: Optional[str] = Field(None, max_length=40)
 
 # Feedback Schema
 class FeedbackRequest(BaseModel):
-    content_id: str
-    content_type: str # resource, project, phase
-    rating: int # 1-5
-    comments: Optional[str] = None
+    content_id: str = Field(..., min_length=1, max_length=500)
+    content_type: str = Field(..., pattern="^(resource|project|phase|roadmap)$")
+    rating: int = Field(..., ge=1, le=5)
+    comments: Optional[str] = Field(None, max_length=2000)
 
 class RoadmapFeedbackRequest(BaseModel):
     rating: int
@@ -161,9 +185,50 @@ class RoadmapFeedbackRequest(BaseModel):
 
 # Chat (AI tutor)
 class ChatRequest(BaseModel):
-    message: str
-    goal_id: Optional[str] = None
+    message: str = Field(..., min_length=1, max_length=4000)
+    goal_id: Optional[str] = Field(None, max_length=100)
+
+class ExplainAnswerRequest(BaseModel):
+    """Ask the tutor to explain one question from a quiz the learner has submitted."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    quiz_id: str = Field(..., min_length=1, max_length=64)
+    question_id: str = Field(..., min_length=1, max_length=64)
+    selected_index: int = Field(..., ge=0, le=3)
+
 
 class ChatResponse(BaseModel):
     reply: str
     goal_id: Optional[str] = None
+
+class DeadlineUpdate(BaseModel):
+    deadline: Optional[str] = Field(None, max_length=40)
+
+class ReminderCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=160)
+    due_at: str = Field(..., min_length=10, max_length=40)
+    goal_id: Optional[str] = Field(None, max_length=100)
+
+
+class ReminderCompletionUpdate(BaseModel):
+    completed: bool
+
+
+class EmailPreferencesUpdate(BaseModel):
+    email_reminders: bool
+
+class ResourceReportRequest(BaseModel):
+    resource_url: str = Field(..., min_length=8, max_length=1000)
+    reason: str = Field(..., min_length=3, max_length=500)
+
+class RoadmapImport(BaseModel):
+    roadmap: RoadmapResponse
+
+class CatalogGoalCreate(BaseModel):
+    goal_name: str = Field(..., min_length=2, max_length=160)
+
+class CatalogSkillCreate(BaseModel):
+    skill_name: str = Field(..., min_length=2, max_length=120)
+    category: str = Field("", max_length=80)
+    aliases: str = Field("", max_length=500)

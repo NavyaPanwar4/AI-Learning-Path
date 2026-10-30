@@ -22,6 +22,7 @@ do it as a private, untracked local file instead.
 """
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -46,19 +47,35 @@ def _clean(value, default=""):
     return default if pd.isna(value) else value
 
 
+def _normalize_id(value):
+    """Normalize CSV IDs reliably (e.g. Pandas float 3.0 becomes '3')."""
+    if value is None or pd.isna(value):
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    if re.fullmatch(r"[+-]?\d+\.0+", text):
+        return str(int(float(text)))
+    return text
+
+
 def migrate():
     db = SessionLocal()
     try:
         # --- goals ---
         for _, row in _read("goals.csv").iterrows():
-            gid = str(row["goal_id"])
+            gid = _normalize_id(row.get("goal_id"))
+            if not gid:
+                continue
             if not db.query(m.Goal).filter(m.Goal.goal_id == gid).first():
                 db.add(m.Goal(goal_id=gid, goal_name=_clean(row.get("goal_name"))))
         db.commit()
 
         # --- skills ---
         for _, row in _read("skills.csv").iterrows():
-            sid = str(row["skill_id"])
+            sid = _normalize_id(row.get("skill_id"))
+            if not sid:
+                continue
             if not db.query(m.Skill).filter(m.Skill.skill_id == sid).first():
                 db.add(m.Skill(
                     skill_id=sid,
@@ -72,15 +89,29 @@ def migrate():
         # NOTE: the shipped CSV uses "prerequisite_skill_id", not "prerequisite_id"
         # (the app's own csv_handler column list never matched this file, so this
         # join was silently empty before — fixed here).
+        known_skill_ids = {
+            str(sid) for (sid,) in db.query(m.Skill.skill_id).all()
+        }
+        skipped_dependencies = 0
         for _, row in _read("skill_dependencies.csv").iterrows():
-            sid = str(row["skill_id"])
-            pid = str(row.get("prerequisite_skill_id", row.get("prerequisite_id")))
+            sid = _normalize_id(row.get("skill_id"))
+            pid = _normalize_id(row.get("prerequisite_skill_id"))
+            if not pid:
+                pid = _normalize_id(row.get("prerequisite_id"))
+            if not sid or not pid:
+                skipped_dependencies += 1
+                continue
+            if sid not in known_skill_ids or pid not in known_skill_ids:
+                skipped_dependencies += 1
+                continue
             exists = db.query(m.SkillDependency).filter(
                 m.SkillDependency.skill_id == sid, m.SkillDependency.prerequisite_id == pid
             ).first()
             if not exists:
                 db.add(m.SkillDependency(skill_id=sid, prerequisite_id=pid))
         db.commit()
+        if skipped_dependencies:
+            print(f"Skipped {skipped_dependencies} invalid or incomplete dependency row(s).")
 
         # --- goal <-> skill links ---
         # Shipped CSV uses "importance_level" (a category: "core"/"optional"),
@@ -88,7 +119,13 @@ def migrate():
         # app's schema expects.
         importance_map = {"core": 5, "important": 4, "recommended": 3, "optional": 2}
         for _, row in _read("goal_skills.csv").iterrows():
-            gid, sid = str(row["goal_id"]), str(row["skill_id"])
+            gid, sid = _normalize_id(row.get("goal_id")), _normalize_id(row.get("skill_id"))
+            if not gid or not sid:
+                continue
+            if not db.query(m.Goal).filter(m.Goal.goal_id == gid).first():
+                continue
+            if not db.query(m.Skill).filter(m.Skill.skill_id == sid).first():
+                continue
             exists = db.query(m.GoalSkill).filter(
                 m.GoalSkill.goal_id == gid, m.GoalSkill.skill_id == sid
             ).first()
@@ -104,9 +141,9 @@ def migrate():
         # of those (used only for skill/goal reference data). Blank -> None,
         # not "", so the synthetic rows don't collide on the unique index.
         for _, row in _read("users.csv").iterrows():
-            uid = str(_clean(row.get("user_id")))
+            uid = _normalize_id(row.get("user_id"))
             if uid and not db.query(m.User).filter(m.User.user_id == uid).first():
-                goal_id = _clean(row.get("goal_id"))
+                goal_id = _normalize_id(row.get("goal_id"))
                 username = _clean(row.get("username")) or None
                 email = _clean(row.get("email")) or None
                 hashed_password = _clean(row.get("hashed_password")) or None
@@ -128,7 +165,7 @@ def migrate():
         # numeric column is blank.
         proficiency_map = {"novice": 1, "beginner": 1, "intermediate": 3, "advanced": 4, "expert": 5}
         for _, row in _read("user_skills.csv").iterrows():
-            uid, sid = str(_clean(row.get("user_id"))), str(_clean(row.get("skill_id")))
+            uid, sid = _normalize_id(row.get("user_id")), _normalize_id(row.get("skill_id"))
             if uid and sid:
                 exists = db.query(m.UserSkill).filter(
                     m.UserSkill.user_id == uid, m.UserSkill.skill_id == sid

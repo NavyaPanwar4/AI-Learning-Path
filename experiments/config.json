@@ -1,0 +1,28 @@
+{
+  "seed": 20261018,
+  "thresholds": {
+    "weak": 0.5,
+    "strong": 0.85
+  },
+  "conditions": [
+    "A",
+    "E",
+    "D",
+    "B",
+    "C"
+  ],
+  "runs": 3,
+  "max_phases": 7,
+  "items_per_phase": 4,
+  "temperature": 0.1,
+  "max_attempts": 2,
+  "d_llm_runs": 1,
+  "models": {
+    "groq": "openai/gpt-oss-120b"
+  },
+  "groq_call": {
+    "reasoning_effort": "medium",
+    "max_completion_tokens": 8192,
+    "system_prompt": "You produce accurate learning content."
+  }
+}

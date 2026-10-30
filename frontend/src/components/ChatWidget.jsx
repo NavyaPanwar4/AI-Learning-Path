@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiMessageCircle, FiX, FiSend, FiCpu } from 'react-icons/fi';
-import { sendChatMessage, getChatHistory } from '../api/chat';
+import { sendChatMessageStream, getChatHistory } from '../api/chat';
+import { useAuth } from '../context/useAuth';
 
 // Tiny no-dependency renderer for the bit of markdown the tutor model
 // actually produces: headings, **bold**, *italic*, `code`, lists, paragraphs.
@@ -38,7 +39,6 @@ function ChatMessageContent({ content }) {
     const rawLines = block.split('\n').filter((l) => l.trim() !== '');
 
     // Headings render as their own line even mid-block — split them out first.
-    let runStart = 0;
     const flushParagraph = (lines) => {
       if (lines.length === 0) return;
       rendered.push(
@@ -106,7 +106,7 @@ function ChatMessageContent({ content }) {
 }
 
 export default function ChatWidget() {
-  const token = localStorage.getItem('token');
+  const { authenticated } = useAuth();
 
   const [open, setOpen] = useState(false);
   const [loadedHistory, setLoadedHistory] = useState(false);
@@ -129,7 +129,7 @@ export default function ChatWidget() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, sending, open]);
 
-  if (!token) return null;
+  if (!authenticated) return null;
 
   const handleSend = async () => {
     const text = input.trim();
@@ -141,10 +141,23 @@ export default function ChatWidget() {
     setSending(true);
 
     try {
-      const res = await sendChatMessage(text);
-      setMessages((prev) => [...prev, { role: 'assistant', content: res.data.reply }]);
-    } catch {
-      setError("Couldn't reach the tutor. Please try again.");
+      await sendChatMessageStream(text, (delta) => {
+        setMessages((prev) => {
+          const next = [...prev];
+          const lastIndex = next.length - 1;
+          if (lastIndex >= 0 && next[lastIndex].role === 'assistant') {
+            next[lastIndex] = {
+              ...next[lastIndex],
+              content: `${next[lastIndex].content || ''}${delta}`,
+            };
+          } else {
+            next.push({ role: 'assistant', content: delta });
+          }
+          return next;
+        });
+      });
+    } catch (err) {
+      setError(err.message || "Couldn't reach the tutor. Please try again.");
     } finally {
       setSending(false);
     }

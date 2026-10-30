@@ -18,8 +18,12 @@ export const getMyProfile = () =>
 export const changePassword = (oldPassword, newPassword) =>
   api.put('/users/change-password', { old_password: oldPassword, new_password: newPassword });
 
+// Minutes east of UTC (IST = 330), so streak days follow the learner's own clock.
 export const getDashboard = () =>
-  api.get('/users/dashboard');
+  api.get('/users/dashboard', { params: { tz_offset_minutes: -new Date().getTimezoneOffset() } });
+
+export const getDashboardActivity = () =>
+  api.get('/users/dashboard/activity');
 
 export const updatePersonalInfo = (data) =>
   api.put('/users/personal-info', data);

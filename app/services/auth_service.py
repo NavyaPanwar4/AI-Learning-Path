@@ -1,3 +1,4 @@
+from app.utils.time import utcnow_naive
 import secrets
 import uuid
 from datetime import datetime, timedelta
@@ -92,6 +93,9 @@ class AuthService:
             if not user:
                 raise ValueError("User not found")
 
+            if not db.query(Goal).filter(Goal.goal_id == profile_data.goal_id).first():
+                raise ValueError("Selected goal does not exist")
+
             user.goal_id = profile_data.goal_id
             user.experience_level = profile_data.experience_level
             user.available_hours_per_week = profile_data.available_hours_per_week
@@ -145,7 +149,7 @@ class AuthService:
 
             token = secrets.token_urlsafe(32)
             user.reset_token = token
-            user.reset_token_expires = datetime.utcnow() + timedelta(
+            user.reset_token_expires = utcnow_naive() + timedelta(
                 minutes=settings.PASSWORD_RESET_EXPIRE_MINUTES
             )
             db.commit()
@@ -159,7 +163,7 @@ class AuthService:
         db = SessionLocal()
         try:
             user = db.query(User).filter(User.reset_token == token).first()
-            if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+            if not user or not user.reset_token_expires or user.reset_token_expires < utcnow_naive():
                 raise ValueError("This reset link is invalid or has expired.")
 
             user.hashed_password = get_password_hash(new_password)

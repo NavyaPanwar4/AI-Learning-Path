@@ -1,0 +1,16 @@
+condition,goal,n_runs,profile_sensitivity
+A,ml_engineer,3,0.6604113675344915
+A,data_analyst,3,0.3746014021833442
+A,nlp_llm,3,0.6218386758153028
+B,ml_engineer,1,
+B,data_analyst,1,
+B,nlp_llm,1,
+C,ml_engineer,3,0.5875298390365867
+C,data_analyst,3,0.6771182791336107
+C,nlp_llm,3,0.681461749920289
+D,ml_engineer,1,0.5911062765462242
+D,data_analyst,1,0.7004680719174302
+D,nlp_llm,1,0.6592618439978859
+E,ml_engineer,3,0.6232135477618975
+E,data_analyst,3,0.6807564268936614
+E,nlp_llm,3,0.6500850517520411

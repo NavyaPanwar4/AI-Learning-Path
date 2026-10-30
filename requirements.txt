@@ -1,3 +1,4 @@
+pandas==3.0.5
 fastapi==0.141.1
 uvicorn==0.52.4
 sqlalchemy==2.0.52
@@ -9,7 +10,10 @@ passlib[bcrypt]==1.7.4
 bcrypt==3.2.2
 python-dotenv==1.2.3
 requests==2.34.2
-
+python-multipart==0.0.32
+reportlab==4.5.1
+pytest==8.4.2
+alembic==1.16.5
 # Semantic skill matching — replaces plain string similarity so phrasing
 # differences and abbreviations (e.g. "JS" vs "JavaScript") still match.
 # First run downloads the model (~90 MB) from Hugging Face, so it needs
@@ -18,8 +22,6 @@ sentence-transformers==6.0.1
 torch==2.14.0
 transformers==5.16.1
 
-# Optional — only required if ENABLE_HF_FALLBACK=true in .env (local Hugging
-# Face text-generation fallback in llm_service.py, separate from the
-# sentence-transformer embeddings above). Ollama + Groq already cover the
-# default LLM paths, so most contributors will not need this.
-# accelerate==1.15.0
+# Shared production rate limiting and FastAPI API-level tests
+redis==5.2.1
+httpx==0.28.1
