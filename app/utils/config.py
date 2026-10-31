@@ -151,6 +151,9 @@ class Settings(BaseSettings):
     # Reminders that became due longer ago than this are skipped (e.g. after downtime).
     REMINDER_EMAIL_MAX_AGE_HOURS: int = int(os.getenv("REMINDER_EMAIL_MAX_AGE_HOURS", "24"))
 
+    # AI tutor transcripts are permanently purged after this many days.
+    CHAT_HISTORY_RETENTION_DAYS: int = int(os.getenv("CHAT_HISTORY_RETENTION_DAYS", "30"))
+    CHAT_HISTORY_CLEANUP_INTERVAL_SECONDS: int = int(os.getenv("CHAT_HISTORY_CLEANUP_INTERVAL_SECONDS", "86400"))
     model_config = SettingsConfigDict(
         env_file=os.path.join(
             os.path.dirname(

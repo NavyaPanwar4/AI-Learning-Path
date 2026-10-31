@@ -9,6 +9,8 @@ export const explainQuizAnswer = (quizId, questionId, selectedIndex) =>
 export const getChatHistory = (goalId) =>
   api.get('/chat/history', { params: goalId ? { goal_id: goalId } : {} });
 
+export const clearChatHistory = () => api.delete('/chat/history');
+
 /** Stream tutor tokens over Server-Sent Events using the browser Fetch API. */
 export async function sendChatMessageStream(message, onDelta, goalId, signal) {
   const token = sessionStorage.getItem('access_token');

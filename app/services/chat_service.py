@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import timedelta
 
 from app.db.database import SessionLocal
 from app.db.models import ChatMessage, Goal, IssuedQuiz, QuizAttempt, Roadmap
@@ -7,6 +8,8 @@ from app.services.adaptive_service import adaptive_service
 from app.services.auth_service import auth_service
 from app.services.dashboard_service import dashboard_service
 from app.services.llm_service import llm_service, LLMError
+from app.utils.config import settings
+from app.utils.time import utcnow_naive
 
 MAX_HISTORY_TURNS = 12  # messages of context sent to the model each turn
 
@@ -16,6 +19,40 @@ class ChatService:
     performance) and drives the AI tutor chat through the local LLM.
     Conversation history is persisted per user+goal so the tutor keeps
     continuity across sessions."""
+
+    def _history_cutoff(self):
+        retention_days = max(1, int(settings.CHAT_HISTORY_RETENTION_DAYS))
+        return utcnow_naive() - timedelta(days=retention_days)
+
+    def _purge_expired_history(self, db, user_id: str) -> int:
+        deleted = (
+            db.query(ChatMessage)
+            .filter(
+                ChatMessage.user_id == str(user_id),
+                ChatMessage.created_at < self._history_cutoff(),
+            )
+            .delete(synchronize_session=False)
+        )
+        if deleted:
+            db.commit()
+        return int(deleted or 0)
+
+    def clear_history(self, user_id: str) -> dict:
+        """Delete all tutor history owned by the authenticated user."""
+        db = SessionLocal()
+        try:
+            deleted = (
+                db.query(ChatMessage)
+                .filter(ChatMessage.user_id == str(user_id))
+                .delete(synchronize_session=False)
+            )
+            db.commit()
+            return {"deleted_count": int(deleted or 0)}
+        except Exception:
+            db.rollback()
+            raise
+        finally:
+            db.close()
 
     # ------------------------------------------------------------------
     # Context
@@ -189,6 +226,7 @@ class ChatService:
 
         db = SessionLocal()
         try:
+            self._purge_expired_history(db, user_id)
             rows = (
                 db.query(ChatMessage)
                 .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id)
@@ -245,6 +283,7 @@ class ChatService:
         scoped_goal_id = ctx["goal_id"]
         db = SessionLocal()
         try:
+            self._purge_expired_history(db, user_id)
             rows = (
                 db.query(ChatMessage)
                 .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id)
@@ -360,6 +399,7 @@ class ChatService:
 
         db = SessionLocal()
         try:
+            self._purge_expired_history(db, user_id)
             rows = (
                 db.query(ChatMessage)
                 .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == scoped_goal_id)
@@ -388,6 +428,7 @@ class ChatService:
 
         db = SessionLocal()
         try:
+            self._purge_expired_history(db, user_id)
             rows = (
                 db.query(ChatMessage)
                 .filter(ChatMessage.user_id == str(user_id), ChatMessage.goal_id == target_goal_id)

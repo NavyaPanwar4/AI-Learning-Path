@@ -70,3 +70,12 @@ def get_history(goal_id: Optional[str] = None, current_user_id: str = Depends(ge
     except Exception as e:
         logger.error(f"Error fetching chat history: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.delete("/history")
+def clear_history(current_user_id: str = Depends(get_current_user)):
+    try:
+        return chat_service.clear_history(current_user_id)
+    except Exception as e:
+        logger.error("Error clearing chat history: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error")
+

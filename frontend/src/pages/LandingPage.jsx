@@ -20,21 +20,12 @@ export default function LandingPage() {
           <span><FiCompass size={18} /></span>
           Traject
         </Link>
-        <div className="landing-nav-actions">
-          {isSignedIn ? (
-            <Link className="btn btn-primary landing-nav-cta" to="/home">
-              Go to Overview <FiArrowRight size={15} />
-            </Link>
-          ) : (
-            <>
-              <Link className="landing-login" to="/login">Log in</Link>
-              <Link className="landing-login" to="/register">Register</Link>
-              <Link className="btn btn-primary landing-nav-cta" to="/register">
-                Get started <FiArrowRight size={15} />
-              </Link>
-            </>
-          )}
-        </div>
+        {!isSignedIn && (
+          <div className="landing-nav-actions">
+            <Link className="landing-login" to="/login">Log in</Link>
+            <Link className="landing-login" to="/register">Register</Link>
+          </div>
+        )}
       </nav>
 
       <section className="landing-hero">

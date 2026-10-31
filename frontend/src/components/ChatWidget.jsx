@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { FiMessageCircle, FiX, FiSend, FiCpu } from 'react-icons/fi';
-import { sendChatMessageStream, getChatHistory } from '../api/chat';
+import { FiMessageCircle, FiX, FiSend, FiCpu, FiTrash2 } from 'react-icons/fi';
+import { sendChatMessageStream, getChatHistory, clearChatHistory } from '../api/chat';
 import { useAuth } from '../context/useAuth';
 
 // Tiny no-dependency renderer for the bit of markdown the tutor model
@@ -169,6 +169,21 @@ export default function ChatWidget() {
       handleSend();
     }
   };
+  const handleClearHistory = async () => {
+    if (sending || messages.length === 0) return;
+    const confirmed = window.confirm(
+      'Clear all of your AI Tutor chat history? This cannot be undone.'
+    );
+    if (!confirmed) return;
+
+    setError('');
+    try {
+      await clearChatHistory();
+      setMessages([]);
+    } catch (err) {
+      setError(err.message || 'Could not clear chat history. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -194,7 +209,7 @@ export default function ChatWidget() {
           borderRadius: 16, boxShadow: '0 20px 50px rgba(35,37,39,.2)', overflow: 'hidden',
         }}>
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '14px 16px',
             background: 'var(--color-primary)', color: '#fff',
           }}>
             <div style={{
@@ -203,10 +218,25 @@ export default function ChatWidget() {
             }}>
               <FiCpu size={16} />
             </div>
-            <div>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: '.86rem', fontWeight: 700 }}>AI Tutor</div>
-              <div style={{ fontSize: '.68rem', opacity: .75 }}>Knows your goal &amp; progress</div>
+              <div style={{ fontSize: '.68rem', opacity: .75 }}>History is deleted after 30 days</div>
             </div>
+            <button
+              type="button"
+              onClick={handleClearHistory}
+              disabled={sending || messages.length === 0}
+              aria-label="Clear all chat history"
+              title="Clear all chat history"
+              style={{
+                display: 'grid', placeItems: 'center', width: 32, height: 32,
+                border: '1px solid rgba(255,255,255,.3)', borderRadius: 8,
+                color: '#fff', background: 'transparent', cursor: 'pointer',
+                opacity: sending || messages.length === 0 ? .45 : 1,
+              }}
+            >
+              <FiTrash2 size={15} />
+            </button>
           </div>
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 6px', display: 'flex', flexDirection: 'column', gap: 10 }}>

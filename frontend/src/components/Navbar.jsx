@@ -41,9 +41,6 @@ export default function Navbar() {
         Traject
       </Link>
       <div className="navbar-links">
-        <NavLink className="btn btn-ghost" to="/" end>
-          <FiCompass size={16} /> Landing page
-        </NavLink>
         <span className="nav-section-label">Workspace</span>
         <NavLink className="btn btn-ghost" to="/home"><FiHome size={16} /> Overview</NavLink>
         <NavLink className="btn btn-ghost" to="/my-skills"><FiStar size={16} /> My skills</NavLink>

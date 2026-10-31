@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from uuid import uuid4
 from app.routes import auth_routes, chat_routes, user_routes, roadmap_routes, learning_routes, admin_routes, share_routes
 from app.services.reminder_email_service import reminder_poller
+from app.services.chat_history_retention_service import chat_history_retention_poller
 from app.services.llm_service import LLMError
 from app.utils.config import settings
 from app.utils.logger import logger
@@ -63,6 +64,11 @@ async def llm_error_handler(request: Request, exc: LLMError):
 def startup_event():
     logger.info("Starting up Traject API...")
     reminder_poller.start()  # no-op unless REMINDER_EMAILS_ENABLED and SMTP_HOST are set
+    chat_history_retention_poller.start()
+
+@app.on_event("shutdown")
+def shutdown_event():
+    chat_history_retention_poller.stop()
 
 @app.get("/health", tags=["Health"])
 def health_check():
