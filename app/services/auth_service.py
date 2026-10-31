@@ -1,6 +1,7 @@
 from app.utils.time import utcnow_naive
 import secrets
 import uuid
+import re
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -130,11 +131,25 @@ class AuthService:
         finally:
             db.close()
 
+    @staticmethod
+    def _is_internal_test_goal(goal_name: str) -> bool:
+        """Identify the temporary LLM-first roadmap test goal for user-facing lists.
+
+        Keep this narrowly scoped: legitimate goals such as "Master Algorithms"
+        and any other production learning paths remain available.
+        """
+        normalized = re.sub(r"[^a-z0-9]+", " ", str(goal_name or "").casefold()).strip()
+        return normalized == "test llm first roadmap algorithms"
+
     def get_all_goals(self) -> list:
         db = SessionLocal()
         try:
             goals = db.query(Goal).all()
-            return [{"goal_id": g.goal_id, "goal_name": g.goal_name} for g in goals]
+            return [
+                {"goal_id": g.goal_id, "goal_name": g.goal_name}
+                for g in goals
+                if not self._is_internal_test_goal(g.goal_name)
+            ]
         finally:
             db.close()
 

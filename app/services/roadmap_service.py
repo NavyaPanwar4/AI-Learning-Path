@@ -1,5 +1,6 @@
 import json
 import math
+import re
 import uuid
 
 from app.services.phase_identity import ensure_phase_ids, preserve_phase_identity, reconcile_attempts_to_phase_order
@@ -33,6 +34,20 @@ from app.services.path_planner import PlannerConfig, SkillGraph, SkillNode, plan
 from app.services.roadmap_validator import validate_llm_roadmap_proposal
 from app.utils.config import settings
 from app.utils.logger import logger
+
+
+_HIDDEN_TEST_ROADMAP_NAME = "test llm first roadmap algorithms learning path"
+
+
+def _is_hidden_test_roadmap_name(goal_name: str | None) -> bool:
+    """Match the temporary LLM-first Algorithms test path for list views.
+
+    Punctuation and case are normalized so formatting variations do not cause
+    this internal test entry to reappear. This filter only affects listings; it
+    does not delete the roadmap or change any planner/algorithm behaviour.
+    """
+    normalized_name = re.sub(r"[^a-z0-9]+", " ", str(goal_name or "").casefold()).strip()
+    return _HIDDEN_TEST_ROADMAP_NAME in normalized_name
 
 
 class RoadmapService:
@@ -760,18 +775,6 @@ class RoadmapService:
         else:
             raise ValueError("No valid learning plan could be constructed for this goal.")
 
-        # A structural repair can cause the second elaboration call to omit
-        # projects even though the original proposal contained good ideas.
-        # Restore proposal projects by skill overlap first, then guarantee a
-        # concrete project for every phase as a last-resort fallback.
-        if llm_first_plan and llm_first_plan["repaired"]:
-            roadmap_dict = llm_service.preserve_proposal_projects(
-                llm_first_plan.get("proposal"),
-                llm_first_plan.get("plan_phases", []),
-                roadmap_dict,
-            )
-        roadmap_dict = llm_service.ensure_project_ideas(roadmap_dict)
-
         # The frontend needs the goal ID immediately
         # after generating a new roadmap.
         if isinstance(roadmap_dict, dict):
@@ -901,6 +904,7 @@ class RoadmapService:
                     "is_complete": r.is_complete,
                 }
                 for r in rows
+                if not _is_hidden_test_roadmap_name(r.goal_name)
             ]
 
         finally:
@@ -931,7 +935,11 @@ class RoadmapService:
 
             roadmap = self._decode_roadmap(row.data)
 
+            # The human-readable roadmap name is stored in its own database
+            # column, not inside the serialized phase payload. Include it in
+            # every detail response so the UI can identify the roadmap being viewed.
             roadmap["goal_id"] = row.goal_id
+            roadmap["goal_name"] = row.goal_name or roadmap.get("goal_name") or "Learning Roadmap"
 
             # Repair malformed study notes already stored
             # in the database.
@@ -1047,6 +1055,10 @@ class RoadmapService:
 
             db.commit()
 
+            # Keep identifying metadata when the frontend replaces its local
+            # roadmap object with this mutation response.
+            roadmap["goal_id"] = row.goal_id
+            roadmap["goal_name"] = row.goal_name or roadmap.get("goal_name") or "Learning Roadmap"
             return roadmap
 
         finally:
@@ -1301,6 +1313,8 @@ class RoadmapService:
 
             db.commit()
             activity_service.log_activity(user_id, "roadmap_completed")
+            roadmap["goal_id"] = row.goal_id
+            roadmap["goal_name"] = row.goal_name or roadmap.get("goal_name") or "Learning Roadmap"
             return roadmap
         except Exception:
             db.rollback()

@@ -330,6 +330,8 @@ class AdaptiveService:
             if phase_index + 1 < len(phases):
                 next_phase = phases[phase_index + 1]
                 if next_phase.get("is_remedial") and next_phase.get("remedial_for") == source_title:
+                    roadmap["goal_id"] = row.goal_id
+                    roadmap["goal_name"] = row.goal_name or roadmap.get("goal_name") or "Learning Roadmap"
                     return roadmap
 
             latest_quiz = self._latest_attempt_for_phase(db, user_id, goal_id, phases[phase_index], phase_index)
@@ -373,6 +375,7 @@ class AdaptiveService:
             db.commit()
 
             roadmap["goal_id"] = goal_id
+            roadmap["goal_name"] = row.goal_name or roadmap.get("goal_name") or "Learning Roadmap"
             return roadmap
         finally:
             db.close()

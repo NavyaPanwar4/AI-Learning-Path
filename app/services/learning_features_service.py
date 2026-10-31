@@ -57,6 +57,7 @@ class LearningFeaturesService:
             roadmap.is_complete = bool(parsed.get("is_complete", False))
             db.commit()
             parsed["goal_id"] = goal_id
+            parsed["goal_name"] = roadmap.goal_name or parsed.get("goal_name") or "Learning Roadmap"
             return parsed
         finally:
             db.close()
@@ -304,6 +305,7 @@ class LearningFeaturesService:
             row.data = json.dumps(data)
             db.commit()
             data["goal_id"] = goal_id
+            data["goal_name"] = row.goal_name or data.get("goal_name") or "Learning Roadmap"
             return data
         finally:
             db.close()
@@ -340,6 +342,7 @@ class LearningFeaturesService:
                 row.data = json.dumps(roadmap_data)
             db.commit()
             roadmap_data["goal_id"] = goal_id
+            roadmap_data["goal_name"] = row.goal_name or roadmap_data.get("goal_name") or "Imported roadmap"
             return roadmap_data
         finally:
             db.close()

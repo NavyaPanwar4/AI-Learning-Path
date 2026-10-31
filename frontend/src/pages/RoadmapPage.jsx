@@ -577,9 +577,12 @@ export default function RoadmapPage() {
 
       <div className="container">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 36, flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <h1 style={{ fontSize: '1.9rem', marginBottom: 6, display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              Your Learning Roadmap
+          <div style={{ minWidth: 0, flex: '1 1 320px' }}>
+            <p style={{ margin: '0 0 6px', color: 'var(--color-text-muted)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Currently viewing
+            </p>
+            <h1 style={{ fontSize: '1.9rem', lineHeight: 1.2, marginBottom: 8, display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', overflowWrap: 'anywhere' }}>
+              {roadmap?.goal_name || 'Your Learning Roadmap'}
               {isRoadmapFinished !== undefined && (
                 <span className={`badge ${isRoadmapFinished ? 'badge-primary' : 'badge-surface'}`} style={{ fontSize: '0.9rem' }}>
                   {isRoadmapFinished ? 'Completed' : 'In Progress'}
@@ -592,7 +595,7 @@ export default function RoadmapPage() {
               )}
             </h1>
             <p style={{ color: 'var(--color-text-muted)' }}>
-              {phases.length} phases • Personalized just for you
+              Learning roadmap • {phases.length} phases • Personalized just for you
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>

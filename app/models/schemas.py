@@ -167,6 +167,7 @@ class RoadmapPhase(BaseModel):
 
 class RoadmapResponse(BaseModel):
     goal_id: Optional[str] = None
+    goal_name: Optional[str] = Field(None, max_length=160)
     phases: Optional[List[RoadmapPhase]] = []
     roadmap_text: Optional[str] = None
     is_complete: bool = False
