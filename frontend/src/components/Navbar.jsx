@@ -1,10 +1,28 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { FiCompass, FiStar, FiLogOut, FiMap, FiHome, FiMessageSquare, FiUser, FiCalendar } from 'react-icons/fi';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import {
+  FiCompass,
+  FiStar,
+  FiLogOut,
+  FiMap,
+  FiHome,
+  FiMessageSquare,
+  FiUser,
+  FiCalendar,
+} from 'react-icons/fi';
 import { logout } from '../api/auth';
 import { useAuth } from '../context/useAuth';
 
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+]);
+
 export default function Navbar() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { authenticated, signOut } = useAuth();
 
   const handleLogout = () => {
@@ -13,15 +31,19 @@ export default function Navbar() {
     navigate('/');
   };
 
-  if (!authenticated) return null;
+  const isPublicRoute = PUBLIC_PATHS.has(pathname) || pathname.startsWith('/share/');
+  if (!authenticated || isPublicRoute) return null;
 
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
+    <nav className="navbar" aria-label="Main navigation">
+      <Link to="/" className="navbar-brand" aria-label="Traject landing page">
         <FiCompass size={22} />
-        Learning Path
-      </div>
+        Traject
+      </Link>
       <div className="navbar-links">
+        <NavLink className="btn btn-ghost" to="/" end>
+          <FiCompass size={16} /> Landing page
+        </NavLink>
         <span className="nav-section-label">Workspace</span>
         <NavLink className="btn btn-ghost" to="/home"><FiHome size={16} /> Overview</NavLink>
         <NavLink className="btn btn-ghost" to="/my-skills"><FiStar size={16} /> My skills</NavLink>

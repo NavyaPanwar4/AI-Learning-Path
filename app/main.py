@@ -11,7 +11,7 @@ from app.utils.rate_limit import RequestRateLimitMiddleware
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="Backend for Personalized Learning Path Generator. Auto-generates fully personalized learning paths using user profiles and strict LLM extraction orchestration.",
+    description="Traject API for personalized, adaptive learning paths and progress-aware learning support.",
     version="1.0.0"
 )
 
@@ -61,7 +61,7 @@ async def llm_error_handler(request: Request, exc: LLMError):
 
 @app.on_event("startup")
 def startup_event():
-    logger.info("Starting up Personalized Learning Path Generator...")
+    logger.info("Starting up Traject API...")
     reminder_poller.start()  # no-op unless REMINDER_EMAILS_ENABLED and SMTP_HOST are set
 
 @app.get("/health", tags=["Health"])

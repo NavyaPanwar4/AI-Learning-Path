@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Personalized Learning Path Generator"
+    PROJECT_NAME: str = "Traject"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     # Legacy compatibility setting; application startup does not run create_all.
@@ -137,7 +137,7 @@ class Settings(BaseSettings):
     )
     EMAIL_FROM: str = os.getenv(
         "EMAIL_FROM",
-        "no-reply@learningpath.local",
+        "no-reply@traject.local",
     )
     FRONTEND_URL: str = os.getenv(
         "FRONTEND_URL",

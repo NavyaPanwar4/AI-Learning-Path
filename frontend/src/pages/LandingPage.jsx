@@ -11,17 +11,29 @@ const highlights = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const { authenticated: isSignedIn } = useAuth();
-  const destination = isSignedIn ? '/home' : '/login';
+  const primaryDestination = isSignedIn ? '/home' : '/register';
 
   return (
     <main className="landing-page">
-      <nav className="landing-nav">
-        <Link to="/" className="landing-brand"><span><FiCompass size={18} /></span>Learning Path</Link>
+      <nav className="landing-nav" aria-label="Public navigation">
+        <Link to="/" className="landing-brand">
+          <span><FiCompass size={18} /></span>
+          Traject
+        </Link>
         <div className="landing-nav-actions">
-          {!isSignedIn && <Link className="landing-login" to="/login">Sign in</Link>}
-          <button className="btn btn-primary landing-nav-cta" onClick={() => navigate(destination)}>
-            {isSignedIn ? 'Open workspace' : 'Start learning'} <FiArrowRight size={15} />
-          </button>
+          {isSignedIn ? (
+            <Link className="btn btn-primary landing-nav-cta" to="/home">
+              Go to Overview <FiArrowRight size={15} />
+            </Link>
+          ) : (
+            <>
+              <Link className="landing-login" to="/login">Log in</Link>
+              <Link className="landing-login" to="/register">Register</Link>
+              <Link className="btn btn-primary landing-nav-cta" to="/register">
+                Get started <FiArrowRight size={15} />
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -29,18 +41,18 @@ export default function LandingPage() {
         <div className="landing-copy">
           <span className="landing-eyebrow"><FiZap size={14} /> A calmer way to grow</span>
           <h1>Build a learning path that feels <em>made for you.</em></h1>
-          <p>Learning Path turns your goals, available time, and current skills into a focused plan you can actually follow.</p>
+          <p>Traject turns your goals, available time, and current skills into a focused plan you can actually follow.</p>
           <div className="landing-cta-row">
-            <button className="btn btn-primary landing-main-cta" onClick={() => navigate(destination)}>
-              Build my learning path <FiArrowRight size={17} />
+            <button className="btn btn-primary landing-main-cta" onClick={() => navigate(primaryDestination)}>
+              {isSignedIn ? 'Go to Overview' : 'Create my account'} <FiArrowRight size={17} />
             </button>
-            <span>No credit card. Start with a goal.</span>
+            <span>{isSignedIn ? 'Your learning workspace is ready.' : 'Already have an account? Log in above.'}</span>
           </div>
           <div className="landing-proof"><span><FiCheck size={14} /></span>Personalized roadmap <span><FiCheck size={14} /></span>AI study notes <span><FiCheck size={14} /></span>Progress tracking</div>
         </div>
 
         <div className="landing-preview" aria-label="Example learning path preview">
-          <div className="preview-topline"><span>YOUR LEARNING PATH</span><span className="preview-live">On track</span></div>
+          <div className="preview-topline"><span>YOUR TRAJECT ROADMAP</span><span className="preview-live">On track</span></div>
           <h2>Machine Learning foundations</h2>
           <p>9 weeks · 3 phases · tailored for 6 hours/week</p>
           <div className="preview-progress"><span>Progress</span><b>24%</b><i><em /></i></div>
@@ -67,7 +79,7 @@ export default function LandingPage() {
         <div className="landing-tool-list"><p><FiMap size={17} />Structured phases and projects</p><p><FiFileText size={17} />On-demand AI study guides</p><p><FiZap size={17} />Resources matched to your goal</p></div>
       </section>
 
-      <footer className="landing-footer"><span>© {new Date().getFullYear()} Learning Path</span><Link to="/login">Start your path <FiArrowRight size={14} /></Link></footer>
+      <footer className="landing-footer"><span>© {new Date().getFullYear()} Traject</span><Link to={isSignedIn ? '/home' : '/register'}>{isSignedIn ? 'Open Overview' : 'Start your path'} <FiArrowRight size={14} /></Link></footer>
     </main>
   );
 }

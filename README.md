@@ -1,4 +1,4 @@
-# AI-Based Adaptive Learning Path Generator
+# Traject
 
 A full-stack web application that turns a learner's **goal** and **what they already know** into a
 personalised, phase-wise learning roadmap, tracks **per-skill mastery** from quiz results, and

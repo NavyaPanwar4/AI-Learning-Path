@@ -15,10 +15,10 @@ function getPasswordStrength(pw) {
   return 'strong';
 }
 
-export default function AuthPage() {
+export default function AuthPage({ initialMode = 'login' }) {
   const navigate = useNavigate();
   const { signIn } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(initialMode !== 'register');
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
@@ -29,6 +29,14 @@ export default function AuthPage() {
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
     setError('');
+  };
+
+  const handleModeToggle = () => {
+    const nextIsLogin = !isLogin;
+    setIsLogin(nextIsLogin);
+    setError('');
+    setForm({ username: '', email: '', password: '' });
+    navigate(nextIsLogin ? '/login' : '/register', { replace: true });
   };
 
   const handleSubmit = async (e) => {
@@ -43,6 +51,7 @@ export default function AuthPage() {
         return;
       }
     }
+
     setLoading(true);
     setError('');
     try {
@@ -54,16 +63,7 @@ export default function AuthPage() {
         sessionStorage.setItem('access_token', response.data.access_token);
       }
       signIn();
-
-      if (isLogin) {
-        // Decode JWT to check goal_id (we use a simple heuristic: try to get profile)
-        // Since we don't have a /me endpoint, we'll redirect returning users to /roadmap
-        // and new users (just registered) always go to /onboarding
-        // For login: we redirect to /roadmap, which will bounce back if no profile is set
-        navigate('/home');
-      } else {
-        navigate('/onboarding');
-      }
+      navigate(isLogin ? '/home' : '/onboarding');
     } catch (err) {
       const msg = err.response?.data?.detail;
       if (Array.isArray(msg)) {
@@ -79,24 +79,22 @@ export default function AuthPage() {
   return (
     <div className="page-center">
       <div className="container-sm auth-container">
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <Link to="/" aria-label="Return to Traject landing page" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
             <div style={{ background: 'var(--color-primary)', color: '#fff', borderRadius: 12, padding: '8px 10px', display: 'flex' }}>
               <FiCompass size={24} />
             </div>
-            <h1 style={{ fontSize: '1.8rem', color: 'var(--color-primary)' }}>Learning Path</h1>
-          </div>
+            <h1 style={{ fontSize: '1.8rem', color: 'var(--color-primary)' }}>Traject</h1>
+          </Link>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
             Your AI-powered personalized roadmap generator
           </p>
         </div>
 
-        {/* Card */}
         <div className="card">
-          <h2 style={{ marginBottom: 6 }}>{isLogin ? 'Welcome back ' : 'Create your account'}</h2>
+          <h2 style={{ marginBottom: 6 }}>{isLogin ? 'Welcome back' : 'Create your account'}</h2>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: 28 }}>
-            {isLogin ? 'Sign in to continue your learning journey.' : 'Join thousands building their learning paths.'}
+            {isLogin ? 'Sign in to continue your learning journey.' : 'Create your Traject account to start learning.'}
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -182,7 +180,7 @@ export default function AuthPage() {
               {isLogin ? "Don't have an account? " : 'Already have an account? '}
             </span>
             <button
-              onClick={() => { setIsLogin((v) => !v); setError(''); setForm({ username: '', email: '', password: '' }); }}
+              onClick={handleModeToggle}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}
             >
               {isLogin ? 'Register →' : '← Back to Login'}
