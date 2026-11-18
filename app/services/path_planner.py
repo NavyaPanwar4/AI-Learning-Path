@@ -18,8 +18,10 @@ Rules (R1-R4; they are the "adaptation engine" described in the paper)
 ----------------------------------------------------------------------
 R1  Prerequisite closure: every ancestor of a target skill is a candidate.
 R2  Topological ordering: a skill is never placed before its prerequisites.
-R3  Compression: a candidate whose mastery >= ``strong`` is excluded from
-    instruction (reported in ``Plan.skipped``).
+R3  Compression: a candidate is excluded only when mastery >= ``strong`` AND
+    the learner has passed explicit mastery verification (reported in
+    ``Plan.skipped``). Research callers that omit the verification map retain
+    the historic threshold-only behavior.
 R4  Remediation emphasis: mastery < ``weak`` -> action ``learn``;
     ``weak`` <= mastery < ``strong`` -> action ``review``.
 
@@ -246,13 +248,16 @@ def plan_path(
     mastery: Mapping[str, float],
     config: Optional[PlannerConfig] = None,
     candidates: Optional[Sequence[str]] = None,
+    verified: Optional[Mapping[str, bool]] = None,
 ) -> Plan:
     """Build an ordered, phased plan. Pure and deterministic.
 
     ``mastery`` maps skill id -> [0, 1]; missing skills count as 0.0.
     ``candidates`` is used only when ``config.use_graph`` is False: it is the
     ordered list of skills to filter (e.g. an LLM-proposed list). If omitted
-    the targets themselves are used.
+    the targets themselves are used. When ``verified`` is provided, a skill is
+    skipped only when mastery is strong AND ``verified[skill_id]`` is true.
+    ``None`` retains the original threshold-only behavior for research callers.
     """
     cfg = config or PlannerConfig()
     targets = list(dict.fromkeys(targets))
@@ -289,7 +294,8 @@ def plan_path(
             kept.append((sid, ACTION_LEARN))
             continue
         m = m_of(sid)
-        if m >= cfg.strong:
+        is_verified = verified is None or bool(verified.get(sid, False))
+        if m >= cfg.strong and is_verified:
             skipped.append(sid)
         elif m < cfg.weak:
             kept.append((sid, ACTION_LEARN))

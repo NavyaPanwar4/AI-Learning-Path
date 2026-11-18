@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from fastapi.responses import Response
 from app.routes.auth_routes import get_current_user
 from app.models.schemas import RoadmapResponse, FeedbackRequest, StudyNotes, QuizSubmission
-from app.services.roadmap_service import roadmap_service
+from app.services.roadmap_service import roadmap_service, RoadmapAlreadyExistsError
 from app.services.feedback_service import feedback_service
 from app.services.llm_service import llm_service, LLMError
 from app.services.activity_service import activity_service
@@ -10,15 +10,48 @@ from app.services.skill_extraction import skill_extraction_service
 from app.services.adaptive_service import adaptive_service
 from app.services.report_service import report_service
 from app.services.quiz_service import quiz_service, QuizSubmissionError
+from app.services.mastery_verification_service import (
+    mastery_verification_service, MasteryVerificationError,
+)
 import logging
 
 router = APIRouter(prefix="/roadmap", tags=["Roadmap"])
 logger = logging.getLogger("learning_path_generator")
 
 def _queue_roadmap_generation(background_tasks: BackgroundTasks, current_user_id: str):
-    """Persist a generation job and run generation outside the request response."""
-    job = roadmap_service.create_generation_job(current_user_id)
-    background_tasks.add_task(roadmap_service.run_generation_job, job["job_id"], current_user_id)
+    "Queue a roadmap, reusing an active job and rejecting a saved roadmap."
+    existing = roadmap_service.get_existing_roadmap_for_active_goal(current_user_id)
+    if existing:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "ROADMAP_ALREADY_EXISTS",
+                "goal_id": existing["goal_id"],
+                "goal_name": existing["goal_name"],
+                "message": existing["goal_name"] + " has already been generated. Delete the saved roadmap before generating it again.",
+            },
+        )
+    verification = mastery_verification_service.pending_for_active_goal(current_user_id)
+    if verification["pending_skills"]:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "mastery_verification_required",
+                "goal_id": verification.get("goal_id"),
+                "pending_skills": verification["pending_skills"],
+                "message": "Verify provisionally mastered skills before generating your roadmap.",
+            },
+        )
+    try:
+        job = roadmap_service.create_generation_job(current_user_id)
+    except RoadmapAlreadyExistsError as exc:
+        raise HTTPException(status_code=409, detail=exc.as_detail()) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    # Attach to an already queued job instead of creating duplicate work.
+    if not job.get("reused") or job.get("status") == "queued":
+        background_tasks.add_task(roadmap_service.run_generation_job, job["job_id"], current_user_id)
     return job
 
 
@@ -38,6 +71,65 @@ def get_generation_job(job_id: str, current_user_id: str = Depends(get_current_u
     if not job:
         raise HTTPException(status_code=404, detail="Generation job not found")
     return job
+
+
+@router.post("/generation-jobs/{job_id}/cancel")
+def cancel_generation_job(job_id: str, current_user_id: str = Depends(get_current_user)):
+    job = roadmap_service.request_cancel_generation(job_id, current_user_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Generation job not found")
+    if job["status"] in ("completed", "failed"):
+        raise HTTPException(status_code=409, detail={
+            "code": "GENERATION_NOT_CANCELLABLE",
+            "status": job["status"],
+            "message": "This roadmap generation has already finished.",
+        })
+    return job
+
+
+
+@router.get("/{goal_id}/mastery-verification/pending")
+def get_pending_mastery_verifications(goal_id: str, current_user_id: str = Depends(get_current_user)):
+    return mastery_verification_service.list_pending(current_user_id, goal_id)
+
+
+@router.post("/{goal_id}/skills/{skill_id}/verification-quiz")
+def issue_mastery_verification_quiz(goal_id: str, skill_id: str, current_user_id: str = Depends(get_current_user)):
+    try:
+        return mastery_verification_service.issue_quiz(current_user_id, goal_id, skill_id)
+    except MasteryVerificationError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
+    except LLMError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=str(exc))
+    except Exception as exc:
+        logger.exception("Could not issue mastery verification quiz: %s", exc)
+        raise HTTPException(status_code=500, detail="Could not issue a verification quiz right now.")
+
+
+@router.post("/{goal_id}/skills/{skill_id}/verification-quiz/submit")
+def submit_mastery_verification_quiz(
+    goal_id: str, skill_id: str, submission: QuizSubmission,
+    current_user_id: str = Depends(get_current_user),
+):
+    try:
+        return mastery_verification_service.submit_quiz(
+            current_user_id, goal_id, skill_id, submission.quiz_id, submission.answers
+        )
+    except MasteryVerificationError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.detail)
+    except Exception as exc:
+        logger.exception("Could not grade mastery verification quiz: %s", exc)
+        raise HTTPException(status_code=500, detail="Could not grade the verification quiz.")
+
+
+@router.get("/existing/{goal_id}")
+def check_existing_roadmap(goal_id: str, current_user_id: str = Depends(get_current_user)):
+    """Check a selected goal for an existing roadmap before skill assessment."""
+    existing = roadmap_service.get_existing_roadmap_for_goal(current_user_id, goal_id)
+    if not existing:
+        return {"exists": False, "goal_id": str(goal_id)}
+    return {"exists": True, **existing}
+
 
 @router.get("/saved")
 def get_saved_roadmaps(current_user_id: str = Depends(get_current_user)):

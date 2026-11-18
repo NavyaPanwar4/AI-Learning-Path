@@ -10,12 +10,47 @@ validation enforces scope, mastery and prerequisite constraints.
 import heapq
 
 from app.db.database import SessionLocal
-from app.db.models import GoalSkill, Skill, SkillDependency, User, UserSkill
+from app.db.models import GoalSkill, GoalUserSkill, Skill, SkillDependency, User
 from app.services.curriculum_service import curriculum_service
+from app.services.mastery_decay import decay_mastery, load_last_reviewed_at_by_skill, normalize_skill_name
+from app.utils.config import settings
 from app.utils.logger import logger
 
 
 class GapAnalysisService:
+    def _verified_mastered_skill_ids(self, db, user_id: str, goal_id: str) -> set[str]:
+        """Return only skills verified and still above the strong BKT threshold.
+
+        UserSkill rows are intentionally excluded: they represent global profile
+        membership, not goal-specific quiz evidence.
+        """
+        states = db.query(GoalUserSkill).filter(
+            GoalUserSkill.user_id == str(user_id),
+            GoalUserSkill.goal_id == str(goal_id),
+        ).all()
+        if not states:
+            return set()
+        skill_ids = {str(state.skill_id) for state in states}
+        skills = {
+            str(skill.skill_id): skill
+            for skill in db.query(Skill).filter(Skill.skill_id.in_(skill_ids)).all()
+        }
+        last_reviewed = load_last_reviewed_at_by_skill(db, str(user_id), str(goal_id))
+        mastered = set()
+        for state in states:
+            if str(getattr(state, "verification_status", "unverified") or "unverified") != "verified":
+                continue
+            skill = skills.get(str(state.skill_id))
+            if skill is None or state.mastery_probability is None:
+                continue
+            probability = decay_mastery(
+                float(state.mastery_probability),
+                last_reviewed.get(normalize_skill_name(skill.skill_name)),
+            )
+            if probability >= float(settings.PLANNER_STRONG_THRESHOLD):
+                mastered.add(str(state.skill_id))
+        return mastered
+
     def get_curated_plan(self, user_id: str):
         """Return a fixed curriculum plan for a seeded goal, or ``None``."""
         db = SessionLocal()
@@ -27,14 +62,11 @@ class GapAnalysisService:
             skills_by_id = {
                 str(skill.skill_id): skill for skill in db.query(Skill).all()
             }
-            current_skill_ids = {
-                str(us.skill_id)
-                for us in db.query(UserSkill)
-                .filter(UserSkill.user_id == str(user_id))
-                .all()
-            }
+            verified_mastered_ids = self._verified_mastered_skill_ids(
+                db, str(user_id), str(user.goal_id)
+            )
             return curriculum_service.build_plan(
-                str(user.goal_id), skills_by_id, current_skill_ids
+                str(user.goal_id), skills_by_id, verified_mastered_ids
             )
         finally:
             db.close()
@@ -56,12 +88,9 @@ class GapAnalysisService:
             skill_by_id = {
                 str(skill.skill_id): skill for skill in db.query(Skill).all()
             }
-            possessed = {
-                str(us.skill_id)
-                for us in db.query(UserSkill)
-                .filter(UserSkill.user_id == str(user_id))
-                .all()
-            }
+            verified_mastered_ids = self._verified_mastered_skill_ids(
+                db, str(user_id), str(user.goal_id)
+            )
 
             target_links = (
                 db.query(GoalSkill)
@@ -82,7 +111,7 @@ class GapAnalysisService:
                 str(link.skill_id)
                 for link in target_links
                 if str(link.skill_id) in skill_by_id
-                and str(link.skill_id) not in possessed
+                and str(link.skill_id) not in verified_mastered_ids
             ]
             if not target_ids:
                 return []
@@ -100,7 +129,7 @@ class GapAnalysisService:
             while stack:
                 dependent = stack.pop()
                 for prerequisite in prereq_map.get(dependent, set()):
-                    if prerequisite not in possessed and prerequisite not in required:
+                    if prerequisite not in verified_mastered_ids and prerequisite not in required:
                         required.add(prerequisite)
                         stack.append(prerequisite)
 

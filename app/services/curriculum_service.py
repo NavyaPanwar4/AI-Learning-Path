@@ -56,9 +56,9 @@ class CurriculumService:
     ) -> Optional[list]:
         """Build fixed phase dictionaries, or None for an uncurated goal.
 
-        ``skills_by_id`` maps IDs to ORM Skill objects. A skill already present
-        in the learner's UserSkill records is omitted, preserving the app's
-        existing behavior of not re-teaching recorded skills.
+        ``skills_by_id`` maps IDs to ORM Skill objects. ``possessed_skill_ids``
+        must contain only skills the caller has confirmed as mastered; a global
+        UserSkill/profile record alone is not sufficient to omit a skill.
         """
         curriculum = self._load().get(str(goal_id))
         if curriculum is None:

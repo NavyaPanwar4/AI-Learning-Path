@@ -29,19 +29,26 @@ def seed(Session, mastery):
     db.add(m.GoalSkill(goal_id="g", skill_id="c"))
     for sid, p in mastery.items():
         # Mastery is goal-scoped: the planner reads GoalUserSkill for this goal.
-        db.add(m.GoalUserSkill(user_id="u", goal_id="g", skill_id=sid, proficiency=1, mastery_probability=p))
+        db.add(m.GoalUserSkill(
+            user_id="u", goal_id="g", skill_id=sid, proficiency=1, mastery_probability=p,
+            verification_status="unverified",
+        ))
     db.commit(); db.close()
 
 
 def test_build_plan_orders_and_filters(session_factory):
     seed(session_factory, {"a": 0.9, "b": 0.2})
     plan, phases = rs.roadmap_service._build_plan("u", "g")
-    assert plan.skill_ids() == ["b", "c"] and plan.skipped == ["a"]
-    assert phases[0]["skills"][0] == {"id": "b", "name": "B", "action": "learn"}
+    assert plan.skill_ids() == ["a", "b", "c"] and plan.skipped == []
+    assert phases[0]["skills"][0] == {"id": "a", "name": "A", "action": "review"}
 
 
-def test_build_plan_none_when_everything_mastered(session_factory):
+def test_build_plan_skips_only_when_everything_is_mastered_and_verified(session_factory):
     seed(session_factory, {"a": 0.95, "b": 0.95, "c": 0.95})
+    db = session_factory()
+    for state in db.query(m.GoalUserSkill).filter_by(user_id="u", goal_id="g").all():
+        state.verification_status = "verified"
+    db.commit(); db.close()
     assert rs.roadmap_service._build_plan("u", "g") is None
 
 

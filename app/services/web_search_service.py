@@ -658,14 +658,14 @@ class WebSearchService:
             phase_specs.append((phase_index, phase_title, skills))
 
         empty_result = {phase_index: [] for phase_index, _, _ in phase_specs}
-        if not self.api_key or self.api_key.strip().casefold() in {
+        live_search_enabled = bool(self.api_key and self.api_key.strip().casefold() not in {
             "your_tavily_api_key", "replace_me", "changeme", "your_api_key"
-        }:
+        })
+        if not live_search_enabled:
             logger.warning(
-                "Tavily resource search is not configured; roadmap phases will "
-                "not receive unverified LLM-generated resource URLs. Set a real TAVILY_API_KEY in .env."
+                "Tavily resource search is not configured; using curated resources "
+                "only. Set a real TAVILY_API_KEY in .env for additional live results."
             )
-            return empty_result
 
         signature = tuple((idx, title, tuple(skills)) for idx, title, skills in phase_specs)
         cache_key = ("phase_plan", signature)
@@ -686,7 +686,7 @@ class WebSearchService:
                         cached_skill = self._cache.get(individual_cache_key)
                     if cached_skill and time.monotonic() - cached_skill[0] < settings.WEB_SEARCH_CACHE_TTL_SECONDS:
                         results = copy.deepcopy(cached_skill[1])
-                    else:
+                    elif live_search_enabled:
                         # One focused query per skill lets later phases get
                         # coverage without increasing total query volume versus
                         # the old 3-queries-for-first-8-skills strategy.
@@ -696,6 +696,8 @@ class WebSearchService:
                             self._cache[individual_cache_key] = (
                                 time.monotonic(), copy.deepcopy(results)
                             )
+                    else:
+                        results = []
                     skill_results[skill_key] = results
 
                 for result in skill_results[skill_key]:

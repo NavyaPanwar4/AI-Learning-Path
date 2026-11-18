@@ -48,6 +48,17 @@ def test_login_api_returns_auth_cookie(monkeypatch, client):
 def test_roadmap_generation_api_queues_background_job(monkeypatch, authenticated_client):
     from app.routes import roadmap_routes
 
+    # The generation-job method is mocked below; keep this API test independent
+    # from the user's database and the mastery-verification lookup.
+    monkeypatch.setattr(
+        roadmap_routes.roadmap_service,
+        "get_existing_roadmap_for_active_goal",
+        lambda _user_id: None,
+    )
+    verifier = getattr(roadmap_routes, "mastery_verification_service", None)
+    if verifier is not None:
+        monkeypatch.setattr(verifier, "pending_for_active_goal", lambda _user_id: {"pending_skills": []})
+
     started = []
     monkeypatch.setattr(
         roadmap_routes.roadmap_service,

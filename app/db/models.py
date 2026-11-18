@@ -9,7 +9,9 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    Index,
     String,
+    text,
     Text,
     UniqueConstraint,
     false,
@@ -122,6 +124,12 @@ class GoalUserSkill(Base):
     bkt_observations = Column(Integer, nullable=False, default=0)
     created_at = Column(DateTime, default=utcnow_naive)
     updated_at = Column(DateTime, default=utcnow_naive, onupdate=utcnow_naive)
+    # A high BKT estimate is provisional until the learner passes a
+    # server-graded, multi-aspect verification quiz.
+    verification_status = Column(String(20), nullable=False, default="unverified", server_default="unverified")
+    verification_attempts = Column(Integer, nullable=False, default=0, server_default="0")
+    last_verification_score = Column(Integer, nullable=True)
+    verified_at = Column(DateTime, nullable=True)
 
 
 class UserFeedback(Base):
@@ -168,6 +176,16 @@ class RoadmapVersion(Base):
 
 class RoadmapGenerationJob(Base):
     __tablename__ = "roadmap_generation_jobs"
+    __table_args__ = (
+        Index(
+            "uq_active_roadmap_job_user_goal",
+            "user_id",
+            "goal_id",
+            unique=True,
+            sqlite_where=text("goal_id IS NOT NULL AND status IN ('queued', 'running', 'cancel_requested')"),
+            postgresql_where=text("goal_id IS NOT NULL AND status IN ('queued', 'running', 'cancel_requested')"),
+        ),
+    )
 
     job_id = Column(String, primary_key=True, default=gen_uuid)
     user_id = Column(String, ForeignKey("users.user_id"), nullable=False, index=True)
@@ -236,6 +254,8 @@ class IssuedQuiz(Base):
     goal_id = Column(String, nullable=False, index=True)
     phase_index = Column(Integer, nullable=False)
     difficulty = Column(String, nullable=False, default="beginner")
+    quiz_type = Column(String(30), nullable=False, default="phase", server_default="phase")
+    skill_id = Column(String, ForeignKey("skills.skill_id"), nullable=True, index=True)
     questions_json = Column(Text, nullable=False)  # Includes answer key; never expose before submission.
     expires_at = Column(DateTime, nullable=False, index=True)
     submitted_at = Column(DateTime, nullable=True)

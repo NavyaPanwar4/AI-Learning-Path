@@ -3,6 +3,7 @@ import pytest
 
 from app.models.schemas import FeedbackRequest, QuizSubmission, SessionLogRequest
 from app.services.link_validator import _is_reachable
+from app.services import link_validator
 from app.services.skill_extraction import skill_extraction_service
 
 
@@ -42,6 +43,24 @@ def test_session_duration_is_bounded():
 
 def test_private_urls_are_rejected():
     assert _is_reachable("http://127.0.0.1:8000") is False
+
+
+def test_reachable_urls_may_redirect(monkeypatch):
+    class Response:
+        status_code = 200
+
+    monkeypatch.setattr(link_validator.socket, "getaddrinfo", lambda *args, **kwargs: [
+        (None, None, None, None, ("8.8.8.8", 0))
+    ])
+    calls = []
+    monkeypatch.setattr(
+        link_validator.requests,
+        "head",
+        lambda *args, **kwargs: calls.append(kwargs["allow_redirects"]) or Response(),
+    )
+
+    assert _is_reachable("https://example.com/redirected") is True
+    assert calls == [True]
 
 
 def test_bkt_correct_response_increases_mastery():

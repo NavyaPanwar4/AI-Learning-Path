@@ -114,3 +114,31 @@ def test_one_based_phase_indices_are_normalized_without_structural_repair(graph)
         "Foundations", "Data Preparation", "Model Building"
     ]
     assert any("Normalized non-sequential phase index" in issue for issue in result["issues"])
+
+
+
+def test_high_mastery_unverified_skill_is_required(graph):
+    result = validate_llm_roadmap_proposal(
+        {"phases": [{"title": "Model Building", "skills": [
+            {"id": "c", "name": "Machine Learning"},
+        ]}]},
+        graph, ["c"], {"a": 0.95, "b": 0.95, "c": 0.1},
+        verified={"a": False, "b": True},
+    )
+    flat = [skill["id"] for phase in result["plan_phases"] for skill in phase["skills"]]
+    assert flat == ["a", "c"]
+    assert "a" in flat and "b" not in flat
+
+
+def test_only_verified_high_mastery_is_removed(graph):
+    result = validate_llm_roadmap_proposal(
+        {"phases": [{"title": "Model Building", "skills": [
+            {"id": "a", "name": "Python Fundamentals"},
+            {"id": "b", "name": "NumPy"},
+            {"id": "c", "name": "Machine Learning"},
+        ]}]},
+        graph, ["c"], {"a": 0.95, "b": 0.95, "c": 0.1},
+        verified={"a": True, "b": False},
+    )
+    flat = [skill["id"] for phase in result["plan_phases"] for skill in phase["skills"]]
+    assert flat == ["b", "c"]

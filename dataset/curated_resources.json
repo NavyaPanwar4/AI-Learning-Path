@@ -691,10 +691,9 @@
         "type": "book"
       },
       {
-        "title": "Functional Programming in Java - Full Course",
-        "url": "https://www.youtube.com/watch?v=rPSL1alFIjI",
-        "type": "video",
-        "channel": "freeCodeCamp.org"
+        "title": "Functional Programming in Python",
+        "url": "https://realpython.com/python-functional-programming/",
+        "type": "tutorial"
       }
     ],
     "Code Review Best Practices": [

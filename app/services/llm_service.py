@@ -50,6 +50,10 @@ QUIZ_SCHEMA = _obj(questions={"type": "array", "items": _obj(
     question=_STR, options={"type": "array", "items": _STR},
     correct_index={"type": "integer"}, explanation=_STR, skill=_STR,
 )})
+VERIFICATION_QUIZ_SCHEMA = _obj(questions={"type": "array", "items": _obj(
+    question=_STR, options={"type": "array", "items": _STR},
+    correct_index={"type": "integer"}, explanation=_STR, skill=_STR, aspect=_STR,
+)})
 
 
 class LLMError(Exception):
@@ -885,6 +889,39 @@ Return ONLY JSON.
         return str(entry).strip().casefold()
 
     @classmethod
+    def _ensure_projects(cls, phases: list, plan_phases: list) -> list:
+        """Preserve Groq projects and repair only missing project data."""
+        result = []
+        for position, phase in enumerate(phases or []):
+            item = dict(phase) if isinstance(phase, dict) else {}
+            projects = [
+                {"title": str(project.get("title")).strip(), "description": str(project.get("description")).strip()}
+                for project in (item.get("projects") or [])
+                if isinstance(project, dict)
+                and str(project.get("title") or "").strip()
+                and str(project.get("description") or "").strip()
+            ]
+            if not projects:
+                skills = (
+                    plan_phases[position].get("skills", [])
+                    if position < len(plan_phases) and isinstance(plan_phases[position], dict)
+                    else []
+                )
+                names = [
+                    str(skill.get("name") or skill.get("id") or "").strip()
+                    for skill in skills
+                    if isinstance(skill, dict) and (skill.get("name") or skill.get("id"))
+                ]
+                topic = ", ".join(names[:2]) or str(item.get("title") or f"Phase {position + 1}")
+                projects = [{
+                    "title": f"{topic} practice project",
+                    "description": f"Build a small practical project applying {topic}.",
+                }]
+            item["projects"] = projects
+            result.append(item)
+        return result
+
+    @classmethod
     def merge_elaboration_with_plan(cls, plan_phases: list, llm_result: Optional[dict]) -> Dict[str, Any]:
         """Enforce the plan: skills and their order always come from the plan.
 
@@ -903,10 +940,24 @@ Return ONLY JSON.
                 if isinstance(idx, int) and idx not in by_index:
                     by_index[idx] = ph
 
+        planned_indices = [phase.get("index", position) for position, phase in enumerate(plan_phases)]
+        raw_indices = [
+            phase.get("index", position)
+            for position, phase in enumerate(raw_phases)
+            if isinstance(phase, dict)
+        ]
+        use_positional_matching = (
+            len(raw_indices) == len(planned_indices)
+            and set(raw_indices) != set(planned_indices)
+        )
         merged, matches = [], 0
-        for planned in plan_phases:
+        for position, planned in enumerate(plan_phases):
             idx = planned["index"]
-            ph = by_index.get(idx, {})
+            ph = (
+                raw_phases[position]
+                if use_positional_matching and position < len(raw_phases) and isinstance(raw_phases[position], dict)
+                else by_index.get(idx, {})
+            )
             planned_keys = [cls._skill_key(sk) for sk in planned["skills"]]
             listed = ph.get("skills", []) if isinstance(ph.get("skills", []), list) else []
             listed_keys = [cls._skill_key(sk) for sk in listed]
@@ -930,7 +981,7 @@ Return ONLY JSON.
                 phase["projects"] = ph["projects"]
             merged.append(phase)
         adherence = (matches / len(plan_phases)) if plan_phases else 1.0
-        return {"phases": merged, "adherence": adherence}
+        return {"phases": cls._ensure_projects(merged, plan_phases), "adherence": adherence}
 
     def generate_roadmap_proposal(
         self,
@@ -1057,141 +1108,7 @@ Return only the JSON object with a "phases" array.
                 "projects": raw.get("projects", []) if isinstance(raw.get("projects"), list) else [],
             }
             merged.append(item)
-        return {"phases": merged}
-
-    @staticmethod
-    def _valid_project_items(value: Any) -> list[dict]:
-        """Keep only project objects the roadmap UI can render safely."""
-        if not isinstance(value, list):
-            return []
-        result = []
-        for item in value:
-            if not isinstance(item, dict):
-                continue
-            title = str(item.get("title") or "").strip()
-            description = str(item.get("description") or "").strip()
-            if title and description:
-                result.append({"title": title, "description": description})
-        return result
-
-    @staticmethod
-    def _project_phase_skill_keys(skills: Any) -> set[str]:
-        """Return both IDs and names so phases can be matched after repair."""
-        if not isinstance(skills, list):
-            return set()
-        keys = set()
-        for skill in skills:
-            if isinstance(skill, dict):
-                for field in ("id", "name"):
-                    value = str(skill.get(field) or "").strip().casefold()
-                    if value:
-                        keys.add(value)
-            else:
-                value = str(skill or "").strip().casefold()
-                if value:
-                    keys.add(value)
-        return keys
-
-    @classmethod
-    def preserve_proposal_projects(
-        cls, proposal: Optional[dict], plan_phases: list, roadmap: Optional[dict]
-    ) -> Optional[dict]:
-        """Restore proposal projects if repair/re-elaboration dropped them.
-
-        A repaired plan can add or move skills, so matching solely by numeric
-        phase index is unsafe. Match by skill overlap and never overwrite valid
-        projects already produced by the corrected-plan elaboration.
-        """
-        if not isinstance(roadmap, dict):
-            return roadmap
-        final_phases = roadmap.get("phases")
-        raw_phases = proposal.get("phases", []) if isinstance(proposal, dict) else []
-        if not isinstance(final_phases, list) or not isinstance(raw_phases, list):
-            return roadmap
-
-        sources = []
-        for source_index, raw in enumerate(raw_phases):
-            if not isinstance(raw, dict):
-                continue
-            projects = cls._valid_project_items(raw.get("projects"))
-            skill_keys = cls._project_phase_skill_keys(raw.get("skills"))
-            if projects and skill_keys:
-                sources.append({"index": source_index, "projects": projects, "skill_keys": skill_keys})
-
-        used_sources = set()
-        restored = 0
-        for final_index, phase in enumerate(final_phases):
-            if not isinstance(phase, dict) or cls._valid_project_items(phase.get("projects")):
-                continue
-            planned = plan_phases[final_index] if final_index < len(plan_phases) else {}
-            target_keys = cls._project_phase_skill_keys(planned.get("skills", []))
-            if not target_keys:
-                target_keys = cls._project_phase_skill_keys(phase.get("skills", []))
-            candidates = []
-            for source in sources:
-                if source["index"] in used_sources:
-                    continue
-                overlap = len(target_keys & source["skill_keys"])
-                if overlap:
-                    candidates.append((overlap, -abs(final_index - source["index"]), source))
-            if not candidates:
-                continue
-            _, _, best = max(candidates, key=lambda candidate: (candidate[0], candidate[1]))
-            phase["projects"] = best["projects"]
-            used_sources.add(best["index"])
-            restored += len(best["projects"])
-
-        if restored:
-            logger.info("Restored %d project idea(s) from the validated LLM proposal after plan repair", restored)
-        return roadmap
-
-    @staticmethod
-    def _fallback_project_for_phase(title: str, skills: list[str]) -> dict:
-        """Create a concrete last-resort project when all LLM paths omit one."""
-        text = (title + " " + " ".join(skills)).casefold()
-        if any(token in text for token in ("html", "css", "responsive", "web foundation")):
-            return {"title": "Responsive Multi-Page Website", "description": "Build a small website with semantic HTML, reusable page sections, navigation, and responsive CSS. Check the layout at mobile and desktop widths and fix the issues you find."}
-        if any(token in text for token in ("react", "next.js", "nextjs", "frontend", "front-end")):
-            return {"title": "Interactive Component-Based Dashboard", "description": "Build a small dashboard with reusable UI components, page or route navigation, form state, and loading, empty, and error states. Verify the main user flows in the browser."}
-        if any(token in text for token in ("javascript", "typescript", "browser")):
-            return {"title": "Interactive Task Tracker", "description": "Create a task tracker with add, edit, complete, and delete actions. Validate user input, handle empty states, and test at least three realistic usage cases."}
-        if any(token in text for token in ("node.js", "express", "backend", "restful api", "api development", "server-side")):
-            return {"title": "RESTful CRUD API", "description": "Implement create, read, update, and delete endpoints for one resource. Validate request bodies, return appropriate HTTP status codes, and test success and failure cases."}
-        if any(token in text for token in ("database", "sql", "mongodb", "persistence")):
-            return {"title": "Persistent Task Manager", "description": "Connect a small task-management feature to a database. Support creating, listing, updating, and deleting records, and verify that data persists after restarting the application."}
-        if any(token in text for token in ("auth", "security", "permission", "jwt")):
-            return {"title": "Protected User Workspace", "description": "Add user registration and sign-in to a small application, protect a private route, validate inputs, and test both authorized and unauthorized access."}
-        if any(token in text for token in ("deploy", "docker", "ci/cd", "production", "devops")):
-            return {"title": "Deployable Application with CI Checks", "description": "Package a small application for deployment, document required configuration, add a health check, and create an automated workflow that runs tests before building or deploying it."}
-        if any(token in text for token in ("machine learning", "classification", "regression", "neural network", "model evaluation", "mlops")):
-            return {"title": "End-to-End Model Experiment", "description": "Use a suitable dataset to train a baseline model, evaluate it with task-appropriate metrics, inspect representative errors, and document what the results do and do not show."}
-        if any(token in text for token in ("data", "pandas", "statistics", "visualization", "analytics")):
-            return {"title": "Dataset Exploration Report", "description": "Select a small dataset, clean and summarize it using the phase skills, create two useful visualizations or analyses, and write a short report of findings and limitations."}
-
-        focus = ", ".join(skill for skill in skills[:3] if skill) or title or "the phase skills"
-        lead = skills[0] if skills else title or "Skills"
-        return {"title": f"{lead} Applied Mini-Project", "description": f"Build a small, working deliverable that demonstrates {focus}. Include one realistic use case, test it with representative inputs, and document the key implementation decisions."}
-
-    @classmethod
-    def ensure_project_ideas(cls, roadmap: Optional[dict]) -> Optional[dict]:
-        """Guarantee each returned phase has at least one renderable project."""
-        if not isinstance(roadmap, dict):
-            return roadmap
-        phases = roadmap.get("phases")
-        if not isinstance(phases, list):
-            return roadmap
-        for phase in phases:
-            if not isinstance(phase, dict):
-                continue
-            projects = cls._valid_project_items(phase.get("projects"))
-            if projects:
-                phase["projects"] = projects
-                continue
-            skills_value = phase.get("skills", [])
-            skills = [str(skill).strip() for skill in skills_value if str(skill).strip()] if isinstance(skills_value, list) else []
-            phase["projects"] = [cls._fallback_project_for_phase(str(phase.get("title") or ""), skills)]
-            logger.warning("No project idea generated for phase '%s'; inserted deterministic fallback", phase.get("title", "Untitled phase"))
-        return roadmap
+        return {"phases": cls._ensure_projects(merged, plan_phases)}
 
     def generate_roadmap_from_plan(self, context: dict, plan_phases: list) -> Dict[str, Any]:
         """Elaborate a deterministic or curated plan without changing its skills.
@@ -1244,7 +1161,7 @@ Return only the JSON object with a "phases" array.
             result = {}
         merged = self.merge_elaboration_with_plan(plan_phases, result)
         logger.info("Planner elaboration adherence: %.2f", merged["adherence"])
-        return {"phases": merged["phases"]}
+        return {"phases": self._ensure_projects(merged["phases"], plan_phases)}
 
     # ------------------------------------------------------------------
     # Strict, reproducible generation for experiments (no fallbacks)
@@ -1507,7 +1424,7 @@ Needs improvement:
     ) -> list:
 
         prompt = f"""
-Create exactly 4 multiple-choice questions.
+Create exactly 5 multiple-choice questions.
 
 Return ONLY:
 
@@ -1525,7 +1442,7 @@ Return ONLY:
 
 Requirements:
 
-- Exactly 4 questions.
+- Exactly 5 questions.
 - Exactly 4 options each.
 - correct_index is 0-3.
 - Test understanding rather than trivia.
@@ -1613,6 +1530,71 @@ Skills:
             logger.warning("No valid AI quiz questions returned.")
             raise LLMError("bad_response")
         return valid_questions
+
+
+    def generate_skill_verification_quiz(self, skill_name: str) -> list:
+        """Generate exactly five questions spanning distinct skill aspects."""
+        aspects = {
+            "core_concepts",
+            "practical_application",
+            "debugging",
+            "edge_cases",
+            "best_practices",
+        }
+        prompt = f"""Create exactly 5 multiple-choice questions to verify a learner's knowledge of: {skill_name}.
+
+Return ONLY JSON with this shape:
+{{
+  "questions": [
+    {{"question":"...", "options":["A","B","C","D"], "correct_index":0, "explanation":"...", "skill":"{skill_name}", "aspect":"core_concepts"}}
+  ]
+}}
+
+Requirements:
+- Exactly five questions and four options per question.
+- Use each aspect exactly once: core_concepts, practical_application, debugging, edge_cases, best_practices.
+- Questions must test understanding, not definitions alone or trivia.
+- Use realistic scenarios and one unambiguously correct answer per question.
+- Keep explanations concise.
+- Every question must assess only {skill_name}.
+"""
+        result = self._generate_json(
+            prompt, retries=1, model=self.model,
+            timeout_seconds=settings.GROQ_QUIZ_TIMEOUT_SECONDS,
+            schema=VERIFICATION_QUIZ_SCHEMA, schema_name="mastery_verification_quiz",
+            max_tokens=settings.GROQ_QUIZ_MAX_COMPLETION_TOKENS,
+        )
+        questions = result.get("questions") if isinstance(result, dict) else None
+        if not isinstance(questions, list) or len(questions) != 5:
+            raise LLMError("bad_response")
+        valid = []
+        seen_aspects = set()
+        for question in questions:
+            if not isinstance(question, dict):
+                raise LLMError("bad_response")
+            options = question.get("options")
+            index = question.get("correct_index")
+            aspect = str(question.get("aspect") or "").strip().casefold()
+            if (
+                not isinstance(question.get("question"), str) or not question["question"].strip()
+                or not isinstance(options, list) or len(options) != 4
+                or not all(isinstance(option, str) and option.strip() for option in options)
+                or isinstance(index, bool) or not isinstance(index, int) or not 0 <= index < 4
+                or aspect not in aspects or aspect in seen_aspects
+            ):
+                raise LLMError("bad_response")
+            seen_aspects.add(aspect)
+            valid.append({
+                "question": question["question"].strip(),
+                "options": options,
+                "correct_index": index,
+                "explanation": str(question.get("explanation") or ""),
+                "skill": skill_name,
+                "aspect": aspect,
+            })
+        if seen_aspects != aspects:
+            raise LLMError("bad_response")
+        return valid
 
 
 llm_service = LLMService()

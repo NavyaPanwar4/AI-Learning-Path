@@ -163,7 +163,18 @@ skill_id,skill_name,category,difficulty,estimated_learning_hours,description,ali
 162,Measure Theory,Mathematics,Advanced,45.0,"Sigma algebras, Lebesgue integration, and rigorous probability foundations",
 163,Algebraic Topology,Mathematics,Advanced,50.0,"Homology, cohomology, fundamental groups, and persistent homology",
 164,Convex Analysis,Mathematics,Advanced,35.0,"Convex sets, conjugate functions, and optimality conditions",
+166,Excel and Spreadsheet Analysis,Data Analytics,Beginner,15.0,"Formulas, pivot tables, lookups, data cleaning, and business reporting","excel,spreadsheets,google-sheets"
 165,Synthetic Data Generation,Data Science,Advanced,25.0,"GANs, VAEs, and privacy-preserving synthetic dataset creation",
+167,KPI and Business Requirements,Data Analytics,Beginner,15.0,"Define business questions, KPIs, stakeholder requirements, and measurable outcomes","kpi,business-analysis,requirements"
+168,Data Modeling and Warehousing,Data Engineering,Intermediate,30.0,"Dimensional modeling, star schemas, slowly changing dimensions, and analytical warehouses","data-modeling,data-warehouse"
+169,Workflow Orchestration,Data Engineering,Intermediate,25.0,"DAG-based scheduling, retries, dependencies, and production workflow operations","airflow,orchestration"
+170,Experiment Tracking and Reproducibility,Artificial Intelligence,Intermediate,20.0,"Track datasets, parameters, metrics, artifacts, and reproducible model experiments","mlflow,experiment-tracking"
+171,Feature Stores and Model Serving,Artificial Intelligence,Advanced,30.0,"Online and offline features, model APIs, batch inference, and serving reliability","feature-store,model-serving"
+172,Linux and Endpoint Security,Cybersecurity,Beginner,25.0,"Linux and Windows fundamentals, processes, permissions, logs, and endpoint hardening","linux,endpoint-security"
+173,Financial Markets and Portfolio Management,Finance,Intermediate,35.0,"Market instruments, portfolio construction, performance attribution, and risk controls","quantitative-finance,portfolio"
+174,NLP Preprocessing and Information Retrieval,Artificial Intelligence,Intermediate,25.0,"Tokenization, text normalization, embeddings, ranking, search, and retrieval evaluation","nlp-preprocessing,information-retrieval"
+175,Image Processing and Dataset Curation,Artificial Intelligence,Intermediate,25.0,"Image transforms, labeling, augmentation, dataset quality, and visual data pipelines","image-processing,data-labeling"
+176,Product Discovery and Prioritization,Product Management,Intermediate,20.0,"User research, problem framing, prioritization, roadmaps, and product success metrics","product-discovery,prioritization"
 cd0c03bf-05c4-4208-a13c-261e7386d05e,Python programming,Extracted,,,,
 2e620ef7-5056-4ab1-9b68-744b13c41cdb,SQL queries,Extracted,,,,
 944ae317-76cb-401b-8972-aae31c16ebbe,Redux,Extracted,,,,

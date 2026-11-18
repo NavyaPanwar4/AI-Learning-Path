@@ -33,6 +33,7 @@ def validate_llm_roadmap_proposal(
     *,
     weak_threshold: float = 0.50,
     strong_threshold: float = 0.85,
+    verified: Optional[Mapping[str, bool]] = None,
 ) -> dict:
     """Normalize and repair an LLM roadmap proposal.
 
@@ -45,8 +46,8 @@ def validate_llm_roadmap_proposal(
         }
 
     Only skills in the target skills' prerequisite closure are allowed. Every
-    unmastered candidate in that closure is required; mastered skills are
-    excluded. The LLM's order is retained whenever it respects prerequisite
+    candidate without both strong BKT mastery and a successful verification
+    is required; verified strong-mastery skills may be excluded. The LLM's order is retained whenever it respects prerequisite
     constraints. When it does not, a stable topological ordering is computed,
     preferring the LLM's relative order among currently eligible skills.
     """
@@ -60,7 +61,10 @@ def validate_llm_roadmap_proposal(
     allowed_ids = graph.closure(targets)
     required_ids = {
         sid for sid in allowed_ids
-        if _mastery_value(mastery, sid) < strong_threshold
+        if not (
+            _mastery_value(mastery, sid) >= strong_threshold
+            and (verified is None or bool(verified.get(sid, False)))
+        )
     }
 
     # Exact ID is preferred. Exact normalized names are accepted as a recovery
@@ -134,10 +138,13 @@ def validate_llm_roadmap_proposal(
     observed_set = set(observed_order)
     mastered_proposed = {
         sid for sid in observed_set
-        if _mastery_value(mastery, sid) >= strong_threshold
+        if (
+            _mastery_value(mastery, sid) >= strong_threshold
+            and (verified is None or bool(verified.get(sid, False)))
+        )
     }
     if mastered_proposed:
-        issues.append("Removed skills already above the mastery threshold")
+        issues.append("Removed skills with strong mastery and successful verification")
         repaired = True
 
     filtered_order = [sid for sid in observed_order if sid in required_ids]

@@ -59,6 +59,15 @@ def get_user_skills(current_user_id: str = Depends(get_current_user)):
     finally:
         db.close()
 
+@router.delete("/skills")
+def delete_all_skills(current_user_id: str = Depends(get_current_user)):
+    try:
+        deleted = skill_extraction_service.delete_all_user_skills(current_user_id)
+        return {"message": "All skills removed.", "deleted": deleted}
+    except Exception as e:
+        logger.error(f"Error deleting all user skills: {e}")
+        raise HTTPException(status_code=500, detail="Could not remove all skills")
+
 @router.put("/profile")
 def update_profile(profile: UserProfileUpdate, current_user_id: str = Depends(get_current_user)):
     try:

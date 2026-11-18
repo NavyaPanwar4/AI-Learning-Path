@@ -230,9 +230,9 @@ configurable through `PLANNER_WEAK_THRESHOLD` and `PLANNER_STRONG_THRESHOLD`.
 
 | File | Contents |
 |------|----------|
-| `skills.csv` | 229 skills with category, difficulty, estimated hours, description and aliases |
+| `skills.csv` | 240 skills with category, difficulty, estimated hours, description and aliases |
 | `goals.csv` | 25 learning goals |
-| `goal_skills.csv` | 370 goal-to-skill mappings with an importance level |
+| `goal_skills.csv` | 405 goal-to-skill mappings with an importance level |
 | `skill_dependencies.csv` | 226 prerequisite edges with a strength value |
 | `goal_curricula.json` | reviewed phase-by-phase curricula for the 25 goals |
 | `curated_resources.json` | hand-picked learning resources per skill |
@@ -289,7 +289,7 @@ python scripts/migrate_csv_to_db.py
 ```
 
 `alembic upgrade head` creates the schema. `migrate_csv_to_db.py` loads the goals and skills from
-`dataset/` (25 goals, 229 skills, 226 prerequisite edges, 370 goal-skill rows). It is safe to re-run
+`dataset/` (25 goals, 240 skills, 226 prerequisite edges, 405 goal-skill rows). It is safe to re-run
 because it skips rows that already exist.
 
 > If you have an older database created before Alembic was introduced, back it up and compare its schema

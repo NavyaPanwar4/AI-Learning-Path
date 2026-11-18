@@ -274,6 +274,11 @@ class SkillExtractionService:
                 goal_skill.mastery_probability = probability
                 goal_skill.proficiency = new_level
                 goal_skill.bkt_observations = (goal_skill.bkt_observations or 0) + len(evidence)
+                # A later learning/revision quiz can reopen verification after a
+                # prior failed check. A verification submission itself writes its
+                # final passed/failed state after this BKT update in the same txn.
+                if getattr(goal_skill, "verification_status", "unverified") == "failed":
+                    goal_skill.verification_status = "unverified"
 
                 # Keep the legacy UserSkill row only as a global possessed-skill/profile record.
                 profile_skill = db.query(UserSkill).filter(
@@ -341,6 +346,19 @@ class SkillExtractionService:
             db.delete(row)
             db.commit()
             return True
+        finally:
+            db.close()
+
+    def delete_all_user_skills(self, user_id: str) -> int:
+        db = SessionLocal()
+        try:
+            deleted = (
+                db.query(UserSkill)
+                .filter(UserSkill.user_id == str(user_id))
+                .delete(synchronize_session=False)
+            )
+            db.commit()
+            return int(deleted or 0)
         finally:
             db.close()
 

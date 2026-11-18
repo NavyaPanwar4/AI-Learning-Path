@@ -53,11 +53,11 @@ def _is_reachable(url: str) -> bool:
         addresses = socket.getaddrinfo(parsed.hostname, parsed.port or (443 if parsed.scheme == "https" else 80), type=socket.SOCK_STREAM)
         if any(not ipaddress.ip_address(address[4][0]).is_global for address in addresses):
             return False
-        resp = requests.head(url, allow_redirects=False, timeout=_TIMEOUT_SECONDS, headers=_HEADERS)
+        resp = requests.head(url, allow_redirects=True, timeout=_TIMEOUT_SECONDS, headers=_HEADERS)
         if resp.status_code < 400:
             return True
         resp = requests.get(
-            url, allow_redirects=False, timeout=_TIMEOUT_SECONDS, headers=_HEADERS, stream=True
+            url, allow_redirects=True, timeout=_TIMEOUT_SECONDS, headers=_HEADERS, stream=True
         )
         return resp.status_code < 400
     except requests.exceptions.RequestException:

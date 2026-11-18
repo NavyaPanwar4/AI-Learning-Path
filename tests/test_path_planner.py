@@ -126,3 +126,19 @@ def test_unknown_target_raises():
 def test_config_validation():
     with pytest.raises(ValueError):
         PlannerConfig(weak=0.9, strong=0.5)
+
+
+def test_high_bkt_mastery_is_provisional_until_verified():
+    graph = make_graph()
+    mastery = {"a": 0.95, "b": 0.95, "c": 0.1, "d": 0.1, "e": 0.1}
+    plan = plan_path(graph, ["e"], mastery, verified={"a": False, "b": True})
+    assert "a" in plan.skill_ids()  # high BKT but not verified
+    assert "b" in plan.skipped     # high BKT and verified
+
+
+def test_verified_skill_below_threshold_is_not_skipped():
+    graph = make_graph()
+    mastery = {"a": 0.70, "b": 0.95, "c": 0.1, "d": 0.1, "e": 0.1}
+    plan = plan_path(graph, ["e"], mastery, verified={"a": True, "b": True})
+    assert "a" in plan.skill_ids()
+    assert "b" in plan.skipped

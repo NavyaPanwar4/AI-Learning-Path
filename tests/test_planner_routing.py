@@ -36,10 +36,10 @@ def seed(Session, goal_mastery=None, recorded=()):
     db.commit(); db.close()
 
 
-def test_recorded_skill_without_goal_state_counts_as_mastered(session_factory):
+def test_recorded_skill_without_goal_state_is_provisional_until_verified(session_factory):
     seed(session_factory, recorded=["a"])
     plan, _ = rs.roadmap_service._build_plan("u", "g")
-    assert plan.skill_ids() == ["b", "c"] and plan.skipped == ["a"]
+    assert plan.skill_ids() == ["a", "b", "c"] and plan.skipped == []
 
 
 def test_goal_scoped_mastery_overrides_recorded_skill(session_factory):
@@ -54,7 +54,7 @@ def test_weak_but_not_mastered_skill_is_review(session_factory):
     seed(session_factory, goal_mastery={"a": 0.9, "b": 0.6})
     plan, _ = rs.roadmap_service._build_plan("u", "g")
     actions = {i.skill_id: i.action for i in plan.items}
-    assert actions == {"b": "review", "c": "learn"}
+    assert actions == {"a": "review", "b": "review", "c": "learn"}
 
 
 def test_prerequisite_depths_are_longest_chain():
@@ -94,7 +94,14 @@ def test_fallback_used_when_planner_raises(session_factory, monkeypatch):
 
 
 def test_error_when_neither_plan_exists(session_factory, monkeypatch):
-    seed(session_factory, recorded=["a", "b", "c"])
+    # A truly empty plan requires every skill to have both strong BKT mastery
+    # and a successful verification; profile-only skills are now provisional.
+    seed(session_factory, goal_mastery={"a": 0.95, "b": 0.95, "c": 0.95})
+    db = session_factory()
+    for state in db.query(m.GoalUserSkill).filter_by(user_id="u", goal_id="g").all():
+        state.verification_status = "verified"
+    db.commit()
+    db.close()
     monkeypatch.setattr(settings, "USE_PATH_PLANNER", True)
     monkeypatch.setattr(rs.gap_analysis_service, "get_fallback_plan", lambda user_id: None)
     with pytest.raises(ValueError):
@@ -120,6 +127,9 @@ def test_llm_first_proposal_is_validated_and_repairs_missing_prerequisites(sessi
 def test_curated_goal_llm_first_scope_does_not_import_external_prerequisites(session_factory, monkeypatch):
     """Curated goals use LLM-first phase design without legacy cross-domain expansion."""
     seed(session_factory)
+    # Curated production goals are sourced from goal_curricula.json, not the
+    # synthetic GoalSkill rows created by this isolated test database.
+    monkeypatch.setattr(rs.curriculum_service, "get_skill_ids", lambda goal_id: ["c"])
     monkeypatch.setattr(settings, "USE_LLM_FIRST_VALIDATED_ROADMAP", True)
     captured = {}
 
@@ -134,7 +144,6 @@ def test_curated_goal_llm_first_scope_does_not_import_external_prerequisites(ses
         }]}
 
     monkeypatch.setattr(rs.llm_service, "generate_roadmap_proposal", fake_proposal)
-    monkeypatch.setattr(rs.curriculum_service, "get_skill_ids", lambda goal_id: ["c"])
 
     result = rs.roadmap_service._build_llm_first_plan(
         "u", "g", "Goal", {"experience_level": "beginner"},
@@ -145,34 +154,6 @@ def test_curated_goal_llm_first_scope_does_not_import_external_prerequisites(ses
     assert [item["id"] for item in captured["candidate_skills"]] == ["c"]
     assert captured["prerequisite_edges"] == []
     assert [skill["id"] for phase in result["plan_phases"] for skill in phase["skills"]] == ["c"]
-
-
-def test_curated_llm_first_uses_complete_curriculum_not_stale_goal_skill_mappings(session_factory, monkeypatch):
-    """A stale GoalSkill table must not hide reviewed curriculum skills."""
-    seed(session_factory)  # Only skill c is mapped in GoalSkill; a and b are missing there.
-    captured = {}
-    curated_plan = [{"index": 0, "title": "Foundations", "skills": [
-        {"id": "a", "name": "A", "action": "learn"},
-        {"id": "b", "name": "B", "action": "learn"},
-        {"id": "c", "name": "C", "action": "learn"},
-    ]}]
-
-    def fake_proposal(**kwargs):
-        captured.update(kwargs)
-        return {"phases": [{"index": 0, "title": "Full curriculum", "duration": "1 week",
-            "skills": [{"id": "c", "name": "C", "action": "learn"}], "projects": []}]}
-
-    monkeypatch.setattr(rs.llm_service, "generate_roadmap_proposal", fake_proposal)
-    monkeypatch.setattr(rs.curriculum_service, "get_skill_ids", lambda goal_id: ["a", "b", "c"])
-    result = rs.roadmap_service._build_llm_first_plan(
-        "u", "g", "Goal", {"experience_level": "beginner"},
-        restrict_to_goal_skills=True,
-    )
-
-    assert result is not None
-    assert captured["target_skill_ids"] == ["a", "b", "c"]
-    assert {item["id"] for item in captured["candidate_skills"]} == {"a", "b", "c"}
-    assert [item["id"] for phase in result["plan_phases"] for item in phase["skills"]] == ["a", "b", "c"]
 
 
 def test_uncurated_goal_llm_first_scope_keeps_prerequisite_closure(session_factory, monkeypatch):
@@ -204,9 +185,12 @@ def test_uncurated_goal_llm_first_scope_keeps_prerequisite_closure(session_facto
     assert [skill["id"] for phase in result["plan_phases"] for skill in phase["skills"]] == ["a", "b", "c"]
 
 
-def test_curated_goal_uses_llm_first_path_when_enabled(session_factory, monkeypatch):
-    """The new generation route applies to curated goals too, without widening scope."""
+def test_curated_goal_uses_reviewed_curriculum_as_fixed_plan(session_factory, monkeypatch):
+    """Curated goals never let proposal generation omit reviewed skills."""
     seed(session_factory)
+    # Keep the synthetic goal aligned with the production curated-curriculum
+    # source so the test exercises LLM-first routing rather than fallback.
+    monkeypatch.setattr(rs.curriculum_service, "get_skill_ids", lambda goal_id: ["c"])
     monkeypatch.setattr(settings, "USE_LLM_FIRST_VALIDATED_ROADMAP", True)
     monkeypatch.setattr(
         rs.auth_service,
@@ -224,26 +208,37 @@ def test_curated_goal_uses_llm_first_path_when_enabled(session_factory, monkeypa
         "skills": [{"id": "c", "name": "C", "action": "learn"}],
     }]
     monkeypatch.setattr(rs.gap_analysis_service, "get_curated_plan", lambda user_id: curated_plan)
-    monkeypatch.setattr(rs.curriculum_service, "get_skill_ids", lambda goal_id: ["c"])
     captured = {}
+    monkeypatch.setattr(
+        rs.llm_service,
+        "generate_roadmap_proposal",
+        lambda **kwargs: {
+            "phases": [{
+                "index": 0,
+                "title": "LLM phase",
+                "skills": [{"id": "c", "name": "C", "action": "learn"}],
+                "projects": [{"title": "C mini-project", "description": "Practice C"}],
+            }]
+        },
+    )
 
-    def fake_proposal(**kwargs):
-        captured.update(kwargs)
-        return {"phases": [{
-            "index": 0,
-            "title": "LLM-first phase",
-            "duration": "1 week",
-            "skills": [{"id": "c", "name": "C", "action": "learn"}],
-            "projects": [{"title": "C mini-project", "description": "Practice C"}],
-        }]}
-
-    monkeypatch.setattr(rs.llm_service, "generate_roadmap_proposal", fake_proposal)
+    monkeypatch.setattr(
+        rs.llm_service,
+        "generate_roadmap_from_plan",
+        lambda context, plan: {
+            "phases": [{
+                "title": "Reviewed phase",
+                "duration": "1 week",
+                "skills": ["C"],
+                "projects": [{"title": "C mini-project", "description": "Practice C"}],
+            }]
+        },
+    )
     monkeypatch.setattr(rs.web_search_service, "search_courses_for_plan", lambda plan: {})
     monkeypatch.setattr(rs.activity_service, "log_activity", lambda *args, **kwargs: None)
 
     roadmap = rs.roadmap_service.generate_personalized_roadmap("u")
 
-    assert captured["target_skill_ids"] == ["c"]
-    assert [entry["id"] for entry in captured["candidate_skills"]] == ["c"]
-    assert roadmap["phases"][0]["title"] == "LLM-first phase"
+    assert roadmap["phases"][0]["title"] == "Reviewed phase"
+    assert roadmap["phases"][0]["skills"] == ["C"]
     assert roadmap["phases"][0]["projects"][0]["title"] == "C mini-project"

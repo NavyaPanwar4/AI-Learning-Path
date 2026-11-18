@@ -33,6 +33,12 @@ def test_ml_engineer_core_skills_are_covered():
         assert curated.get(skill.casefold()), skill
 
 
+def test_python_functional_programming_does_not_use_java_resource():
+    resources = load_curated_resources()["functional programming"]
+    assert all("java" not in resource["title"].casefold() for resource in resources)
+    assert any("python" in resource["title"].casefold() for resource in resources)
+
+
 def test_missing_or_broken_file_is_not_fatal(tmp_path):
     assert load_curated_resources(str(tmp_path / "nope.json")) == {}
     bad = tmp_path / "bad.json"
@@ -86,6 +92,35 @@ def test_switch_turns_curated_resources_off(monkeypatch):
     assert svc._curated_for("Docker")
     monkeypatch.setattr(settings, "USE_CURATED_RESOURCES", False)
     assert svc._curated_for("Docker") == []
+
+
+def test_curated_resources_are_available_without_tavily(monkeypatch):
+    svc = make(
+        monkeypatch,
+        {
+            "html & css fundamentals": [
+                {
+                    "title": "Learn HTML",
+                    "url": "https://web.test/html",
+                    "type": "course",
+                }
+            ]
+        },
+    )
+    svc.api_key = ""
+
+    result = svc.search_courses_for_plan(
+        [
+            {
+                "index": 0,
+                "title": "Web foundations",
+                "skills": [{"name": "HTML & CSS Fundamentals"}],
+            }
+        ]
+    )
+
+    assert result[0][0]["title"] == "Learn HTML"
+    assert result[0][0]["curated"] is True
 
 
 def test_a_video_is_kept_in_the_top_three_when_one_exists():

@@ -235,7 +235,8 @@
           "9",
           "66",
           "67",
-          "83"
+          "83",
+          "18"
         ]
       },
       {
@@ -430,7 +431,8 @@
         "title": "Programming for Quantitative Work",
         "skill_ids": [
           "1",
-          "2"
+          "2",
+          "173"
         ]
       },
       {
@@ -485,7 +487,8 @@
           "26",
           "34",
           "27",
-          "28"
+          "28",
+          "35"
         ]
       },
       {
@@ -518,7 +521,10 @@
         "skill_ids": [
           "56",
           "60",
-          "63"
+          "63",
+          "14",
+          "170",
+          "171"
         ]
       },
       {
@@ -540,7 +546,8 @@
           "86",
           "87",
           "95",
-          "104"
+          "104",
+          "94"
         ]
       },
       {
@@ -577,7 +584,8 @@
         "skill_ids": [
           "101",
           "102",
-          "105"
+          "105",
+          "99"
         ]
       }
     ]
@@ -589,7 +597,8 @@
         "title": "Security and Network Foundations",
         "skill_ids": [
           "106",
-          "107"
+          "107",
+          "172"
         ]
       },
       {
@@ -603,14 +612,16 @@
         "title": "Security Operations and Threat Intelligence",
         "skill_ids": [
           "115",
-          "124"
+          "124",
+          "120"
         ]
       },
       {
         "title": "Incident Response and Digital Forensics",
         "skill_ids": [
           "114",
-          "113"
+          "113",
+          "112"
         ]
       },
       {
@@ -639,14 +650,17 @@
           "1",
           "34",
           "26",
-          "27"
+          "27",
+          "18"
         ]
       },
       {
         "title": "Data Quality and Pipeline Design",
         "skill_ids": [
           "153",
-          "35"
+          "35",
+          "168",
+          "169"
         ]
       },
       {
@@ -661,7 +675,8 @@
         "title": "Containerized Pipelines and CI/CD",
         "skill_ids": [
           "90",
-          "93"
+          "93",
+          "92"
         ]
       },
       {
@@ -697,7 +712,9 @@
         "title": "Machine Learning and Evaluation",
         "skill_ids": [
           "46",
-          "55"
+          "55",
+          "60",
+          "174"
         ]
       },
       {
@@ -738,7 +755,8 @@
         "skill_ids": [
           "66",
           "67",
-          "83"
+          "83",
+          "9"
         ]
       },
       {
@@ -773,7 +791,8 @@
         "title": "Modern Routing and Web Applications",
         "skill_ids": [
           "72",
-          "76"
+          "76",
+          "14"
         ]
       }
     ]
@@ -815,7 +834,8 @@
         "title": "Security and Resilience",
         "skill_ids": [
           "96",
-          "105"
+          "105",
+          "122"
         ]
       },
       {
@@ -835,7 +855,8 @@
         "title": "Security and Networking Foundations",
         "skill_ids": [
           "106",
-          "107"
+          "107",
+          "10"
         ]
       },
       {
@@ -870,7 +891,9 @@
         "title": "Red Team, Blue Team and Risk",
         "skill_ids": [
           "123",
-          "121"
+          "121",
+          "118",
+          "122"
         ]
       }
     ]
@@ -935,7 +958,9 @@
           "1",
           "26",
           "126",
-          "129"
+          "129",
+          "28",
+          "175"
         ]
       },
       {
@@ -963,7 +988,8 @@
       {
         "title": "Production ML and MLOps",
         "skill_ids": [
-          "59"
+          "59",
+          "14"
         ]
       },
       {
@@ -1003,7 +1029,8 @@
         "title": "Business Intelligence and Data Storytelling",
         "skill_ids": [
           "44",
-          "45"
+          "45",
+          "176"
         ]
       },
       {
@@ -1032,7 +1059,8 @@
           "10",
           "9",
           "4",
-          "2"
+          "2",
+          "18"
         ]
       },
       {
@@ -1047,7 +1075,8 @@
         "title": "Relational and NoSQL Databases",
         "skill_ids": [
           "15",
-          "36"
+          "36",
+          "168"
         ]
       },
       {
@@ -1062,7 +1091,8 @@
         "title": "Architecture and Performance",
         "skill_ids": [
           "19",
-          "20"
+          "20",
+          "98"
         ]
       },
       {
@@ -1132,7 +1162,10 @@
         "title": "SQL and Python for Data Analysis",
         "skill_ids": [
           "34",
-          "26"
+          "26",
+          "1",
+          "15",
+          "166"
         ]
       },
       {
@@ -1146,7 +1179,8 @@
         "title": "Statistics and Probability",
         "skill_ids": [
           "29",
-          "30"
+          "30",
+          "129"
         ]
       },
       {
@@ -1167,7 +1201,8 @@
         "title": "Data Storytelling and Responsible Practice",
         "skill_ids": [
           "45",
-          "38"
+          "38",
+          "167"
         ]
       }
     ]

@@ -2,6 +2,10 @@ import json
 import math
 import re
 import uuid
+from datetime import datetime, timezone
+
+from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 
 from app.services.phase_identity import ensure_phase_ids, preserve_phase_identity, reconcile_attempts_to_phase_order
 
@@ -35,6 +39,15 @@ from app.services.roadmap_validator import validate_llm_roadmap_proposal
 from app.utils.config import settings
 from app.utils.logger import logger
 
+# Safety limits: allow normal multi-minute LLM generation, but expire abandoned jobs.
+GENERATION_QUEUED_TIMEOUT_SECONDS = 5 * 60
+GENERATION_RUNNING_TIMEOUT_SECONDS = 20 * 60
+GENERATION_CANCEL_ACK_TIMEOUT_SECONDS = 5 * 60
+
+
+def _generation_now_naive() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
 
 _HIDDEN_TEST_ROADMAP_NAME = "test llm first roadmap algorithms learning path"
 
@@ -50,45 +63,295 @@ def _is_hidden_test_roadmap_name(goal_name: str | None) -> bool:
     return _HIDDEN_TEST_ROADMAP_NAME in normalized_name
 
 
+class RoadmapAlreadyExistsError(Exception):
+    """Raised when the authenticated user's selected goal already has a saved roadmap."""
+
+    def __init__(self, goal_id: str, goal_name: str = ""):
+        self.goal_id = str(goal_id)
+        self.goal_name = goal_name or "Learning path"
+        super().__init__(f"{self.goal_name} has already been generated. Delete the saved roadmap before generating it again.")
+
+    def as_detail(self) -> dict:
+        return {
+            "code": "ROADMAP_ALREADY_EXISTS",
+            "goal_id": self.goal_id,
+            "goal_name": self.goal_name,
+            "message": str(self),
+        }
+
+
+class RoadmapGenerationCancelled(Exception):
+    """Raised when a learner cancels a roadmap while it is being generated."""
+
+
 class RoadmapService:
 
-    def create_generation_job(self, user_id: str) -> dict:
-        job_id = str(uuid.uuid4())
+    def get_existing_roadmap_for_active_goal(self, user_id: str) -> dict | None:
+        """Return the authenticated user's saved roadmap for their active goal."""
+        user_profile = auth_service.get_user_by_id(str(user_id))
+        if not user_profile:
+            return None
+        goal_id = str(user_profile.get("goal_id") or "default")
         db = SessionLocal()
         try:
-            db.add(RoadmapGenerationJob(job_id=job_id, user_id=str(user_id), status="queued"))
-            db.commit()
-            return {"job_id": job_id, "status": "queued"}
+            saved = db.query(Roadmap).filter(
+                Roadmap.user_id == str(user_id),
+                Roadmap.goal_id == goal_id,
+            ).first()
+            if not saved:
+                return None
+            return {"goal_id": str(saved.goal_id), "goal_name": saved.goal_name or "Learning path"}
         finally:
             db.close()
 
-    def run_generation_job(self, job_id: str, user_id: str) -> None:
+    def get_existing_roadmap_for_goal(self, user_id: str, goal_id: str) -> dict | None:
+        """Return a saved roadmap for this user and explicitly selected goal."""
         db = SessionLocal()
         try:
-            job = db.query(RoadmapGenerationJob).filter(RoadmapGenerationJob.job_id == job_id, RoadmapGenerationJob.user_id == str(user_id)).first()
-            if not job:
-                return
-            job.status = "running"
-            db.commit()
+            saved = db.query(Roadmap).filter(
+                Roadmap.user_id == str(user_id),
+                Roadmap.goal_id == str(goal_id),
+            ).first()
+            if not saved:
+                return None
+            return {
+                "goal_id": str(saved.goal_id),
+                "goal_name": saved.goal_name or "Learning path",
+            }
         finally:
             db.close()
+
+    def create_generation_job(self, user_id: str) -> dict:
+        """Create one job per user/goal, or reuse an already queued/running job.
+
+        A saved roadmap is immutable with respect to generation: the learner must
+        delete it explicitly before a new generation can be started.
+        """
+        user_profile = auth_service.get_user_by_id(str(user_id))
+        if not user_profile:
+            raise ValueError("User not found.")
+        goal_id = str(user_profile.get("goal_id") or "default")
+        db = SessionLocal()
         try:
-            roadmap = self.generate_personalized_roadmap(user_id)
+            saved = db.query(Roadmap).filter(
+                Roadmap.user_id == str(user_id),
+                Roadmap.goal_id == goal_id,
+            ).first()
+            if saved:
+                raise RoadmapAlreadyExistsError(saved.goal_id, saved.goal_name)
+
+            active_job = db.query(RoadmapGenerationJob).filter(
+                RoadmapGenerationJob.user_id == str(user_id),
+                RoadmapGenerationJob.status.in_(["queued", "running", "cancel_requested"]),
+                or_(
+                    RoadmapGenerationJob.goal_id == goal_id,
+                    RoadmapGenerationJob.goal_id.is_(None),
+                ),
+            ).order_by(RoadmapGenerationJob.created_at.desc()).first()
+            if active_job:
+                # A legacy queued job may have a NULL goal_id. Reuse it without
+                # mutating the row; run_generation_job records the resolved goal
+                # when the task completes.
+                return {
+                    "job_id": active_job.job_id,
+                    "status": active_job.status,
+                    "goal_id": goal_id,
+                    "reused": True,
+                }
+
+            job_id = str(uuid.uuid4())
+            db.add(RoadmapGenerationJob(
+                job_id=job_id,
+                user_id=str(user_id),
+                goal_id=goal_id,
+                status="queued",
+            ))
+            try:
+                db.commit()
+            except IntegrityError:
+                # The partial unique index resolves simultaneous requests. Return
+                # the winning active job rather than creating a second roadmap.
+                db.rollback()
+                active_job = db.query(RoadmapGenerationJob).filter(
+                    RoadmapGenerationJob.user_id == str(user_id),
+                    RoadmapGenerationJob.goal_id == goal_id,
+                    RoadmapGenerationJob.status.in_(["queued", "running", "cancel_requested"]),
+                ).order_by(RoadmapGenerationJob.created_at.desc()).first()
+                if active_job:
+                    return {
+                        "job_id": active_job.job_id,
+                        "status": active_job.status,
+                        "goal_id": goal_id,
+                        "reused": True,
+                    }
+                saved = db.query(Roadmap).filter(
+                    Roadmap.user_id == str(user_id),
+                    Roadmap.goal_id == goal_id,
+                ).first()
+                if saved:
+                    raise RoadmapAlreadyExistsError(saved.goal_id, saved.goal_name)
+                raise
+            return {"job_id": job_id, "status": "queued", "goal_id": goal_id, "reused": False}
+        finally:
+            db.close()
+
+    def _set_generation_job_cancelled(self, job_id: str, user_id: str) -> None:
+        db = SessionLocal()
+        try:
+            job = db.query(RoadmapGenerationJob).filter(
+                RoadmapGenerationJob.job_id == str(job_id),
+                RoadmapGenerationJob.user_id == str(user_id),
+                RoadmapGenerationJob.status.in_(["running", "cancel_requested"]),
+            ).first()
+            if job:
+                job.status = "cancelled"
+                job.error = None
+                db.commit()
+        finally:
+            db.close()
+
+    def request_cancel_generation(self, job_id: str, user_id: str) -> dict | None:
+        """Request cancellation for a job belonging to the authenticated user.
+
+        Queued jobs can be cancelled immediately. Running jobs move to
+        cancel_requested and are stopped at the next safe generation checkpoint.
+        """
+        db = SessionLocal()
+        try:
+            job = db.query(RoadmapGenerationJob).filter(
+                RoadmapGenerationJob.job_id == str(job_id),
+                RoadmapGenerationJob.user_id == str(user_id),
+            ).first()
+            if not job:
+                return None
+            if job.status == "queued":
+                job.status = "cancelled"
+                job.error = None
+            elif job.status == "running":
+                job.status = "cancel_requested"
+            db.commit()
+            return {
+                "job_id": job.job_id,
+                "status": job.status,
+                "goal_id": job.goal_id,
+                "error": job.error,
+            }
+        finally:
+            db.close()
+
+    def _raise_if_generation_cancelled(self, job_id: str | None, user_id: str) -> None:
+        if not job_id:
+            return
+        db = SessionLocal()
+        try:
+            status = db.query(RoadmapGenerationJob.status).filter(
+                RoadmapGenerationJob.job_id == str(job_id),
+                RoadmapGenerationJob.user_id == str(user_id),
+            ).scalar()
+        finally:
+            db.close()
+        if status in ("cancel_requested", "cancelled"):
+            raise RoadmapGenerationCancelled("Roadmap generation was cancelled by the learner.")
+
+    def _expire_stale_generation_job(self, job, now: datetime) -> bool:
+        """Expire abandoned jobs so clients never poll an orphan indefinitely."""
+        if job.status not in ("queued", "running", "cancel_requested"):
+            return False
+        reference_time = job.updated_at or job.created_at
+        if reference_time is None:
+            return False
+        if reference_time.tzinfo is not None:
+            reference_time = reference_time.astimezone(timezone.utc).replace(tzinfo=None)
+        elapsed = max(0.0, (now - reference_time).total_seconds())
+
+        if job.status == "queued":
+            timeout = GENERATION_QUEUED_TIMEOUT_SECONDS
+            terminal_status = "failed"
+            message = "Roadmap generation did not start within 5 minutes. Please retry generation."
+        elif job.status == "cancel_requested":
+            timeout = GENERATION_CANCEL_ACK_TIMEOUT_SECONDS
+            terminal_status = "cancelled"
+            message = "The cancellation request was acknowledged by the job watchdog. Any unfinished roadmap was discarded."
+        else:
+            timeout = GENERATION_RUNNING_TIMEOUT_SECONDS
+            terminal_status = "failed"
+            message = "Roadmap generation exceeded the 20-minute safety limit. Please retry generation."
+
+        if elapsed <= timeout:
+            return False
+        job.status = terminal_status
+        job.error = message
+        job.updated_at = now
+        return True
+
+    def run_generation_job(self, job_id: str, user_id: str) -> None:
+        # Claim a job once. Reused queued jobs cannot launch duplicate workers.
+        db = SessionLocal()
+        try:
+            claimed = db.query(RoadmapGenerationJob).filter(
+                RoadmapGenerationJob.job_id == str(job_id),
+                RoadmapGenerationJob.user_id == str(user_id),
+                RoadmapGenerationJob.status == "queued",
+            ).update(
+                {"status": "running", "updated_at": _generation_now_naive()},
+                synchronize_session=False,
+            )
+            db.commit()
+            if not claimed:
+                return
+        finally:
+            db.close()
+
+        try:
+            self._raise_if_generation_cancelled(job_id, user_id)
+            roadmap = self.generate_personalized_roadmap(user_id, job_id=job_id)
+            if not isinstance(roadmap, dict) or not roadmap.get("goal_id"):
+                raise RuntimeError("Roadmap generation ended without a saved roadmap.")
+
+            # Verify persistence. The generation method normally completes the
+            # job atomically with the roadmap save; this fallback handles legacy flows.
             db = SessionLocal()
             try:
-                job = db.query(RoadmapGenerationJob).filter(RoadmapGenerationJob.job_id == job_id).first()
-                job.status = "completed"
-                job.goal_id = roadmap.get("goal_id") if roadmap else None
-                db.commit()
+                saved = db.query(Roadmap).filter(
+                    Roadmap.user_id == str(user_id),
+                    Roadmap.goal_id == str(roadmap["goal_id"]),
+                ).first()
+                if not saved:
+                    raise RuntimeError("Roadmap generation returned data but no saved roadmap was found.")
+                job = db.query(RoadmapGenerationJob).filter(
+                    RoadmapGenerationJob.job_id == str(job_id),
+                    RoadmapGenerationJob.user_id == str(user_id),
+                ).first()
+                if job and job.status == "running":
+                    job.status = "completed"
+                    job.goal_id = str(roadmap["goal_id"])
+                    job.error = None
+                    job.updated_at = _generation_now_naive()
+                    db.commit()
+                elif job and job.status in ("cancel_requested", "cancelled"):
+                    job.status = "cancelled"
+                    job.error = None
+                    job.updated_at = _generation_now_naive()
+                    db.commit()
             finally:
                 db.close()
+        except RoadmapGenerationCancelled:
+            self._set_generation_job_cancelled(job_id, user_id)
         except Exception as exc:
             db = SessionLocal()
             try:
-                job = db.query(RoadmapGenerationJob).filter(RoadmapGenerationJob.job_id == job_id).first()
+                job = db.query(RoadmapGenerationJob).filter(
+                    RoadmapGenerationJob.job_id == str(job_id),
+                    RoadmapGenerationJob.user_id == str(user_id),
+                ).first()
                 if job:
-                    job.status = "failed"
-                    job.error = str(exc)[:1000]
+                    if job.status == "cancel_requested":
+                        job.status = "cancelled"
+                        job.error = None
+                    elif job.status not in ("completed", "cancelled", "failed"):
+                        job.status = "failed"
+                        job.error = str(exc)[:1000]
+                    job.updated_at = _generation_now_naive()
                     db.commit()
             finally:
                 db.close()
@@ -96,10 +359,24 @@ class RoadmapService:
     def get_generation_job(self, job_id: str, user_id: str) -> dict | None:
         db = SessionLocal()
         try:
-            job = db.query(RoadmapGenerationJob).filter(RoadmapGenerationJob.job_id == job_id, RoadmapGenerationJob.user_id == str(user_id)).first()
+            job = db.query(RoadmapGenerationJob).filter(
+                RoadmapGenerationJob.job_id == str(job_id),
+                RoadmapGenerationJob.user_id == str(user_id),
+            ).first()
             if not job:
                 return None
-            return {"job_id": job.job_id, "status": job.status, "goal_id": job.goal_id, "error": job.error}
+            now = _generation_now_naive()
+            if self._expire_stale_generation_job(job, now):
+                db.commit()
+                db.refresh(job)
+            return {
+                "job_id": job.job_id,
+                "status": job.status,
+                "goal_id": job.goal_id,
+                "error": job.error,
+                "created_at": job.created_at.isoformat() if job.created_at else None,
+                "updated_at": job.updated_at.isoformat() if job.updated_at else None,
+            }
         finally:
             db.close()
 
@@ -274,6 +551,43 @@ class RoadmapService:
         ensure_phase_ids(roadmap)
         return roadmap
 
+    @staticmethod
+    def _restore_fixed_plan_skills(roadmap, plan_phases):
+        """Restore authoritative phase skills after LLM elaboration."""
+        if not isinstance(roadmap, dict) or not isinstance(plan_phases, list):
+            return roadmap
+
+        generated_phases = roadmap.get("phases", [])
+        if not isinstance(generated_phases, list):
+            generated_phases = []
+
+        phases = []
+        for position, planned in enumerate(plan_phases):
+            generated = generated_phases[position] if position < len(generated_phases) else {}
+            phase = dict(generated) if isinstance(generated, dict) else {}
+            skills = planned.get("skills", []) if isinstance(planned, dict) else []
+            phase["skills"] = [
+                skill.get("name") or skill.get("id")
+                for skill in skills
+                if isinstance(skill, dict) and (skill.get("name") or skill.get("id"))
+            ]
+            phase["skill_ids"] = [
+                skill.get("id")
+                for skill in skills
+                if isinstance(skill, dict) and skill.get("id")
+            ]
+            phase["actions"] = [
+                skill.get("action")
+                for skill in skills
+                if isinstance(skill, dict) and skill.get("action")
+            ]
+            phase.setdefault("title", planned.get("title") or f"Phase {position + 1}")
+            phase.setdefault("duration", "Flexible")
+            phases.append(phase)
+
+        roadmap["phases"] = phases
+        return roadmap
+
     # ------------------------------------------------------------------
     # Roadmap generation
     # ------------------------------------------------------------------
@@ -315,9 +629,9 @@ class RoadmapService:
         back to the legacy generation path.
 
         Mastery comes from the goal-scoped BKT state, decayed by time since the
-        last review. A skill the learner has recorded as known (``UserSkill``)
-        but that has no goal-scoped state yet counts as mastered, which keeps
-        the app's existing rule of not re-teaching recorded skills.
+        last review. A skill recorded in ``UserSkill`` without goal-scoped BKT evidence
+        receives the configured initial mastery prior; profile membership alone
+        never qualifies a skill to be skipped.
         """
         db = SessionLocal()
         try:
@@ -331,9 +645,13 @@ class RoadmapService:
                 if d.prerequisite_id in skills and d.skill_id in skills
             ]
             mastery = {}
+            verified = {}
+            # A global profile record is not evidence of mastery for this goal.
+            initial_mastery = float(get_bkt_parameters(db).p_initial)
             for us in db.query(UserSkill).filter(UserSkill.user_id == str(user_id)).all():
                 if us.skill_id in skills:
-                    mastery[us.skill_id] = settings.PLANNER_STRONG_THRESHOLD
+                    mastery[us.skill_id] = initial_mastery
+                    verified[us.skill_id] = False
             last_reviewed = load_last_reviewed_at_by_skill(db, str(user_id), str(goal_id))
             for us in db.query(GoalUserSkill).filter(
                 GoalUserSkill.user_id == str(user_id),
@@ -346,6 +664,7 @@ class RoadmapService:
                 last_at = last_reviewed.get(normalize_skill_name(skill.skill_name)) if skill else None
                 p = decay_mastery(p, last_at)
                 mastery[us.skill_id] = max(0.0, min(1.0, p))
+                verified[us.skill_id] = (getattr(us, "verification_status", "unverified") == "verified")
         finally:
             db.close()
 
@@ -355,7 +674,7 @@ class RoadmapService:
             edges,
         )
         cfg = PlannerConfig(weak=settings.PLANNER_WEAK_THRESHOLD, strong=settings.PLANNER_STRONG_THRESHOLD)
-        plan = plan_path(graph, [t for t in target_ids if t in skills], mastery, cfg)
+        plan = plan_path(graph, [t for t in target_ids if t in skills], mastery, cfg, verified=verified)
         if not plan.items:
             return None
         plan_phases = [
@@ -433,12 +752,13 @@ class RoadmapService:
             )
 
             mastery = {}
+            verified = {}
+            # UserSkill is profile membership, not goal-specific mastery evidence.
+            initial_mastery = float(get_bkt_parameters(db).p_initial)
             for user_skill in db.query(UserSkill).filter(UserSkill.user_id == str(user_id)).all():
                 if str(user_skill.skill_id) in skills:
-                    # Preserve existing product semantics: a globally recorded
-                    # skill is considered known unless goal-scoped quiz evidence
-                    # overrides that value below.
-                    mastery[str(user_skill.skill_id)] = settings.PLANNER_STRONG_THRESHOLD
+                    mastery[str(user_skill.skill_id)] = initial_mastery
+                    verified[str(user_skill.skill_id)] = False
 
             last_reviewed = load_last_reviewed_at_by_skill(db, str(user_id), str(goal_id))
             for state in db.query(GoalUserSkill).filter(
@@ -450,6 +770,7 @@ class RoadmapService:
                     continue
                 last_at = last_reviewed.get(normalize_skill_name(skills[sid].skill_name))
                 mastery[sid] = max(0.0, min(1.0, decay_mastery(state.mastery_probability, last_at)))
+                verified[sid] = (getattr(state, "verification_status", "unverified") == "verified")
 
             allowed_ids = graph.closure(target_ids)
             candidate_skills = [
@@ -487,6 +808,7 @@ class RoadmapService:
             mastery,
             weak_threshold=settings.PLANNER_WEAK_THRESHOLD,
             strong_threshold=settings.PLANNER_STRONG_THRESHOLD,
+            verified=verified,
         )
         logger.info(
             "LLM-first roadmap proposal validated: goal_id=%s proposed_phases=%d "
@@ -540,7 +862,9 @@ class RoadmapService:
         ]
         return None, fallback_plan, missing_skills
 
-    def generate_personalized_roadmap(self, user_id: str):
+    def generate_personalized_roadmap(self, user_id: str, job_id: str | None = None):
+
+        self._raise_if_generation_cancelled(job_id, user_id)
 
         # 1. Load user profile
         user_profile = auth_service.get_user_by_id(user_id)
@@ -606,10 +930,10 @@ class RoadmapService:
         finally:
             db.close()
 
-        # Keep each curated goal's reviewed skill scope, but allow the LLM-first
-        # proposal + deterministic validation technique to design its phase
-        # structure. For curated goals, the validator graph is scoped to the
-        # goal's mapped skills so noisy cross-domain edges cannot expand scope.
+        # Curated curricula are authoritative: use them as the fixed skill plan
+        # and let the LLM elaborate only the phase content. Proposal generation
+        # remains available for uncurated goals, where validation is needed to
+        # derive the skill scope from the prerequisite graph.
         curated_plan = gap_analysis_service.get_curated_plan(user_id)
         fallback_plan = None
         planned = None
@@ -629,6 +953,9 @@ class RoadmapService:
                     learner_context,
                     restrict_to_goal_skills=curated_plan is not None,
                 )
+                self._raise_if_generation_cancelled(job_id, user_id)
+            except RoadmapGenerationCancelled:
+                raise
             except Exception as exc:
                 # Preserve a safe fallback when proposal generation or
                 # validation fails. A curated curriculum takes precedence over
@@ -655,11 +982,22 @@ class RoadmapService:
             planned, fallback_plan, missing_skills = self._plan_for_uncurated_goal(user_id, goal_id)
 
         selected_plan = (
-            (llm_first_plan["plan_phases"] if llm_first_plan else None)
-            or curated_plan
+            curated_plan
+            if curated_plan is not None
+            else (llm_first_plan["plan_phases"] if llm_first_plan else None)
             or (planned[1] if planned else fallback_plan)
             or []
         )
+        if curated_plan is not None and llm_first_plan:
+            reviewed_titles = {
+                phase.get("index", position): phase.get("title")
+                for position, phase in enumerate(curated_plan)
+                if phase.get("title")
+            }
+            for position, phase in enumerate(selected_plan):
+                title = reviewed_titles.get(phase.get("index", position))
+                if title:
+                    phase["title"] = title
         selected_mode = (
             "llm-proposal-validated" if llm_first_plan else
             "curated" if curated_plan is not None else
@@ -690,6 +1028,9 @@ class RoadmapService:
                 exc,
             )
             raw_resources_by_phase = {}
+
+        self._raise_if_generation_cancelled(job_id, user_id)
+        self._raise_if_generation_cancelled(job_id, user_id)
 
         verified_resources_by_phase = {}
         for position, planned_phase in enumerate(selected_plan):
@@ -758,7 +1099,14 @@ class RoadmapService:
         # repairs changed phase membership/order, elaborate the corrected plan;
         # otherwise preserve project metadata from the initial proposal.
         if llm_first_plan:
-            if llm_first_plan["repaired"]:
+            if curated_plan is not None:
+                # The reviewed curriculum owns phase boundaries. Groq still
+                # supplies project ideas, while validation confirms its
+                # proposal remains inside the reviewed skill scope.
+                roadmap_dict = llm_service.merge_proposal_with_validated_plan(
+                    llm_first_plan["proposal"], curated_plan
+                )
+            elif llm_first_plan["repaired"]:
                 roadmap_dict = llm_service.generate_roadmap_from_plan(
                     context, llm_first_plan["plan_phases"]
                 )
@@ -774,6 +1122,8 @@ class RoadmapService:
             roadmap_dict = llm_service.generate_roadmap_from_plan(context, fallback_plan)
         else:
             raise ValueError("No valid learning plan could be constructed for this goal.")
+
+        self._raise_if_generation_cancelled(job_id, user_id)
 
         # The frontend needs the goal ID immediately
         # after generating a new roadmap.
@@ -807,6 +1157,8 @@ class RoadmapService:
                     len(phase["resources"]),
                 )
 
+        roadmap_dict = self._restore_fixed_plan_skills(roadmap_dict, selected_plan)
+
         # 5.6 Normalize any study notes that may already
         # exist in generated data.
         roadmap_dict = self._normalize_roadmap(
@@ -817,6 +1169,8 @@ class RoadmapService:
             roadmap_dict = RoadmapResponse.model_validate(roadmap_dict).model_dump(exclude_none=True)
 
         # 6. Upsert into DB
+        self._raise_if_generation_cancelled(job_id, user_id)
+
         if roadmap_dict and (
             roadmap_dict.get("phases")
             or roadmap_dict.get("roadmap_text")
@@ -860,8 +1214,24 @@ class RoadmapService:
                         )
                     )
 
+                if job_id:
+                    completed_job = db.query(RoadmapGenerationJob).filter(
+                        RoadmapGenerationJob.job_id == str(job_id),
+                        RoadmapGenerationJob.user_id == str(user_id),
+                        RoadmapGenerationJob.status == "running",
+                    ).update(
+                        {"status": "completed", "goal_id": goal_id, "error": None},
+                        synchronize_session=False,
+                    )
+                    if not completed_job:
+                        db.rollback()
+                        raise RoadmapGenerationCancelled("Roadmap generation was cancelled before saving.")
+
                 db.commit()
 
+            except RoadmapGenerationCancelled:
+                db.rollback()
+                raise
             except Exception as exc:
                 db.rollback()
                 raise RuntimeError("The roadmap was generated but could not be saved.") from exc
@@ -948,11 +1318,6 @@ class RoadmapService:
             roadmap = self._normalize_roadmap(
                 roadmap
             )
-
-            for phase in roadmap.get("phases", []) or []:
-                phase["resources"] = filter_relevant_resources(
-                    phase.get("resources", []), phase.get("skills", [])
-                )
 
             normalized_data = json.dumps(
                 roadmap,
