@@ -18,6 +18,7 @@ import LearningInsightsPage from './pages/LearningInsightsPage';
 import StudyPlannerPage from './pages/StudyPlannerPage';
 import SharedProgressPage from './pages/SharedProgressPage';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { RoadmapGenerationProvider } from './context/RoadmapGenerationContext.jsx';
 import { useAuth } from './context/useAuth';
 
 function ProtectedRoute({ children }) {
@@ -29,6 +30,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <RoadmapGenerationProvider>
         <Navbar />
         <Routes>
           {/* The public landing page is the entry point for both signed-out and signed-in users. */}
@@ -52,6 +54,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <ChatWidget />
+      </RoadmapGenerationProvider>
       </BrowserRouter>
     </AuthProvider>
   );

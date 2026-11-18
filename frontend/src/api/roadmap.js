@@ -2,6 +2,17 @@ import api from './axios';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Start a durable server-side job without waiting for roadmap generation to finish.
+export const startRoadmapGeneration = () =>
+  api.post('/roadmap/generate-roadmap/async');
+
+// Read the persisted job status. The backend enforces user ownership.
+export const getRoadmapGenerationJob = (jobId) =>
+  api.get(`/roadmap/generation-jobs/${encodeURIComponent(jobId)}`);
+
+export const cancelRoadmapGeneration = (jobId) =>
+  api.post(`/roadmap/generation-jobs/${encodeURIComponent(jobId)}/cancel`);
+
 // Roadmap generation can involve several slow LLM/resource calls. Queue it and
 // poll the persisted job rather than holding the original request open.
 export const generateRoadmap = async ({ onStatus } = {}) => {
@@ -29,10 +40,16 @@ export const generateRoadmap = async ({ onStatus } = {}) => {
       failure.response = { data: { detail: failure.message } };
       throw failure;
     }
+    if (current.status === 'cancelled') {
+      throw new Error(current.error || 'Roadmap generation was cancelled.');
+    }
   }
 
   throw new Error('Roadmap generation is taking longer than expected. Refresh Saved Roadmaps to check its status.');
 };
+
+export const getExistingRoadmap = (goalId) =>
+  api.get(`/roadmap/existing/${encodeURIComponent(goalId)}`);
 
 export const getSavedRoadmaps = () =>
   api.get('/roadmap/saved');
@@ -75,3 +92,16 @@ export const getRecommendation = (goalId) =>
 
 export const insertRemedialPhase = (goalId, phaseIndex) =>
   api.post(`/roadmap/${goalId}/phase/${phaseIndex}/insert-remedial`);
+
+
+export const getPendingMasteryVerifications = (goalId) =>
+  api.get(`/roadmap/${goalId}/mastery-verification/pending`);
+
+export const issueMasteryVerificationQuiz = (goalId, skillId) =>
+  api.post(`/roadmap/${goalId}/skills/${skillId}/verification-quiz`);
+
+export const submitMasteryVerificationQuiz = (goalId, skillId, quizId, answers) =>
+  api.post(`/roadmap/${goalId}/skills/${skillId}/verification-quiz/submit`, {
+    quiz_id: quizId,
+    answers,
+  });

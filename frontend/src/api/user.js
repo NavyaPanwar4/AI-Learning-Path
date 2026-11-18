@@ -33,3 +33,6 @@ export const logSession = (durationMinutes) =>
 
 export const deleteUserSkill = (skillId) =>
   api.delete(`/users/skills/${skillId}`);
+
+export const deleteAllUserSkills = () =>
+  api.delete('/users/skills');

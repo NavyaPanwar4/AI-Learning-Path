@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiCheckCircle, FiTrash2 } from 'react-icons/fi';
-import { getUserSkills, deleteUserSkill } from '../api/user';
+import { getUserSkills, deleteAllUserSkills, deleteUserSkill } from '../api/user';
 import LoadingSpinner from '../components/LoadingSpinner';
 import useSessionTimer from '../hooks/useSessionTimer';
 
@@ -10,6 +10,7 @@ export default function MySkillsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletingId, setDeletingId] = useState(null);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   useEffect(() => {
     getUserSkills()
@@ -32,6 +33,22 @@ export default function MySkillsPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!skills.length || deletingAll) return;
+    if (!window.confirm('Remove all skills from your profile? This cannot be undone.')) return;
+
+    setDeletingAll(true);
+    setError('');
+    try {
+      await deleteAllUserSkills();
+      setSkills([]);
+    } catch {
+      setError('Failed to remove all skills. Please try again.');
+    } finally {
+      setDeletingAll(false);
+    }
+  };
+
   if (loading) return <LoadingSpinner message="Loading your skills..." />;
 
   return (
@@ -49,6 +66,16 @@ export default function MySkillsPage() {
             <FiCheckCircle size={20} color="var(--color-success)" />
             <h3 style={{ fontSize: '1.1rem' }}>Identified Skills</h3>
             <span className="badge badge-primary" style={{ marginLeft: 'auto' }}>{skills.length}</span>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={handleDeleteAll}
+              disabled={!skills.length || deletingAll}
+              style={{ color: 'var(--color-danger, #c53030)', borderColor: 'var(--color-danger, #c53030)' }}
+            >
+              <FiTrash2 size={14} />
+              {deletingAll ? 'Removing...' : 'Delete all skills'}
+            </button>
           </div>
 
           {skills.length === 0 ? (

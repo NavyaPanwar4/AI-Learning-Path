@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { FiExternalLink, FiBook, FiCode, FiStar, FiX, FiRefreshCw, FiClock, FiCheckCircle, FiFileText, FiHelpCircle, FiDownload, FiBarChart2, FiCalendar } from 'react-icons/fi';
-import { generateRoadmap, submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz, insertRemedialPhase, downloadLearningReport } from '../api/roadmap';
+import { submitFeedback, getSavedRoadmap, updatePhaseStatus, completeRoadmap, generateStudyNotes, generateQuiz, submitQuiz, insertRemedialPhase, downloadLearningReport } from '../api/roadmap';
+import { useRoadmapGeneration } from '../context/useRoadmapGeneration.js';
 import { setRoadmapDeadline } from '../api/learning';
 import { explainQuizAnswer } from '../api/chat';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -326,8 +327,8 @@ export default function RoadmapPage() {
 
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [generationStatus, setGenerationStatus] = useState('queued');
   const [error, setError] = useState('');
+  const [alreadyGenerated] = useState(null);
   const [feedbackResource, setFeedbackResource] = useState(null);
   const [generatingNotes, setGeneratingNotes] = useState(null);
   const [notesError, setNotesError] = useState('');
@@ -344,33 +345,81 @@ export default function RoadmapPage() {
   const fetchedRoadmapKey = useRef(null);
 
   const { goalId } = useParams();
+  const { startGeneration, job, isStarting, isCancelling, cancelError, pollError, retryPolling, cancelGeneration, dismissJob } = useRoadmapGeneration();
+
+  const handleCancelGeneration = async () => {
+    try {
+      await cancelGeneration();
+    } catch {
+      // Keep the active job visible so the learner can retry cancellation.
+    }
+  };
+
+  useEffect(() => {
+    if (job?.status !== 'cancelled') return;
+    dismissJob();
+    navigate('/assess-skills', { replace: true });
+  }, [job?.status, dismissJob, navigate]);
 
   const fetchRoadmap = useCallback(async () => {
-    setLoading(true);
     setError('');
+
+    // Stay on this generation screen. The learner can explicitly explore
+    // Traject, and the navbar status control returns here at any time.
+    if (!goalId) {
+      if (job?.status === 'cancelled') {
+        dismissJob();
+      } else if (job?.job_id) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        await startGeneration();
+        setLoading(false);
+      } catch (err) {
+        const detail = err.response?.data?.detail;
+        const detailCode = typeof detail === 'object' ? detail?.code : null;
+        const existingGoalId = typeof detail === 'object' ? detail?.goal_id : null;
+        if (err.response?.status === 409 && detailCode === 'ROADMAP_ALREADY_EXISTS' && existingGoalId) {
+          navigate(`/roadmap/${existingGoalId}`, { replace: true });
+          return;
+        }
+        setError(typeof detail === 'string' ? detail : detail?.message || err.message || 'Failed to start roadmap generation.');
+        setLoading(false);
+      }
+      return;
+    }
+
+    setLoading(true);
     setRoadmap(null);
     try {
-      let res;
-      if (goalId) {
-        res = await getSavedRoadmap(goalId);
-      } else {
-        res = await generateRoadmap({ onStatus: setGenerationStatus });
-      }
+      const res = await getSavedRoadmap(goalId);
       setRoadmap(res.data);
       setDeadlineDraft(typeof res.data.deadline === 'string' ? res.data.deadline.slice(0, 10) : '');
       setManagementError('');
       setManagementMessage('');
     } catch (err) {
       const detail = err.response?.data?.detail;
-      if (err.response?.status === 400 || (detail && detail.includes('profile'))) {
-        navigate('/onboarding');
-      } else {
-        setError(detail || err.message || 'Failed to generate or retrieve roadmap.');
-      }
+      setError(typeof detail === 'string' ? detail : detail?.message || err.message || 'Failed to retrieve roadmap.');
     } finally {
       setLoading(false);
     }
-  }, [goalId, navigate]);
+  }, [goalId, navigate, startGeneration, job?.job_id, job?.status, dismissJob]);
+
+  const handleRetryRoadmapGeneration = async () => {
+    dismissJob();
+    setError('');
+    setLoading(true);
+    try {
+      await startGeneration();
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      setError(typeof detail === 'string' ? detail : detail?.message || err.message || 'Could not restart roadmap generation.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePhaseToggle = async (index, currentStatus) => {
     try {
@@ -542,9 +591,100 @@ export default function RoadmapPage() {
     fetchRoadmap();
   }, [fetchRoadmap, goalId]);
 
-  if (loading) return <LoadingSpinner message={goalId
-    ? "Loading your saved roadmap..."
-    : `Roadmap generation ${generationStatus}. This may take a few minutes.`} />;
+  if (loading && goalId) return <LoadingSpinner message="Loading your saved roadmap..." />;
+
+  if (job?.status === 'cancelled') return null;
+
+  if (alreadyGenerated) return (
+    <div className="page">
+      <div className="container-sm" style={{ textAlign: 'center', paddingTop: 60 }}>
+        <div className="card" style={{ padding: 32 }}>
+          <h2 style={{ marginBottom: 10 }}>This learning path is already generated</h2>
+          <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: 24 }}>
+            {alreadyGenerated.goal_name || 'This learning path'} is already saved in your account.
+            To generate it again, delete the existing roadmap from My Roadmaps first.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 10 }}>
+            <button className="btn btn-primary" onClick={() => navigate(`/roadmap/${alreadyGenerated.goal_id}`)}>
+              View Existing Roadmap
+            </button>
+            <button className="btn btn-outline" onClick={() => navigate('/saved-roadmaps')}>
+              Manage Saved Roadmaps
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!goalId && (loading || job?.job_id || isStarting)) {
+    const status = job?.status || 'queued';
+    const cancelling = status === 'cancel_requested';
+    const completed = status === 'completed';
+    const failed = status === 'failed';
+    const active = ['queued', 'running', 'cancel_requested'].includes(status);
+
+    return (
+      <div className="page roadmap-generation-screen">
+        <div className="roadmap-generation-container">
+          <div className={`card roadmap-generation-card${active ? ' is-active' : ''}`}>
+            {!completed && !failed && (
+              <div className="roadmap-generation-large-spinner" aria-hidden="true" />
+            )}
+            <h1>
+              {completed
+                ? 'Your roadmap is ready'
+                : failed
+                  ? 'Roadmap generation failed'
+                  : cancelling
+                    ? 'Cancelling your roadmap...'
+                    : 'Your roadmap is being generated'}
+            </h1>
+            <p>
+              {completed
+                ? 'Your personalized learning path is ready to explore.'
+                : failed
+                  ? (job?.error || 'Something went wrong while generating your learning path. You can try again.')
+                  : cancelling
+                    ? 'Your cancellation request has been received. Traject will safely stop generation.'
+                    : 'This may take a few minutes.'}
+            </p>
+
+            {cancelError && <div className="alert alert-error" role="alert">{cancelError}</div>}
+            {pollError && (
+              <div className="alert alert-error" role="alert">
+                <div>{pollError}</div>
+                <button type="button" className="btn btn-outline" style={{ marginTop: 10 }} onClick={retryPolling}>
+                  Retry status check
+                </button>
+              </div>
+            )}
+
+            <div className="roadmap-generation-actions">
+              {completed ? (
+                <button className="btn btn-primary" onClick={() => navigate(job?.goal_id ? `/roadmap/${job.goal_id}` : '/saved-roadmaps')}>
+                  View generated roadmap
+                </button>
+              ) : failed ? (
+                <button className="btn btn-outline" onClick={handleRetryRoadmapGeneration}>
+                  Try generation again
+                </button>
+              ) : active ? (
+                <button
+                  type="button"
+                  className="btn btn-outline roadmap-generation-cancel"
+                  onClick={handleCancelGeneration}
+                  disabled={isCancelling || !job?.job_id || cancelling}
+                >
+                  {isCancelling || cancelling ? 'Cancelling...' : 'Cancel roadmap generation'}
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error) return (
     <div className="page">
